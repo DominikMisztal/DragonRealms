@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		config.setTitle("WaterDroplets");
 		config.setWindowedMode(800,480);
 		config.useVsync(true);
-		new Lwjgl3Application(new DragonRealms(), config);
+		new Lwjgl3Application(new Drop(), config);
+
 	}
 }
