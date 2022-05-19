@@ -61,6 +61,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         Vector3 position = camera.unproject(clickCoordinates);
         Vector2 tile = map.convertCoordinates(position);
         System.out.println("x: " + tile.x + " y: " + tile.y );
+        map.getTile(tile);
         return false;
     }
 
