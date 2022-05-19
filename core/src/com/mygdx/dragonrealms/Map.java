@@ -1,5 +1,7 @@
 package com.mygdx.dragonrealms;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayers;
@@ -9,7 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 
+import java.io.*;
 import java.util.HashMap;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Map {
     TiledMap tiledMap;
@@ -25,38 +31,44 @@ public class Map {
     }
 
     private void createTilesMap(){
-        tilesHashMap = new HashMap<>();
-        TiledMapTile tiledMapTile;
-        MapLayers mapLayers = tiledMap.getLayers();
-        tiledMapTileLayer = (TiledMapTileLayer) mapLayers.get("objects");
-        int height, width;
-        height = tiledMapTileLayer.getHeight();
-        width = tiledMapTileLayer.getWidth();
+        try{
+            tilesHashMap = new HashMap<>();
+            FileHandle fileHandle = new FileHandle("assets/maps/map1.txt");
+            BufferedReader reader = fileHandle.reader(1000);
+            for(int i = 0; i < 10; i++){
 
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                tiledMapTile = tiledMapTileLayer.getCell(i,j).getTile();
-                Tile tile = new Tile();
-                tile.coordinates.x = i;
-                tile.coordinates.y = j;
-                String type = (String) tiledMapTile.getProperties().get("type");
-                switch (type){
-                    case "grass":
-                        tile.type = TileType.GRASS;
-                        break;
-                    case "sand":
-                        tile.type = TileType.SAND;
-                        break;
-                    case "mountain":
-                        tile.type = TileType.MOUNTAIN;
-                        break;
-                    case "water":
-                        tile.type = TileType.MOUNTAIN;
-                        break;
-                }
-                tilesHashMap.put(tile.coordinates, tile);
+                    String typeLine;
+                    typeLine = reader.readLine();
+                    String[] typeArray = typeLine.split(",");
+                    int j = 0;
+                    for (String type: typeArray) {
+                        Tile tile = new Tile();
+                        tile.coordinates.x = i;
+                        switch (type){
+                            case "2":
+                                tile.type = TileType.GRASS;
+                                break;
+                            case "1":
+                                tile.type = TileType.SAND;
+                                break;
+                            case "4":
+                                tile.type = TileType.MOUNTAIN;
+                                break;
+                            case "3":
+                                tile.type = TileType.WATER;
+                                break;
+                        }
+                        tile.coordinates.y = j;
+                        tilesHashMap.put(new Vector2(j,i), tile);
+                        j++;
+                    }
+
+
             }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+        return;
     }
 
     public void getTile(Vector2 coordinates){

@@ -27,7 +27,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        map = new Map("maps/map1.tmx");
+        map = new Map("maps/map1_changed.tmx");
         Gdx.input.setInputProcessor(this);
     }
 
@@ -61,6 +61,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         Vector3 position = camera.unproject(clickCoordinates);
         Vector2 tile = map.convertCoordinates(position);
         System.out.println("x: " + tile.x + " y: " + tile.y );
+        //Vector2 coords = new Vector2(tile.x, tile.y);
         map.getTile(tile);
         return false;
     }

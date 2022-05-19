@@ -6,4 +6,8 @@ public class Tile {
     Vector2 coordinates;
     TileType type;
 
+    public Tile(){
+        coordinates = new Vector2();
+    }
+
 }
