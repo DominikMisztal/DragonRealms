@@ -11,13 +11,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
-    Texture img;
-    TiledMap tiledMap;
+    Map map;
     OrthographicCamera camera;
-    TiledMapRenderer tiledMapRenderer;
 
     @Override
     public void create () {
@@ -27,8 +27,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        tiledMap = new TmxMapLoader().load("map1.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        map = new Map("maps/map1.tmx");
         Gdx.input.setInputProcessor(this);
     }
 
@@ -38,8 +37,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
+        map.render(camera);
     }
 
     @Override
@@ -59,6 +57,11 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
+        Vector3 position = camera.unproject(clickCoordinates);
+        Vector2 tile = map.convertCoordinates(position);
+        System.out.println("x: " + tile.x + " y: " + tile.y );
+        map.getTile(tile);
         return false;
     }
 
