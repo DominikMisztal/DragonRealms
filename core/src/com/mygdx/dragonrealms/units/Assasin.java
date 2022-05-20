@@ -1,4 +1,4 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.units;
 
 import java.awt.image.BufferedImage;
 
