@@ -2,7 +2,6 @@ package com.mygdx.dragonrealms.map;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -14,9 +13,7 @@ import java.util.HashMap;
 public class Map {
     TiledMap tiledMap;
     final static int TILESIZE = 64;
-    Texture img;
     TiledMapRenderer tiledMapRenderer;
-    TiledMapTileLayer tiledMapTileLayer;
     HashMap<Vector2, Tile> tilesHashMap;
 
     public Map(String map_file){
@@ -31,37 +28,44 @@ public class Map {
             FileHandle fileHandle = new FileHandle("assets/maps/map_test/map_alpha_tiles.txt");
             BufferedReader reader = fileHandle.reader(4096);
             for(int i = 0; i < 32; i++){
-
                     String typeLine;
                     typeLine = reader.readLine();
                     String[] typeArray = typeLine.split(",");
                     int j = 0;
                     for (String type: typeArray) {
                         Tile tile = new Tile();
-                        tile.coordinates.x = i;
                         switch (type){
                             case "2":
-                                tile.type = TileType.GRASS;
+                                tile.setType(TileType.GRASS);
+                                tile.setMovementCost(1);
                                 break;
                             case "1":
-                                tile.type = TileType.SAND;
+                                tile.setType(TileType.SAND);
+                                tile.setMovementCost(2);
+
                                 break;
                             case "4":
-                                tile.type = TileType.MOUNTAIN;
+                                tile.setType(TileType.MOUNTAIN);
+                                tile.setMovementCost(99);
                                 break;
                             case "3":
-                                tile.type = TileType.WATER;
+                                tile.setType(TileType.WATER);
+                                tile.setMovementCost(99);
                                 break;
                             case "5":
-                                tile.type = TileType.FOREST;
+                                tile.setType(TileType.FOREST);
+                                tile.setMovementCost(4);
                                 break;
                             case "6":
-                                tile.type = TileType.SNOW;
+                                tile.setType(TileType.SNOW);
+                                tile.setMovementCost(5);
                                 break;
                             case "7":
-                                tile.type = TileType.SHALLOW_WATER;
+                                tile.setType(TileType.SHALLOW_WATER);
+                                tile.setMovementCost(3);
                                 break;
                         }
+                        tile.coordinates.x = i;
                         tile.coordinates.y = j;
                         tilesHashMap.put(new Vector2(j,i), tile);
                         j++;
@@ -78,7 +82,7 @@ public class Map {
     public void getTile(Vector2 coordinates){
         Tile tile = tilesHashMap.get(coordinates);
         if(tile != null){
-            switch (tile.type){
+            switch (tile.getType()){
                 case SAND:
                     System.out.println("Tile is sand");
                     break;

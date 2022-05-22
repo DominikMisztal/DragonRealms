@@ -1,4 +1,4 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.units;
 
 import com.mygdx.dragonrealms.units.Unit;
 import com.mygdx.dragonrealms.units.UnitType;

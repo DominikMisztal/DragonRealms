@@ -39,13 +39,13 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
 
-        if(keycode == Input.Keys.LEFT)
+        if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
             camera.translate(-32,0);
-        if(keycode == Input.Keys.RIGHT)
+        if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
             camera.translate(32,0);
-        if(keycode == Input.Keys.UP)
+        if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
             camera.translate(0, 32);
-        if(keycode == Input.Keys.DOWN)
+        if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
             camera.translate(0,-32);
         return false;
     }
