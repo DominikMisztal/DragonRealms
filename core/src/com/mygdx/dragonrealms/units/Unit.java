@@ -1,39 +1,50 @@
 package com.mygdx.dragonrealms.units;
 
-import java.awt.image.BufferedImage;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.dragonrealms.map.Map;
+
 
 public class Unit {
+    private String unitName;
+    private Texture texture;
+    private Sprite sprite;
+    private Vector2 coordinates;
+    private int unitCost;
+    private int attack;
+    private int max_hp;
+    private int current_hp;
+    private int range;
 
-    private final String unitName;
-    private final UnitType unitType;
-    private final BufferedImage bufferedImage;
-    private final int unitCost;
-    private final int attack;
-    private final int hp;
-    private final int range;
 
 
-
-    public Unit(String unitName, UnitType unitType, BufferedImage bufferedImage, int unitCost, int attack, int hp, int range){
+    public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int x, int y){
         this.unitName = unitName;
-        this.unitType = unitType;
-        this.bufferedImage = bufferedImage;
+        this.texture = texture;
+        this.sprite = new Sprite(texture);
         this.unitCost = unitCost;
         this.attack = attack;
-        this.hp = hp;
+        this.max_hp = hp;
+        this.current_hp = hp;
         this.range = range;
+        coordinates = new Vector2(x,y);
+        sprite.setPosition(coordinates.x * Map.TILESIZE + 12, coordinates.y * Map.TILESIZE + 12);
+
+
+    }
+
+    public void render(SpriteBatch spriteBatch){
+        sprite.draw(spriteBatch);
     }
 
     public String getUnitName(){
         return this.unitName;
     }
 
-    public UnitType getUnitType(){
-        return this.unitType;
-    }
-
-    public BufferedImage getBufferedImage(){
-        return this.bufferedImage;
+    public Texture getTexture(){
+        return this.texture;
     }
 
     public int getUnitCost(){
@@ -44,8 +55,12 @@ public class Unit {
         return this.attack;
     }
 
-    public int getHp(){
-        return this.hp;
+    public int getMax_hp() {
+        return max_hp;
+    }
+
+    public int getCurrent_hp() {
+        return current_hp;
     }
 
     public int getRange(){

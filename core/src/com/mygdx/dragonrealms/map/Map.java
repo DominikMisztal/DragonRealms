@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class Map {
     TiledMap tiledMap;
-    final static int TILESIZE = 64;
+    public final static int TILESIZE = 64;
     TiledMapRenderer tiledMapRenderer;
     HashMap<Vector2, Tile> tilesHashMap;
 

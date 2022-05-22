@@ -6,14 +6,23 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.dragonrealms.map.Map;
+import com.mygdx.dragonrealms.units.Unit;
+import com.mygdx.dragonrealms.units.Warrior;
+
+import java.util.Vector;
 
 public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
     Map map;
     OrthographicCamera camera;
+
+    Vector<Unit> unitList;
+
+    SpriteBatch sb;
 
     @Override
     public void create () {
@@ -25,6 +34,9 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         camera.update();
         map = new Map("maps/map_test/mapa_alpha.tmx");
         Gdx.input.setInputProcessor(this);
+        unitList = new Vector<>();
+        unitList.add(new Warrior(0,0));
+        sb = new SpriteBatch();
     }
 
     @Override
@@ -34,6 +46,12 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         map.render(camera);
+        sb.begin();
+        for (Unit unit : unitList) {
+            unit.render(sb);
+        }
+        sb.end();
+
     }
 
     @Override
@@ -66,7 +84,6 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         Vector3 position = camera.unproject(clickCoordinates);
         Vector2 tile = map.convertCoordinates(position);
         System.out.println("x: " + tile.x + " y: " + tile.y );
-        //Vector2 coords = new Vector2(tile.x, tile.y);
         map.getTile(tile);
         return false;
     }

@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class DragonRealms implements Screen {
+public class  DragonRealms implements Screen {
 	final Drop game;
 
 	Texture dropImage;
