@@ -10,9 +10,9 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("TiledTest");
-		config.setWindowedMode(800,480);
+		config.setWindowedMode(1800,900);
 		config.useVsync(true);
-		new Lwjgl3Application(new Drop(), config);
+		new Lwjgl3Application(new TiledTest(), config);
 
 	}
 }

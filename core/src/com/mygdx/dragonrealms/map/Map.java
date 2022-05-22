@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 public class Map {
     TiledMap tiledMap;
+    final static int TILESIZE = 64;
     Texture img;
     TiledMapRenderer tiledMapRenderer;
     TiledMapTileLayer tiledMapTileLayer;
@@ -27,9 +28,9 @@ public class Map {
     private void createTilesMap(){
         try{
             tilesHashMap = new HashMap<>();
-            FileHandle fileHandle = new FileHandle("assets/maps/map1.txt");
-            BufferedReader reader = fileHandle.reader(1000);
-            for(int i = 0; i < 10; i++){
+            FileHandle fileHandle = new FileHandle("assets/maps/map_test/map_alpha_tiles.txt");
+            BufferedReader reader = fileHandle.reader(4096);
+            for(int i = 0; i < 32; i++){
 
                     String typeLine;
                     typeLine = reader.readLine();
@@ -51,6 +52,15 @@ public class Map {
                             case "3":
                                 tile.type = TileType.WATER;
                                 break;
+                            case "5":
+                                tile.type = TileType.FOREST;
+                                break;
+                            case "6":
+                                tile.type = TileType.SNOW;
+                                break;
+                            case "7":
+                                tile.type = TileType.SHALLOW_WATER;
+                                break;
                         }
                         tile.coordinates.y = j;
                         tilesHashMap.put(new Vector2(j,i), tile);
@@ -67,19 +77,30 @@ public class Map {
 
     public void getTile(Vector2 coordinates){
         Tile tile = tilesHashMap.get(coordinates);
-        switch (tile.type){
-            case SAND:
-                System.out.println("Tile is sand");
-                break;
-            case GRASS:
-                System.out.println("Tile is grass");
-                break;
-            case WATER:
-                System.out.println("Tile is water");
-                break;
-            case MOUNTAIN:
-                System.out.println("Tile is mountain");
-                break;
+        if(tile != null){
+            switch (tile.type){
+                case SAND:
+                    System.out.println("Tile is sand");
+                    break;
+                case GRASS:
+                    System.out.println("Tile is grass");
+                    break;
+                case WATER:
+                    System.out.println("Tile is water");
+                    break;
+                case MOUNTAIN:
+                    System.out.println("Tile is mountain");
+                    break;
+                case FOREST:
+                    System.out.println("Tile is forest");
+                    break;
+                case SNOW:
+                    System.out.println("Tile is snow");
+                    break;
+                case SHALLOW_WATER:
+                    System.out.println("Tile is shallow water");
+                    break;
+            }
         }
     }
 
@@ -90,8 +111,8 @@ public class Map {
 
     public Vector2 convertCoordinates(Vector3 coordinates){
         Vector2 vector = new Vector2();
-        vector.x = (float) Math.floor(coordinates.x/16);
-        vector.y = (float) Math.floor(coordinates.y/16);
+        vector.x = (float) Math.floor(coordinates.x/TILESIZE);
+        vector.y = (float) Math.floor(coordinates.y/TILESIZE);
 
         return vector;
     }

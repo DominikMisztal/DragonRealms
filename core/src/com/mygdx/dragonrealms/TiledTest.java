@@ -2,6 +2,7 @@ package com.mygdx.dragonrealms;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,7 +23,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
         camera.update();
-        map = new Map("maps/map1_changed.tmx");
+        map = new Map("maps/map_test/mapa_alpha.tmx");
         Gdx.input.setInputProcessor(this);
     }
 
@@ -37,6 +38,15 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if(keycode == Input.Keys.LEFT)
+            camera.translate(-32,0);
+        if(keycode == Input.Keys.RIGHT)
+            camera.translate(32,0);
+        if(keycode == Input.Keys.UP)
+            camera.translate(0, 32);
+        if(keycode == Input.Keys.DOWN)
+            camera.translate(0,-32);
         return false;
     }
 
