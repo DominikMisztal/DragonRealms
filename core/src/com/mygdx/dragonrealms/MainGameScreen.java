@@ -63,7 +63,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         sb.end();
         putInMapBounds();
     }
-    
+
     private void putInMapBounds() {
 
         if (camera.position.x < camera.viewportWidth / 2f)
@@ -76,24 +76,31 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else if (camera.position.y > mapHeight - camera.viewportHeight / 2f)
             camera.position.y = mapWidth - camera.viewportHeight / 2f;
 
-        
+    }
+    private boolean isInMapBounds() {
+
+        return camera.position.x >= camera.viewportWidth / 2f
+                && camera.position.x <= mapWidth - camera.viewportWidth / 2f
+                && camera.position.y >= camera.viewportHeight / 2f
+                && camera.position.y <= mapHeight - camera.viewportHeight / 2f;
 
     }
     @Override
     public boolean keyDown(int keycode) {
 
-        if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
+        if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
             camera.translate(-64,0);
-        if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
+        if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
             camera.translate(64,0);
-        if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
+        if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
             camera.translate(0, 64);
-        if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
+        if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
             camera.translate(0,-64);
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
             dispose();
         }
+        putInMapBounds();
         return false;
     }
 
@@ -123,7 +130,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
+        if(isInMapBounds()){
+            camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
+        }
+        putInMapBounds();
         return true;      
     }
 
@@ -134,7 +144,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        camera.zoom += amountY/10;
         return false;
     }
     @Override
