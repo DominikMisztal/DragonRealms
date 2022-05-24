@@ -66,23 +66,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private void putInMapBounds() {
 
-        if (camera.position.x < camera.viewportWidth / 2f)
-            camera.position.x = camera.viewportWidth / 2f;
-        else if (camera.position.x > mapWidth - camera.viewportWidth / 2f)
-            camera.position.x = mapHeight - camera.viewportWidth / 2f;
+        if (camera.position.x < camera.viewportWidth*camera.zoom / 2f)
+            camera.position.x = camera.viewportWidth*camera.zoom / 2f;
+        else if (camera.position.x > mapWidth - camera.viewportWidth*camera.zoom / 2f)
+            camera.position.x = mapHeight - camera.viewportWidth*camera.zoom / 2f;
 
-        if (camera.position.y < camera.viewportHeight / 2f)
-            camera.position.y = camera.viewportHeight / 2f;
-        else if (camera.position.y > mapHeight - camera.viewportHeight / 2f)
-            camera.position.y = mapWidth - camera.viewportHeight / 2f;
+        if (camera.position.y < camera.viewportHeight*camera.zoom / 2f)
+            camera.position.y = camera.viewportHeight*camera.zoom / 2f;
+        else if (camera.position.y > mapHeight - camera.viewportHeight*camera.zoom / 2f)
+            camera.position.y = mapWidth - camera.viewportHeight*camera.zoom / 2f;
 
     }
     private boolean isInMapBounds() {
 
-        return camera.position.x >= camera.viewportWidth / 2f
-                && camera.position.x <= mapWidth - camera.viewportWidth / 2f
-                && camera.position.y >= camera.viewportHeight / 2f
-                && camera.position.y <= mapHeight - camera.viewportHeight / 2f;
+        return camera.position.x >= camera.viewportWidth*camera.zoom / 2f
+                && camera.position.x <= mapWidth - camera.viewportWidth*camera.zoom / 2f
+                && camera.position.y >= camera.viewportHeight*camera.zoom / 2f
+                && camera.position.y <= mapHeight - camera.viewportHeight*camera.zoom / 2f;
 
     }
     @Override
@@ -144,6 +144,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        camera.zoom += amountY/200;
+        if(camera.zoom > 1.138){
+            camera.zoom = 1.138f;
+        }
+        if(camera.zoom < 0.6){
+            camera.zoom = 0.6f;
+        }
+        System.out.println("zoom: " + camera.zoom);
         return false;
     }
     @Override
