@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class  DragonRealms implements Screen {
-	final Drop game;
+	final MyGame game;
 
 	Texture dropImage;
 	Texture bucketImage;
@@ -29,7 +29,7 @@ public class  DragonRealms implements Screen {
 	long lastDropTime;
 	int dropsGathered;
 
-	public DragonRealms(final Drop game) {
+	public DragonRealms(final MyGame game) {
 		this.game = game;
 
 		// load the images for the droplet and the bucket, 64x64 pixels each

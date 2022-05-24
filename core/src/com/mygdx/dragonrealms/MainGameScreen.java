@@ -1,9 +1,6 @@
 package com.mygdx.dragonrealms;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +12,7 @@ import com.mygdx.dragonrealms.units.Warrior;
 
 import java.util.Vector;
 
-public class TiledTest extends ApplicationAdapter implements InputProcessor {
+public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
 
     Map map;
     OrthographicCamera camera;
@@ -25,7 +22,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
     SpriteBatch sb;
 
     @Override
-    public void create () {
+    public void show() {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -33,38 +30,49 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
         camera.setToOrtho(false,w,h);
         camera.update();
         map = new Map("maps/map_test/mapa_alpha.tmx");
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         unitList = new Vector<>();
-        unitList.add(new Warrior(0,0));
-        sb = new SpriteBatch();
+        for(int i = 0; i < 5; i += 2){
+            for(int j = 0; j < 5; j += 2){
+                unitList.add(new Warrior(i,j));
+            }
+        }
     }
 
     @Override
-    public void render(){
+    public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
+        camera.update();
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
+
+
         map.render(camera);
+
+        sb = new SpriteBatch();
         sb.begin();
         for (Unit unit : unitList) {
             unit.render(sb);
         }
         sb.end();
-
+        if(Gdx.input.isKeyPressed(Input.Keys.B)){
+            Gdx.app.exit();
+            dispose();
+        }
     }
-
     @Override
     public boolean keyDown(int keycode) {
 
         if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
-            camera.translate(-32,0);
+            camera.translate(-64,0);
         if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
-            camera.translate(32,0);
+            camera.translate(64,0);
         if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
-            camera.translate(0, 32);
+            camera.translate(0, 64);
         if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
-            camera.translate(0,-32);
+            camera.translate(0,-64);
         return false;
     }
 
@@ -77,13 +85,12 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
     public boolean keyTyped(char character) {
         return false;
     }
-
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
         Vector3 position = camera.unproject(clickCoordinates);
         Vector2 tile = map.convertCoordinates(position);
-        System.out.println("x: " + tile.x + " y: " + tile.y );
+        System.out.println("x: " + tile.x + " y: " + tile.y);
         map.getTile(tile);
         return false;
     }
@@ -95,6 +102,7 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
         return false;
     }
 
@@ -105,6 +113,11 @@ public class TiledTest extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        camera.zoom += amountY/10;
         return false;
+    }
+    @Override
+    public void hide() {
+
     }
 }
