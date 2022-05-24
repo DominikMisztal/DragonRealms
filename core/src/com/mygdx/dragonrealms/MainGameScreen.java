@@ -58,10 +58,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             unit.render(sb);
         }
         sb.end();
-        if(Gdx.input.isKeyPressed(Input.Keys.B)){
-            Gdx.app.exit();
-            dispose();
-        }
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -74,6 +70,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.translate(0, 64);
         if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
             camera.translate(0,-64);
+        if(keycode == Input.Keys.B){
+            Gdx.app.exit();
+            dispose();
+        }
         return false;
     }
 
