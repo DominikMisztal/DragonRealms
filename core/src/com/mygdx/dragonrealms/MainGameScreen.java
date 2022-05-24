@@ -52,6 +52,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         map.render(camera);
 
         sb = new SpriteBatch();
+        sb.setProjectionMatrix(camera.combined);
         sb.begin();
         for (Unit unit : unitList) {
             unit.render(sb);
