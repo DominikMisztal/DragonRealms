@@ -18,18 +18,21 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     OrthographicCamera camera;
 
     Vector<Unit> unitList;
-
+    private float mapWidth;
+    private float mapHeight;
     SpriteBatch sb;
 
     @Override
     public void show() {
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false,w,h);
+        camera.setToOrtho(false,width,height);
         camera.update();
         map = new Map("maps/map_test/mapa_alpha.tmx");
+        mapWidth = map.getWidth();
+        mapHeight = map.getHeight();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -58,6 +61,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             unit.render(sb);
         }
         sb.end();
+        putInMapBounds();
+    }
+    
+    private void putInMapBounds() {
+
+        if (camera.position.x < camera.viewportWidth / 2f)
+            camera.position.x = camera.viewportWidth / 2f;
+        else if (camera.position.x > mapWidth - camera.viewportWidth / 2f)
+            camera.position.x = mapHeight - camera.viewportWidth / 2f;
+
+        if (camera.position.y < camera.viewportHeight / 2f)
+            camera.position.y = camera.viewportHeight / 2f;
+        else if (camera.position.y > mapHeight - camera.viewportHeight / 2f)
+            camera.position.y = mapWidth - camera.viewportHeight / 2f;
+
+        
+
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -104,7 +124,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
-        return false;
+        return true;      
     }
 
     @Override

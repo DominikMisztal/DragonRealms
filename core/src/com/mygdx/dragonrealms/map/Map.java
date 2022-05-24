@@ -108,6 +108,16 @@ public class Map {
         }
     }
 
+    public int getWidth(){
+        TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");
+        return layer.getWidth() * TILESIZE;
+    }
+
+    public int getHeight(){
+        TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");
+        return layer.getHeight() * TILESIZE;
+    }
+
     public void render(OrthographicCamera camera){
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
