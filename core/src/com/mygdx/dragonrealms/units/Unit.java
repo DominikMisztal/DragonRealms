@@ -31,8 +31,6 @@ public class Unit {
         this.range = range;
         coordinates = new Vector2(x,y);
         sprite.setPosition(coordinates.x * Map.TILESIZE + 12, coordinates.y * Map.TILESIZE + 12);
-
-
     }
 
     public void render(SpriteBatch spriteBatch){

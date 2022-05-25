@@ -7,20 +7,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.dragonrealms.map.Map;
+import com.mygdx.dragonrealms.map.Tile;
+import com.mygdx.dragonrealms.map.TileType;
+import com.mygdx.dragonrealms.units.Archer;
+import com.mygdx.dragonrealms.units.Assassin;
 import com.mygdx.dragonrealms.units.Unit;
+import com.mygdx.dragonrealms.units.UnitType;
 import com.mygdx.dragonrealms.units.Warrior;
 
+import java.util.Random;
 import java.util.Vector;
 
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
 
-    Map map;
-    OrthographicCamera camera;
+    private Map map;
+    private OrthographicCamera camera;
 
-    Vector<Unit> unitList;
+    private Vector<Unit> unitList;
     private float mapWidth;
     private float mapHeight;
-    SpriteBatch sb;
+    private SpriteBatch sb;
+
+    @Override
+    public void create(){
+        
+    }
 
     @Override
     public void show() {
@@ -37,11 +48,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
         unitList = new Vector<>();
-        for(int i = 0; i < 5; i += 2){
-            for(int j = 0; j < 5; j += 2){
-                unitList.add(new Warrior(i,j));
-            }
-        }
     }
 
     @Override
@@ -50,7 +56,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         camera.update();
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         map.render(camera);
 
@@ -87,7 +92,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public boolean keyDown(int keycode) {
-
+        Random random = new Random();
+        int x, y;
         if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
             camera.translate(-64,0);
         if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
@@ -99,6 +105,26 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
             dispose();
+        }
+
+        if(keycode == Input.Keys.I){
+            x = random.nextInt(32);
+            y = random.nextInt(32);
+            boolean test = spawnUnit(1, x, y);
+            System.out.println("test: " + test);
+            System.out.println("Spawning warrior at X: " + x + " Y: " + y);
+        }
+        if(keycode == Input.Keys.O){
+            x = random.nextInt(32);
+            y = random.nextInt(32);
+            spawnUnit(2, x, y);
+            System.out.println("Spawning archer at X: " + x + " Y: " + y);
+        }
+        if(keycode == Input.Keys.P){
+            x = random.nextInt(32);
+            y = random.nextInt(32);
+            spawnUnit(3, x, y);
+            System.out.println("Spawning assassin at X: " + x + " Y: " + y);
         }
         putInMapBounds();
         return false;
@@ -157,5 +183,31 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public void hide() {
 
+    }
+
+    private boolean spawnUnit(int type, int x, int y){
+        Tile tile;
+        Unit unit;
+        tile = map.getTile(new Vector2(x,y));
+        if(tile == null || tile.getUnit() != null || tile.getType() == TileType.MOUNTAIN || tile.getType() == TileType.WATER){
+            return false;
+        }
+
+        if(type == 1){
+            unit = new Warrior(x, y);
+        }
+        else if(type == 2){
+            unit = new Archer(x, y);
+        }
+        else if(type == 3){
+            unit = new Assassin(x, y);
+        }
+        else{
+            return false;
+        }
+
+        tile.setUnit(unit);
+        unitList.add(unit);
+        return true;
     }
 }

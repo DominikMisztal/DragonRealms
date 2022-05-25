@@ -79,33 +79,34 @@ public class Map {
         return;
     }
 
-    public void getTile(Vector2 coordinates){
+    public Tile getTile(Vector2 coordinates){
         Tile tile = tilesHashMap.get(coordinates);
-        if(tile != null){
-            switch (tile.getType()){
-                case SAND:
-                    System.out.println("Tile is sand");
-                    break;
-                case GRASS:
-                    System.out.println("Tile is grass");
-                    break;
-                case WATER:
-                    System.out.println("Tile is water");
-                    break;
-                case MOUNTAIN:
-                    System.out.println("Tile is mountain");
-                    break;
-                case FOREST:
-                    System.out.println("Tile is forest");
-                    break;
-                case SNOW:
-                    System.out.println("Tile is snow");
-                    break;
-                case SHALLOW_WATER:
-                    System.out.println("Tile is shallow water");
-                    break;
-            }
-        }
+        // if(tile != null){
+        //     switch (tile.getType()){
+        //         case SAND:
+        //             System.out.println("Tile is sand");
+        //             break;
+        //         case GRASS:
+        //             System.out.println("Tile is grass");
+        //             break;
+        //         case WATER:
+        //             System.out.println("Tile is water");
+        //             break;
+        //         case MOUNTAIN:
+        //             System.out.println("Tile is mountain");
+        //             break;
+        //         case FOREST:
+        //             System.out.println("Tile is forest");
+        //             break;
+        //         case SNOW:
+        //             System.out.println("Tile is snow");
+        //             break;
+        //         case SHALLOW_WATER:
+        //             System.out.println("Tile is shallow water");
+        //             break;
+        //     }
+        // }
+        return tile;
     }
 
     public int getWidth(){

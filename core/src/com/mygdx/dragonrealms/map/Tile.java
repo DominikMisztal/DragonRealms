@@ -9,9 +9,9 @@ public class Tile {
     public Vector2 coordinates;
     private TileType type;
     private int movementCost;
+
     public Tile(){
         coordinates = new Vector2();
-
     }
 
     public int getMovementCost() {
