@@ -116,6 +116,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             spawnUnit(3);
             System.out.println("Spawning assassin at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
         }
+
+        if(keycode == Input.Keys.L){
+            map.bordersOnOff();
+        }
         putInMapBounds();
         return false;
     }

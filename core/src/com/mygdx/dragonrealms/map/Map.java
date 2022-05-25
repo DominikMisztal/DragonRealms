@@ -1,7 +1,10 @@
 package com.mygdx.dragonrealms.map;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -15,11 +18,15 @@ public class Map {
     public final static int TILESIZE = 64;
     TiledMapRenderer tiledMapRenderer;
     HashMap<Vector2, Tile> tilesHashMap;
+    boolean borders;
+    ShapeRenderer sRenderer;
 
     public Map(String map_file){
         tiledMap = new TmxMapLoader().load(map_file);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         createTilesMap();
+        borders = false;
+        sRenderer = new ShapeRenderer();
     }
 
     private void createTilesMap(){
@@ -81,31 +88,6 @@ public class Map {
 
     public Tile getTile(Vector2 coordinates){
         Tile tile = tilesHashMap.get(coordinates);
-        // if(tile != null){
-        //     switch (tile.getType()){
-        //         case SAND:
-        //             System.out.println("Tile is sand");
-        //             break;
-        //         case GRASS:
-        //             System.out.println("Tile is grass");
-        //             break;
-        //         case WATER:
-        //             System.out.println("Tile is water");
-        //             break;
-        //         case MOUNTAIN:
-        //             System.out.println("Tile is mountain");
-        //             break;
-        //         case FOREST:
-        //             System.out.println("Tile is forest");
-        //             break;
-        //         case SNOW:
-        //             System.out.println("Tile is snow");
-        //             break;
-        //         case SHALLOW_WATER:
-        //             System.out.println("Tile is shallow water");
-        //             break;
-        //     }
-        // }
         return tile;
     }
 
@@ -122,6 +104,17 @@ public class Map {
     public void render(OrthographicCamera camera){
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+        if(borders == true){
+            for(int i = 0; i< 32; i++){
+                for (int j = 0; j < 32; j++){
+                    sRenderer.begin(ShapeType.Line);
+                    sRenderer.identity();
+                    sRenderer.setColor(Color.BLACK);
+                    sRenderer.rect(i * TILESIZE , j * TILESIZE , TILESIZE, TILESIZE );
+                    sRenderer.end();
+                }
+            }
+        }
     }
 
     public Vector2 convertCoordinates(Vector3 coordinates){
@@ -130,5 +123,9 @@ public class Map {
         vector.y = (float) Math.floor(coordinates.y/TILESIZE);
 
         return vector;
+    }
+
+    public void bordersOnOff(){
+        borders = !borders;
     }
 }
