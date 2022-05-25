@@ -12,10 +12,8 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.units.Archer;
 import com.mygdx.dragonrealms.units.Assassin;
 import com.mygdx.dragonrealms.units.Unit;
-import com.mygdx.dragonrealms.units.UnitType;
 import com.mygdx.dragonrealms.units.Warrior;
 
-import java.util.Random;
 import java.util.Vector;
 
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
@@ -27,6 +25,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private float mapWidth;
     private float mapHeight;
     private SpriteBatch sb;
+    private Vector2 lastClickTile;
 
     @Override
     public void create(){
@@ -92,8 +91,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public boolean keyDown(int keycode) {
-        Random random = new Random();
-        int x, y;
         if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
             camera.translate(-64,0);
         if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
@@ -108,23 +105,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
 
         if(keycode == Input.Keys.I){
-            x = random.nextInt(32);
-            y = random.nextInt(32);
-            boolean test = spawnUnit(1, x, y);
-            System.out.println("test: " + test);
-            System.out.println("Spawning warrior at X: " + x + " Y: " + y);
+            spawnUnit(1);
+            System.out.println("Spawning warrior at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
         }
         if(keycode == Input.Keys.O){
-            x = random.nextInt(32);
-            y = random.nextInt(32);
-            spawnUnit(2, x, y);
-            System.out.println("Spawning archer at X: " + x + " Y: " + y);
+            spawnUnit(2);
+            System.out.println("Spawning archer at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
         }
         if(keycode == Input.Keys.P){
-            x = random.nextInt(32);
-            y = random.nextInt(32);
-            spawnUnit(3, x, y);
-            System.out.println("Spawning assassin at X: " + x + " Y: " + y);
+            spawnUnit(3);
+            System.out.println("Spawning assassin at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
         }
         putInMapBounds();
         return false;
@@ -143,9 +133,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
         Vector3 position = camera.unproject(clickCoordinates);
-        Vector2 tile = map.convertCoordinates(position);
-        System.out.println("x: " + tile.x + " y: " + tile.y);
-        map.getTile(tile);
+        lastClickTile = map.convertCoordinates(position);
+        // System.out.println("x: " + tile.x + " y: " + tile.y);
+        // map.getTile(tile);
         return false;
     }
 
@@ -185,22 +175,22 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     }
 
-    private boolean spawnUnit(int type, int x, int y){
+    private boolean spawnUnit(int type){
         Tile tile;
         Unit unit;
-        tile = map.getTile(new Vector2(x,y));
+        tile = map.getTile(new Vector2(lastClickTile.x,lastClickTile.y));
         if(tile == null || tile.getUnit() != null || tile.getType() == TileType.MOUNTAIN || tile.getType() == TileType.WATER){
             return false;
         }
 
         if(type == 1){
-            unit = new Warrior(x, y);
+            unit = new Warrior((int)lastClickTile.x,(int)lastClickTile.y);
         }
         else if(type == 2){
-            unit = new Archer(x, y);
+            unit = new Archer((int)lastClickTile.x,(int)lastClickTile.y);
         }
         else if(type == 3){
-            unit = new Assassin(x, y);
+            unit = new Assassin((int)lastClickTile.x,(int)lastClickTile.y);
         }
         else{
             return false;
