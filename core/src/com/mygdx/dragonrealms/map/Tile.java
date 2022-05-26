@@ -1,5 +1,9 @@
 package com.mygdx.dragonrealms.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.dragonrealms.units.Unit;
 
@@ -9,6 +13,7 @@ public class Tile {
     public Vector2 coordinates;
     private TileType type;
     private int movementCost;
+    private Sprite tileBorder;
 
     public Tile(){
         coordinates = new Vector2();
@@ -36,5 +41,16 @@ public class Tile {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    public void setBorder(int type){
+        if(type == 1){
+            tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/GreenFrame.png")));
+            tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
+        }
+    }
+
+    public void render(SpriteBatch sb){
+        tileBorder.draw(sb);
     }
 }

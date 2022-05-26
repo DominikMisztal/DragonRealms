@@ -18,8 +18,6 @@ public class Unit {
     private int current_hp;
     private int range;
 
-
-
     public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int x, int y){
         this.unitName = unitName;
         this.texture = texture;
@@ -30,7 +28,7 @@ public class Unit {
         this.current_hp = hp;
         this.range = range;
         coordinates = new Vector2(x,y);
-        sprite.setPosition(coordinates.x * Map.TILESIZE + 12, coordinates.y * Map.TILESIZE + 12);
+        sprite.setPosition(coordinates.x * Map.TILESIZE, coordinates.y * Map.TILESIZE);
     }
 
     public void render(SpriteBatch spriteBatch){
@@ -63,6 +61,15 @@ public class Unit {
 
     public int getRange(){
         return this.range;
+    }
+
+    public Vector2 getCoordinates(){
+        return coordinates;
+    }
+
+    public void changePosition(int x, int y){
+            coordinates.x = x; coordinates.y = y;
+            sprite.setPosition(coordinates.x, coordinates.y);
     }
 
 }

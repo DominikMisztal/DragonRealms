@@ -14,12 +14,13 @@ import java.io.*;
 import java.util.HashMap;
 
 public class Map {
-    TiledMap tiledMap;
+    private TiledMap tiledMap;
     public final static int TILESIZE = 64;
-    TiledMapRenderer tiledMapRenderer;
-    HashMap<Vector2, Tile> tilesHashMap;
-    boolean borders;
-    ShapeRenderer sRenderer;
+    private TiledMapRenderer tiledMapRenderer;
+    private HashMap<Vector2, Tile> tilesHashMap;
+    private boolean borders;
+    private ShapeRenderer sRenderer;
+
 
     public Map(String map_file){
         tiledMap = new TmxMapLoader().load(map_file);
