@@ -104,6 +104,7 @@ public class Map {
     public void render(OrthographicCamera camera){
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+        sRenderer.setProjectionMatrix(camera.combined);
         if(borders == true){
             for(int i = 0; i< 32; i++){
                 for (int j = 0; j < 32; j++){

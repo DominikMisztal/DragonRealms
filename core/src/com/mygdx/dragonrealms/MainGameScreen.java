@@ -172,6 +172,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.zoom = 0.6f;
         }
         System.out.println("zoom: " + camera.zoom);
+        putInMapBounds();
         return false;
     }
     @Override
