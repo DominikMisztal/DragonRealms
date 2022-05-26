@@ -9,11 +9,12 @@ public class MyGame extends Game {
 
     public SpriteBatch batch;
     public BitmapFont font;
+    public ScreenManager screenManager;
 
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont(); // use libGDX's default Arial font
-        this.setScreen(new MainMenuScreen(this));
+        screenManager = new ScreenManager(this);
     }
 
     public void render() {
@@ -21,8 +22,10 @@ public class MyGame extends Game {
     }
 
     public void dispose() {
+        super.dispose();
         batch.dispose();
         font.dispose();
+        screenManager.dispose();
     }
 
 }
