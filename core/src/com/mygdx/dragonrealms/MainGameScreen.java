@@ -49,9 +49,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public void render(float delta) {
-        //Gdx.gl.glClearColor(0,0,0,1);
-        //Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         map.render(camera);
 
@@ -137,10 +134,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 temp = lastClickTile;
         Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
+        
         Vector3 position = camera.unproject(clickCoordinates);
+        System.out.println("click: " + position);
         lastClickTile = map.convertCoordinates(position);
+        
         Tile tile = map.getTile(lastClickTile);
-        if(tilesToDraw.contains(tile)){
+        System.out.println("tile: " + tile.getType());
+        if(tilesToDraw.contains(tile) && tile.getUnit() == null){
             System.out.println("moving unit");
             tilesToDraw.clear();
             currentlySelectedUnit.changePosition((int)lastClickTile.x, (int)lastClickTile.y);
@@ -160,31 +161,31 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private void setBordersOnTiles(Vector2 lastClickTile){
         Vector2 temp = new Vector2();
         Tile tile;
-        temp.x = lastClickTile.y; temp.y = lastClickTile.x;
+        temp.x = lastClickTile.x; temp.y = lastClickTile.y;
         tile = map.getTile(temp);
         if(tile != null){
             tile.setBorder(1);
             tilesToDraw.add(tile);
         }
-        temp.x = lastClickTile.y -1; temp.y = lastClickTile.x;
+        temp.x = lastClickTile.x -1; temp.y = lastClickTile.y;
         tile = map.getTile(temp);
         if(tile != null){
             tile.setBorder(1);
             tilesToDraw.add(tile);
         }
-        temp.x = lastClickTile.y + 1; temp.y = lastClickTile.x;
+        temp.x = lastClickTile.x + 1; temp.y = lastClickTile.y;
         tile = map.getTile(temp);
         if(tile != null){
             tile.setBorder(1);
             tilesToDraw.add(tile);
         }
-        temp.x = lastClickTile.y; temp.y = lastClickTile.x-1;
+        temp.x = lastClickTile.x; temp.y = lastClickTile.y-1;
         tile = map.getTile(temp);
         if(tile != null){
             tile.setBorder(1);
             tilesToDraw.add(tile);
         }
-        temp.x = lastClickTile.y; temp.y = lastClickTile.x+1;
+        temp.x = lastClickTile.x; temp.y = lastClickTile.y+1;
         tile = map.getTile(temp);
         if(tile != null){
             tile.setBorder(1);
@@ -199,6 +200,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaY(pointer) < 4){
+            return true;
+        }
         if(isInMapBounds()){
             camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
         }

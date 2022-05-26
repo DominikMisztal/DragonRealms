@@ -73,8 +73,8 @@ public class Map {
                                 tile.setMovementCost(3);
                                 break;
                         }
-                        tile.coordinates.x = i;
-                        tile.coordinates.y = j;
+                        tile.coordinates.x = j;
+                        tile.coordinates.y = i;
                         tilesHashMap.put(new Vector2(j,i), tile);
                         j++;
                     }

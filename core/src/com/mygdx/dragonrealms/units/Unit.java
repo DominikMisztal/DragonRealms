@@ -69,7 +69,7 @@ public class Unit {
 
     public void changePosition(int x, int y){
             coordinates.x = x; coordinates.y = y;
-            sprite.setPosition(coordinates.x, coordinates.y);
+            sprite.setPosition(coordinates.x * Map.TILESIZE, coordinates.y * Map.TILESIZE);
     }
 
 }
