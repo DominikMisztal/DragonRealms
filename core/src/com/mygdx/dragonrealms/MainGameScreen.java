@@ -200,7 +200,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaY(pointer) < 4){
+        if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaX() > -4 
+            && Gdx.input.getDeltaY(pointer) < 4 && Gdx.input.getDeltaY(pointer) > -4){
             return true;
         }
         if(isInMapBounds()){
