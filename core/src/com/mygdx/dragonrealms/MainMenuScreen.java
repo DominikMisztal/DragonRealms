@@ -2,23 +2,34 @@ package com.mygdx.dragonrealms;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.w3c.dom.Text;
 
 public class MainMenuScreen implements Screen, InputProcessor {
 
     final MyGame game;
+    private Skin skin;
     String text;
 
     OrthographicCamera camera;
     private Texture texture;
 
+    Texture playButtonActive;
+    Texture playButtonInactive;
+    Texture exitButtonActive;
+    Texture exitButtonInactive;
+
     public MainMenuScreen(final MyGame game) {
         this.game = game;
+        this.skin = new Skin();
+//        this.skin.addRegions();
 
-        game.font = new BitmapFont(Gdx.files.internal("textures/font1.fnt"));
+//        game.font = new BitmapFont(Gdx.files.internal("textures/font1.fnt"));
         text = "Welcome to Dragon Realms!\n" + "Tap anywhere to begin!";
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -32,13 +43,16 @@ public class MainMenuScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-        texture = new Texture(Gdx.files.internal("mainMenu.jpg"));
-        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+//        texture = new Texture(Gdx.files.internal("mainMenu.jpg"));
+//        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.batch.draw(texture,0,0, 800,500);
+
+
+
+//        game.batch.draw(texture,0,0, 800,500);
         game.font.draw(game.batch, text, 200, 250);
         game.batch.end();
 
