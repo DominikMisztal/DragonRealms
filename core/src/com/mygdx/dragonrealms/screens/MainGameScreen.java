@@ -1,10 +1,16 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
@@ -16,7 +22,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private Map map;
     private MyGame game;
-    OrthographicCamera camera;
+    private Skin skin;
+    private Stage stage;
+    private ShapeRenderer shapeRenderer;
+    private OrthographicCamera camera;
 
     private Vector<Unit> unitList;
     private Vector<Tile> tilesToDraw;
@@ -27,6 +36,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     public MainGameScreen(MyGame game){
         this.game = game;
+        this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.shapeRenderer = new ShapeRenderer();
 
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -37,10 +48,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         map = new Map("maps/map_test/mapa_alpha.tmx");
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(this);
         unitList = new Vector<>();
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -49,15 +57,33 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this);
+        stage.clear();
+
+        this.skin = new Skin();
+        this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        this.skin.add("default-font", game.font);
+        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+    }
+
+    private void update(float delta){
+        stage.act(delta);
     }
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(1f,1f,1f,1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         camera.update();
         map.render(camera);
 
-        game.batch.setProjectionMatrix(camera.combined);
+        update(delta);
+
+        stage.draw();
+
         game.batch.begin();
+        game.batch.setProjectionMatrix(camera.combined);
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
@@ -70,23 +96,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private void putInMapBounds() {
 
-        if (camera.position.x < camera.viewportWidth*camera.zoom / 2f)
-            camera.position.x = camera.viewportWidth*camera.zoom / 2f;
-        else if (camera.position.x > mapWidth - camera.viewportWidth*camera.zoom / 2f)
-            camera.position.x = mapHeight - camera.viewportWidth*camera.zoom / 2f;
+        if (camera.position.x < camera.viewportWidth * camera.zoom / 2f)
+            camera.position.x = camera.viewportWidth * camera.zoom / 2f;
+        else if (camera.position.x > mapWidth - camera.viewportWidth * camera.zoom / 2f)
+            camera.position.x = mapHeight - camera.viewportWidth * camera.zoom / 2f;
 
-        if (camera.position.y < camera.viewportHeight*camera.zoom / 2f)
-            camera.position.y = camera.viewportHeight*camera.zoom / 2f;
-        else if (camera.position.y > mapHeight - camera.viewportHeight*camera.zoom / 2f)
-            camera.position.y = mapWidth - camera.viewportHeight*camera.zoom / 2f;
+        if (camera.position.y < camera.viewportHeight * camera.zoom / 2f)
+            camera.position.y = camera.viewportHeight * camera.zoom / 2f;
+        else if (camera.position.y > mapHeight - camera.viewportHeight * camera.zoom / 2f)
+            camera.position.y = mapWidth - camera.viewportHeight * camera.zoom / 2f;
 
     }
     private boolean isInMapBounds() {
 
-        return camera.position.x >= camera.viewportWidth*camera.zoom / 2f
-                && camera.position.x <= mapWidth - camera.viewportWidth*camera.zoom / 2f
-                && camera.position.y >= camera.viewportHeight*camera.zoom / 2f
-                && camera.position.y <= mapHeight - camera.viewportHeight*camera.zoom / 2f;
+        return camera.position.x >= camera.viewportWidth * camera.zoom / 2f
+                && camera.position.x <= mapWidth - camera.viewportWidth * camera.zoom / 2f
+                && camera.position.y >= camera.viewportHeight * camera.zoom / 2f
+                && camera.position.y <= mapHeight - camera.viewportHeight * camera.zoom / 2f;
 
     }
     @Override
@@ -101,7 +127,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.translate(0,-64);
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
-            dispose();
         }
 
         if(keycode == Input.Keys.I){
@@ -241,6 +266,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public void hide() {
 
+    }
+    @Override
+    public void dispose(){
+        stage.dispose();
     }
 
     private boolean spawnUnit(int type){
