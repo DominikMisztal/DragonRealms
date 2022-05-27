@@ -2,6 +2,7 @@ package com.mygdx.dragonrealms;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,8 +18,10 @@ public class MyGame extends Game {
     public BitmapFont font;
     public ScreenManager screenManager;
     public OrthographicCamera camera;
+    public AssetManager assets;
 
     public void create() {
+        assets = new AssetManager();
         batch = new SpriteBatch();
         initFonts();
         camera = new OrthographicCamera();
@@ -34,6 +37,7 @@ public class MyGame extends Game {
         super.dispose();
         batch.dispose();
         font.dispose();
+        assets.dispose();
         screenManager.dispose();
     }
 

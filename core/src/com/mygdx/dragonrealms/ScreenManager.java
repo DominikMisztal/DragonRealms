@@ -9,6 +9,7 @@ public class ScreenManager {
     private HashMap<STATE, Screen> gameScreens;
 
     public enum STATE{
+        LOADING,
         SPLASH,
         MAIN_MENU,
         SETTINGS,
@@ -19,11 +20,12 @@ public class ScreenManager {
     public ScreenManager(final MyGame game){
         this.game = game;
         initGameScreens();
-        setScreen(STATE.SPLASH);
+        setScreen(STATE.LOADING);
     }
 
     private void initGameScreens(){
         this.gameScreens = new HashMap<>();
+        this.gameScreens.put(STATE.LOADING, new LoadingScreen(game));
         this.gameScreens.put(STATE.SPLASH, new SplashScreen(game));
         this.gameScreens.put(STATE.MAIN_MENU, new MainMenuScreen(game));
         this.gameScreens.put(STATE.SETTINGS, new SettingsScreen(game));
