@@ -12,12 +12,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 
-public class SplashScreen implements Screen {
+public class LogoAnimationScreen implements Screen {
     private MyGame game;
     private Stage stage;
     private Image image;
 
-    public SplashScreen(final MyGame game){
+    public LogoAnimationScreen(final MyGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
     }

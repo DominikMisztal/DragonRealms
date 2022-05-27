@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -25,7 +26,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     public MainMenuScreen(final MyGame game) {
         this.game = game;
-        this.stage = new Stage(new StretchViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -124,8 +125,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     private void initButtons(){
         playButton = new TextButton("Play", skin, "default");
-        playButton.setPosition(100,300);
-        playButton.setSize(300,60);
+        playButton.setSize(300,100);
+        playButton.setPosition(MyGame.WIDTH / 2f - 150f,MyGame.HEIGHT/ 2f + 60);
         playButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out))));
         playButton.addListener(new ClickListener(){
@@ -136,8 +137,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
         });
 
         exitButton = new TextButton("Exit", skin, "default");
-        exitButton.setPosition(100,230);
-        exitButton.setSize(300,60);
+        exitButton.setSize(300,100);
+        exitButton.setPosition(MyGame.WIDTH / 2f - 150f,MyGame.HEIGHT/ 2f - 60);
         exitButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out))));
         exitButton.addListener(new ClickListener(){

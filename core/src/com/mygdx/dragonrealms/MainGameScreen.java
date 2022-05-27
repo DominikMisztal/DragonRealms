@@ -1,10 +1,16 @@
 package com.mygdx.dragonrealms;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
@@ -16,7 +22,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private Map map;
     private MyGame game;
-    OrthographicCamera camera;
+    private Skin skin;
+    private Stage stage;
+    private ShapeRenderer shapeRenderer;
 
     private Vector<Unit> unitList;
     private Vector<Tile> tilesToDraw;
@@ -27,20 +35,19 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     public MainGameScreen(MyGame game){
         this.game = game;
+        this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.shapeRenderer = new ShapeRenderer();
 
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         tilesToDraw = new Vector<>();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,width,height);
-        camera.update();
+        game.camera = new OrthographicCamera();
+        game.camera.setToOrtho(false,width,height);
+        game.camera.update();
         map = new Map("maps/map_test/mapa_alpha.tmx");
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(this);
         unitList = new Vector<>();
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -49,15 +56,33 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this);
+        stage.clear();
+
+        this.skin = new Skin();
+        this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        this.skin.add("default-font", game.font);
+        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+    }
+
+    private void update(float delta){
+        stage.act(delta);
     }
 
     @Override
     public void render(float delta) {
-        camera.update();
-        map.render(camera);
+        Gdx.gl.glClearColor(1f,1f,1f,1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.setProjectionMatrix(camera.combined);
+        game.camera.update();
+        map.render(game.camera);
+
+        update(delta);
+
+        stage.draw();
+
         game.batch.begin();
+        game.batch.setProjectionMatrix(game.camera.combined);
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
@@ -70,38 +95,37 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private void putInMapBounds() {
 
-        if (camera.position.x < camera.viewportWidth*camera.zoom / 2f)
-            camera.position.x = camera.viewportWidth*camera.zoom / 2f;
-        else if (camera.position.x > mapWidth - camera.viewportWidth*camera.zoom / 2f)
-            camera.position.x = mapHeight - camera.viewportWidth*camera.zoom / 2f;
+        if (game.camera.position.x < game.camera.viewportWidth*game.camera.zoom / 2f)
+            game.camera.position.x = game.camera.viewportWidth*game.camera.zoom / 2f;
+        else if (game.camera.position.x > mapWidth - game.camera.viewportWidth*game.camera.zoom / 2f)
+            game.camera.position.x = mapHeight - game.camera.viewportWidth*game.camera.zoom / 2f;
 
-        if (camera.position.y < camera.viewportHeight*camera.zoom / 2f)
-            camera.position.y = camera.viewportHeight*camera.zoom / 2f;
-        else if (camera.position.y > mapHeight - camera.viewportHeight*camera.zoom / 2f)
-            camera.position.y = mapWidth - camera.viewportHeight*camera.zoom / 2f;
+        if (game.camera.position.y < game.camera.viewportHeight*game.camera.zoom / 2f)
+            game.camera.position.y = game.camera.viewportHeight*game.camera.zoom / 2f;
+        else if (game.camera.position.y > mapHeight - game.camera.viewportHeight*game.camera.zoom / 2f)
+            game.camera.position.y = mapWidth - game.camera.viewportHeight*game.camera.zoom / 2f;
 
     }
     private boolean isInMapBounds() {
 
-        return camera.position.x >= camera.viewportWidth*camera.zoom / 2f
-                && camera.position.x <= mapWidth - camera.viewportWidth*camera.zoom / 2f
-                && camera.position.y >= camera.viewportHeight*camera.zoom / 2f
-                && camera.position.y <= mapHeight - camera.viewportHeight*camera.zoom / 2f;
+        return game.camera.position.x >= game.camera.viewportWidth*game.camera.zoom / 2f
+                && game.camera.position.x <= mapWidth - game.camera.viewportWidth*game.camera.zoom / 2f
+                && game.camera.position.y >= game.camera.viewportHeight*game.camera.zoom / 2f
+                && game.camera.position.y <= mapHeight - game.camera.viewportHeight*game.camera.zoom / 2f;
 
     }
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
-            camera.translate(-64,0);
+            game.camera.translate(-64,0);
         if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
-            camera.translate(64,0);
+            game.camera.translate(64,0);
         if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
-            camera.translate(0, 64);
+            game.camera.translate(0, 64);
         if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
-            camera.translate(0,-64);
+            game.camera.translate(0,-64);
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
-            dispose();
         }
 
         if(keycode == Input.Keys.I){
@@ -144,7 +168,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Vector2 temp = lastClickTile;
         Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
         
-        Vector3 position = camera.unproject(clickCoordinates);
+        Vector3 position = game.camera.unproject(clickCoordinates);
         System.out.println("click: " + position);
         lastClickTile = map.convertCoordinates(position);
         
@@ -214,7 +238,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return true;
         }
         if(isInMapBounds()){
-            camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
+            game.camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
         }
         putInMapBounds();
         return true;      
@@ -227,20 +251,24 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        camera.zoom += amountY/50;
-        if(camera.zoom > 1.1375){
-            camera.zoom = 1.1375f;
+        game.camera.zoom += amountY/50;
+        if(game.camera.zoom > 1.1375){
+            game.camera.zoom = 1.1375f;
         }
-        if(camera.zoom < 0.6){
-            camera.zoom = 0.6f;
+        if(game.camera.zoom < 0.6){
+            game.camera.zoom = 0.6f;
         }
-        System.out.println("zoom: " + camera.zoom);
+        System.out.println("zoom: " + game.camera.zoom);
         putInMapBounds();
         return false;
     }
     @Override
     public void hide() {
 
+    }
+    @Override
+    public void dispose(){
+        stage.dispose();
     }
 
     private boolean spawnUnit(int type){

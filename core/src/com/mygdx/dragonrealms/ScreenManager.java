@@ -26,7 +26,7 @@ public class ScreenManager {
     private void initGameScreens(){
         this.gameScreens = new HashMap<>();
         this.gameScreens.put(STATE.LOADING, new LoadingScreen(game));
-        this.gameScreens.put(STATE.SPLASH, new SplashScreen(game));
+        this.gameScreens.put(STATE.SPLASH, new LogoAnimationScreen(game));
         this.gameScreens.put(STATE.MAIN_MENU, new MainMenuScreen(game));
         this.gameScreens.put(STATE.SETTINGS, new SettingsScreen(game));
         this.gameScreens.put(STATE.PLAY, new MainGameScreen(game));
