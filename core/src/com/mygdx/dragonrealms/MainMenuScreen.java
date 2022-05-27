@@ -1,68 +1,64 @@
 package com.mygdx.dragonrealms;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.ScreenUtils;
-import org.w3c.dom.Text;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class MainMenuScreen implements Screen, InputProcessor {
 
     final MyGame game;
     private Skin skin;
-    String text;
+    private Stage stage;
+    private ShapeRenderer shapeRenderer;
 
-    OrthographicCamera camera;
-    private Texture texture;
-
-    Texture playButtonActive;
-    Texture playButtonInactive;
-    Texture exitButtonActive;
-    Texture exitButtonInactive;
+    TextButton playButton;
+    TextButton exitButton;
 
     public MainMenuScreen(final MyGame game) {
         this.game = game;
-        this.skin = new Skin();
-//        this.skin.addRegions();
-
-//        game.font = new BitmapFont(Gdx.files.internal("textures/font1.fnt"));
-        text = "Welcome to Dragon Realms!\n" + "Tap anywhere to begin!";
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        this.stage = new Stage(new StretchViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
+        stage.clear();
 
+        this.skin = new Skin();
+        this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        this.skin.add("default-font", game.font);
+        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+
+        initButtons();
+    }
+
+    private void update(float delta){
+        stage.act(delta);
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
-//        texture = new Texture(Gdx.files.internal("mainMenu.jpg"));
-//        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Gdx.gl.glClearColor(1f,1f,1f,1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
-
-
-
-//        game.batch.draw(texture,0,0, 800,500);
-        game.font.draw(game.batch, text, 200, 250);
-        game.batch.end();
-
-        if (Gdx.input.isTouched()) {
-            game.screenManager.setScreen(ScreenManager.STATE.PLAY);
-        }
+        update(delta);
+        stage.draw();
     }
+
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -82,7 +78,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
+        shapeRenderer.dispose();
     }
 
     @Override
@@ -123,6 +120,35 @@ public class MainMenuScreen implements Screen, InputProcessor {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;
+    }
+
+    private void initButtons(){
+        playButton = new TextButton("Play", skin, "default");
+        playButton.setPosition(100,300);
+        playButton.setSize(300,60);
+        playButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        playButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.screenManager.setScreen(ScreenManager.STATE.PLAY);
+            }
+        });
+
+        exitButton = new TextButton("Exit", skin, "default");
+        exitButton.setPosition(100,230);
+        exitButton.setSize(300,60);
+        exitButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(playButton);
+        stage.addActor(exitButton);
     }
 
 

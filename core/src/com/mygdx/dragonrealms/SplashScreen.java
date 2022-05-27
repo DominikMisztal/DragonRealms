@@ -20,24 +20,30 @@ public class SplashScreen implements Screen {
     public SplashScreen(final MyGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
-        Gdx.input.setInputProcessor(stage);
-
-        Texture texture = new Texture(Gdx.files.internal("archery.png"));
-        image = new Image(texture);
-        image.setOrigin(image.getWidth() / 2, image.getHeight() / 2);
-
-        stage.addActor(image);
     }
 
     @Override
     public void show() {
-        image.setPosition(stage.getWidth() / 2 - 256, stage.getHeight() - 256);
+        Gdx.input.setInputProcessor(stage);
 
+        Runnable setMenuScreen = new Runnable() {
+            @Override
+            public void run() {
+                game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
+            }
+        };
+
+        Texture texture = new Texture(Gdx.files.internal("archery.png"));
+        image = new Image(texture);
+        image.setOrigin(image.getWidth() / 2, image.getHeight() / 2);
+        image.setPosition(stage.getWidth() / 2 - 256, stage.getHeight() - 256);
         image.addAction(sequence(alpha(0), scaleTo(.1f, .1f),
                 parallel(fadeIn(2f, Interpolation.pow2),
                         scaleTo(1f,1f,2.5f, Interpolation.pow5),
                         moveTo(stage.getWidth() / 2 - 256, stage.getHeight() / 2 - 256, 2f, Interpolation.swing)),
-                delay(1.5f), fadeOut(1.25f)));
+                delay(1.5f), fadeOut(1.25f), run(setMenuScreen)));
+
+        stage.addActor(image);
     }
 
     @Override
@@ -51,6 +57,9 @@ public class SplashScreen implements Screen {
     }
 
     public void update(float delta){
+        if(stage.getActors().size == 0){
+            game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
+        }
         stage.act(delta);
     }
 

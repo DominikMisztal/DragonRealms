@@ -5,9 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.dragonrealms.MyGame;
 
 public class LoadingScreen implements Screen {
     private final MyGame game;
@@ -18,14 +18,16 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(final MyGame game){
         this.game = game;
         this.shapeRenderer = new ShapeRenderer();
-
-        this.progress = 0f;
-
-        queueAssets();
     }
 
     @Override
     public void show() {
+        this.progress = 0f;
+        queueAssets();
+    }
+    private void queueAssets(){
+        game.assets.load("archery.png", Texture.class);
+        game.assets.load("ui/uiskin.atlas", TextureAtlas.class);
     }
 
     private void update(float delta){
@@ -77,7 +79,4 @@ public class LoadingScreen implements Screen {
         shapeRenderer.dispose();
     }
 
-    private void queueAssets(){
-        game.assets.load("archery.png", Texture.class);
-    }
 }
