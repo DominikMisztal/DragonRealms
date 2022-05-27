@@ -15,23 +15,19 @@ import java.util.Vector;
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
 
     private Map map;
-    private OrthographicCamera camera;
+    private MyGame game;
+    OrthographicCamera camera;
 
     private Vector<Unit> unitList;
     private Vector<Tile> tilesToDraw;
     private float mapWidth;
     private float mapHeight;
-    private SpriteBatch sb;
     private Vector2 lastClickTile;
     private Unit currentlySelectedUnit;
 
-    @Override
-    public void create(){
-        
-    }
+    public MainGameScreen(MyGame game){
+        this.game = game;
 
-    @Override
-    public void show() {
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         tilesToDraw = new Vector<>();
@@ -43,8 +39,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         mapHeight = map.getHeight();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
         unitList = new Vector<>();
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    @Override
+    public void create(){
+    }
+
+    @Override
+    public void show() {
     }
 
     @Override
@@ -52,16 +56,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         camera.update();
         map.render(camera);
 
-        sb = new SpriteBatch();
-        sb.setProjectionMatrix(camera.combined);
-        sb.begin();
+        game.batch.setProjectionMatrix(camera.combined);
+        game.batch.begin();
         for(Tile tile : tilesToDraw){
-            tile.render(sb);
+            tile.render(game.batch);
         }
         for (Unit unit : unitList) {
-            unit.render(sb);
+            unit.render(game.batch);
         }
-        sb.end();
+        game.batch.end();
         putInMapBounds();
     }
 
@@ -112,6 +115,12 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.P){
             spawnUnit(3);
             System.out.println("Spawning assassin at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
+        }
+        if(keycode == Input.Keys.SPACE){
+            game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
+        }
+        if(keycode == Input.Keys.T){
+            game.screenManager.setScreen(ScreenManager.STATE.ENDGAME);
         }
 
         if(keycode == Input.Keys.L){

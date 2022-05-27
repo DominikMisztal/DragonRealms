@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class MainMenuScreen implements Screen, InputProcessor {
 
     final MyGame game;
-    BitmapFont font;
     String text;
 
     OrthographicCamera camera;
@@ -19,7 +18,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
     public MainMenuScreen(final MyGame game) {
         this.game = game;
 
-        font = new BitmapFont(Gdx.files.internal("textures/font1.fnt"));
+        game.font = new BitmapFont(Gdx.files.internal("textures/font1.fnt"));
         text = "Welcome to Dragon Realms!\n" + "Tap anywhere to begin!";
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -40,12 +39,11 @@ public class MainMenuScreen implements Screen, InputProcessor {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(texture,0,0, 800,500);
-        font.draw(game.batch, text, 200, 250);
+        game.font.draw(game.batch, text, 200, 250);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(new MainGameScreen());
-            dispose();
+            game.screenManager.setScreen(ScreenManager.STATE.PLAY);
         }
     }
 
