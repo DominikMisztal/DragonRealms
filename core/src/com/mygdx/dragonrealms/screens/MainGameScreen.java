@@ -1,9 +1,8 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
@@ -25,6 +25,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Skin skin;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+    private OrthographicCamera camera;
 
     private Vector<Unit> unitList;
     private Vector<Tile> tilesToDraw;
@@ -41,9 +42,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         tilesToDraw = new Vector<>();
-        game.camera = new OrthographicCamera();
-        game.camera.setToOrtho(false,width,height);
-        game.camera.update();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false,width,height);
+        camera.update();
         map = new Map("maps/map_test/mapa_alpha.tmx");
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
@@ -74,15 +75,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Gdx.gl.glClearColor(1f,1f,1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.camera.update();
-        map.render(game.camera);
+        camera.update();
+        map.render(camera);
 
         update(delta);
 
         stage.draw();
 
         game.batch.begin();
-        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(camera.combined);
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
@@ -95,35 +96,35 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     private void putInMapBounds() {
 
-        if (game.camera.position.x < game.camera.viewportWidth*game.camera.zoom / 2f)
-            game.camera.position.x = game.camera.viewportWidth*game.camera.zoom / 2f;
-        else if (game.camera.position.x > mapWidth - game.camera.viewportWidth*game.camera.zoom / 2f)
-            game.camera.position.x = mapHeight - game.camera.viewportWidth*game.camera.zoom / 2f;
+        if (camera.position.x < camera.viewportWidth * camera.zoom / 2f)
+            camera.position.x = camera.viewportWidth * camera.zoom / 2f;
+        else if (camera.position.x > mapWidth - camera.viewportWidth * camera.zoom / 2f)
+            camera.position.x = mapHeight - camera.viewportWidth * camera.zoom / 2f;
 
-        if (game.camera.position.y < game.camera.viewportHeight*game.camera.zoom / 2f)
-            game.camera.position.y = game.camera.viewportHeight*game.camera.zoom / 2f;
-        else if (game.camera.position.y > mapHeight - game.camera.viewportHeight*game.camera.zoom / 2f)
-            game.camera.position.y = mapWidth - game.camera.viewportHeight*game.camera.zoom / 2f;
+        if (camera.position.y < camera.viewportHeight * camera.zoom / 2f)
+            camera.position.y = camera.viewportHeight * camera.zoom / 2f;
+        else if (camera.position.y > mapHeight - camera.viewportHeight * camera.zoom / 2f)
+            camera.position.y = mapWidth - camera.viewportHeight * camera.zoom / 2f;
 
     }
     private boolean isInMapBounds() {
 
-        return game.camera.position.x >= game.camera.viewportWidth*game.camera.zoom / 2f
-                && game.camera.position.x <= mapWidth - game.camera.viewportWidth*game.camera.zoom / 2f
-                && game.camera.position.y >= game.camera.viewportHeight*game.camera.zoom / 2f
-                && game.camera.position.y <= mapHeight - game.camera.viewportHeight*game.camera.zoom / 2f;
+        return camera.position.x >= camera.viewportWidth * camera.zoom / 2f
+                && camera.position.x <= mapWidth - camera.viewportWidth * camera.zoom / 2f
+                && camera.position.y >= camera.viewportHeight * camera.zoom / 2f
+                && camera.position.y <= mapHeight - camera.viewportHeight * camera.zoom / 2f;
 
     }
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
-            game.camera.translate(-64,0);
+            camera.translate(-64,0);
         if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
-            game.camera.translate(64,0);
+            camera.translate(64,0);
         if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
-            game.camera.translate(0, 64);
+            camera.translate(0, 64);
         if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
-            game.camera.translate(0,-64);
+            camera.translate(0,-64);
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
         }
@@ -168,7 +169,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Vector2 temp = lastClickTile;
         Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
         
-        Vector3 position = game.camera.unproject(clickCoordinates);
+        Vector3 position = camera.unproject(clickCoordinates);
         System.out.println("click: " + position);
         lastClickTile = map.convertCoordinates(position);
         
@@ -238,7 +239,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return true;
         }
         if(isInMapBounds()){
-            game.camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
+            camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
         }
         putInMapBounds();
         return true;      
@@ -251,14 +252,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        game.camera.zoom += amountY/50;
-        if(game.camera.zoom > 1.1375){
-            game.camera.zoom = 1.1375f;
+        camera.zoom += amountY/50;
+        if(camera.zoom > 1.1375){
+            camera.zoom = 1.1375f;
         }
-        if(game.camera.zoom < 0.6){
-            game.camera.zoom = 0.6f;
+        if(camera.zoom < 0.6){
+            camera.zoom = 0.6f;
         }
-        System.out.println("zoom: " + game.camera.zoom);
+        System.out.println("zoom: " + camera.zoom);
         putInMapBounds();
         return false;
     }

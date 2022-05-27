@@ -1,6 +1,8 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.Screen;
+import com.mygdx.dragonrealms.MyGame;
+import com.mygdx.dragonrealms.screens.*;
 
 import java.util.HashMap;
 

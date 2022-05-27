@@ -1,4 +1,4 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.mygdx.dragonrealms.MyGame;
 
 public class LoadingScreen implements Screen {
     private final MyGame game;

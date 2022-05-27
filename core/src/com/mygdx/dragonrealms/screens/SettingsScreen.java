@@ -1,4 +1,4 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.Screen;
 import com.mygdx.dragonrealms.MyGame;

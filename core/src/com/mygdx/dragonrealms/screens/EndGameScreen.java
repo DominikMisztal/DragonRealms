@@ -1,9 +1,10 @@
-package com.mygdx.dragonrealms;
+package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.mygdx.dragonrealms.MyGame;
 
 public class EndGameScreen implements Screen {
     private MyGame game;
@@ -25,7 +26,7 @@ public class EndGameScreen implements Screen {
         game.font.draw(game.batch, "You win!", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .75f);
         game.font.draw(game.batch, "Press enter to leave.", Gdx.graphics.getWidth()*.25f, Gdx.graphics.getHeight() * .25f);
         game.batch.end();
-        if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             Gdx.app.exit();
         }
     }
