@@ -92,6 +92,11 @@ public class Map {
         return tile;
     }
 
+    public Tile getTile(int x, int y){
+        Tile tile = tilesHashMap.get(new Vector2(x, y));
+        return tile;
+    }
+
     public int getWidth(){
         TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");
         return layer.getWidth() * TILESIZE;

@@ -24,7 +24,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private MyGame game;
     private Skin skin;
     private Stage stage;
-    private ShapeRenderer shapeRenderer;
     private OrthographicCamera camera;
 
     private Vector<Unit> unitList;
@@ -37,7 +36,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public MainGameScreen(MyGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
-        this.shapeRenderer = new ShapeRenderer();
 
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -186,10 +184,37 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             tilesToDraw.clear();
             currentlySelectedUnit = tile.getUnit();
             if(currentlySelectedUnit != null){
-                setBordersOnTiles(lastClickTile);
+                //setBordersOnTiles(lastClickTile);
+                findUnitMovementRange(currentlySelectedUnit, tile);
             }
         }
         return false;
+    }
+
+    private void findUnitMovementRange(Unit unit, Tile tile){
+        tile.setBorder(1);
+        tilesToDraw.add(tile);
+        int movementPoints = unit.getCurrentMovement();
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+    }
+
+    private void recursiveSearch(int movementPoints, Tile tile){
+        if(tile==null || tile.getMovementCost() == 99 || movementPoints == 0){
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
     }
 
     private void setBordersOnTiles(Vector2 lastClickTile){
