@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -162,6 +163,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.position.y = mapWidth - camera.viewportHeight * camera.zoom / 2f;
 
     }
+    
     private boolean isInMapBounds() {
 
         return camera.position.x >= camera.viewportWidth * camera.zoom / 2f
