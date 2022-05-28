@@ -28,17 +28,16 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
-
+    private static final int MENU_WIDTH = 350;
     private Map map;
     private MyGame game;
     private Skin skin;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
-    TextButton playButton;
-    TextButton exitButton;
+    private TextButton playButton;
+    private TextButton exitButton;
     private OrthographicCamera camera;
 
-    private Vector<Unit> unitList;
     private Vector<Tile> tilesToDraw;
     private float mapWidth;
     private float mapHeight;
@@ -46,7 +45,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Unit currentlySelectedUnit;
     private Vector<Player> players;
     private int currentPlayer;
-    boolean doDrawing = false;
+    boolean doDrawing = true;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -62,7 +61,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         map = new Map("maps/map_test/mapa_alpha.tmx");
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
-        unitList = new Vector<>();
         players = new Vector<>();
         players.add(new Player("Player 1"));
         players.add(new Player("Player 2"));
@@ -120,7 +118,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             unit.render(game.batch);
         }
         game.batch.end();
-        putInMapBounds();
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
         }
@@ -133,12 +130,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
         }
+        putInMapBounds();
+        
+
         if(doDrawing){
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(new Color(0, 1, 0, 0.5f));
-            shapeRenderer.rect(game.camera.viewportWidth - 350, 0, 350, game.camera.viewportHeight);
+            shapeRenderer.setColor(new Color(0, 1, 0, 1f));
+            shapeRenderer.rect(game.camera.viewportWidth - MENU_WIDTH, 0, MENU_WIDTH, game.camera.viewportHeight);
             shapeRenderer.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
@@ -151,8 +151,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         if (camera.position.x < camera.viewportWidth * camera.zoom / 2f)
             camera.position.x = camera.viewportWidth * camera.zoom / 2f;
-        else if (camera.position.x > mapWidth - camera.viewportWidth * camera.zoom / 2f)
-            camera.position.x = mapHeight - camera.viewportWidth * camera.zoom / 2f;
+        else if (camera.position.x > mapWidth + MENU_WIDTH - camera.viewportWidth * camera.zoom / 2f)
+            camera.position.x = mapHeight + MENU_WIDTH - camera.viewportWidth * camera.zoom / 2f;
 
         if (camera.position.y < camera.viewportHeight * camera.zoom / 2f)
             camera.position.y = camera.viewportHeight * camera.zoom / 2f;
@@ -163,7 +163,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private boolean isInMapBounds() {
 
         return camera.position.x >= camera.viewportWidth * camera.zoom / 2f
-                && camera.position.x <= mapWidth - camera.viewportWidth * camera.zoom / 2f
+                && camera.position.x <= mapWidth + MENU_WIDTH - camera.viewportWidth  * camera.zoom / 2f
                 && camera.position.y >= camera.viewportHeight * camera.zoom / 2f
                 && camera.position.y <= mapHeight - camera.viewportHeight * camera.zoom / 2f;
 
@@ -351,7 +351,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
 
         tile.setUnit(unit);
-        //unitList.add(unit);
         players.get(currentPlayer).addUnit(unit);
         return true;
     }
