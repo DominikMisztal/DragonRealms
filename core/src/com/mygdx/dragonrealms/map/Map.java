@@ -9,22 +9,29 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.dragonrealms.screens.MainGameScreen;
 
 import java.io.*;
 import java.util.HashMap;
 
-public class Map {
+public class Map extends Stage {
     private TiledMap tiledMap;
     public final static int TILESIZE = 64;
     private TiledMapRenderer tiledMapRenderer;
     private HashMap<Vector2, Tile> tilesHashMap;
     private boolean borders;
     private ShapeRenderer sRenderer;
+    private MainGameScreen mainGameScreen;
 
 
-    public Map(String map_file){
+    public Map(String map_file, MainGameScreen mgs){
+        mainGameScreen = mgs;
         tiledMap = new TmxMapLoader().load(map_file);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        //this.setViewport();
         createTilesMap();
         borders = false;
         sRenderer = new ShapeRenderer();
@@ -75,6 +82,10 @@ public class Map {
                         }
                         tile.coordinates.x = j;
                         tile.coordinates.y = i;
+                        tile.setBounds(TILESIZE*j, TILESIZE *  i, TILESIZE, TILESIZE);
+                        addActor(tile);
+                        EventListener eventListener = new TileClickListener(tile, mainGameScreen);
+                        tile.addListener(eventListener);
                         tilesHashMap.put(new Vector2(j,i), tile);
                         j++;
                     }
@@ -97,12 +108,12 @@ public class Map {
         return tile;
     }
 
-    public int getWidth(){
+    public int getMapWidth(){
         TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");
         return layer.getWidth() * TILESIZE;
     }
 
-    public int getHeight(){
+    public int getMapHeight(){
         TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");
         return layer.getHeight() * TILESIZE;
     }

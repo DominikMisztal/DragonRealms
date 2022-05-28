@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.dragonrealms.units.Unit;
 
-public class Tile {
+public class Tile extends Actor{
 
     private Unit unit;
     public Vector2 coordinates;
@@ -52,5 +53,9 @@ public class Tile {
 
     public void render(SpriteBatch sb){
         tileBorder.draw(sb);
+    }
+
+    public Vector2 getCoordinates(){
+        return coordinates;
     }
 }
