@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
+import com.mygdx.dragonrealms.Player;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
@@ -32,6 +33,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private float mapHeight;
     private Vector2 lastClickTile;
     private Unit currentlySelectedUnit;
+    private Vector<Player> players;
+    private int currentPlayer;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -47,6 +50,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         mapWidth = map.getWidth();
         mapHeight = map.getHeight();
         unitList = new Vector<>();
+        players = new Vector<>();
+        players.add(new Player("Player 1"));
+        players.add(new Player("Player 2"));
+        players.add(new Player("Player 3"));
+        currentPlayer = 0;
     }
 
     @Override
@@ -85,11 +93,32 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
-        for (Unit unit : unitList) {
+        Vector<Unit> temp = players.get(0).getUnits();
+        for (Unit unit : temp) {
+            unit.render(game.batch);
+        }
+        temp = players.get(1).getUnits();
+        for (Unit unit : temp) {
+            unit.render(game.batch);
+        }
+        temp = players.get(2).getUnits();
+        for (Unit unit : temp) {
             unit.render(game.batch);
         }
         game.batch.end();
         putInMapBounds();
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            camera.translate(0,Gdx.graphics.getDeltaTime() * -200);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            camera.translate(0,Gdx.graphics.getDeltaTime() * 200);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
+        }
     }
 
     private void putInMapBounds() {
@@ -115,14 +144,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
-            camera.translate(-64,0);
-        if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
-            camera.translate(64,0);
-        if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
-            camera.translate(0, 64);
-        if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
-            camera.translate(0,-64);
+        // if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
+        //     camera.translate(-64,0);
+        // if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
+        //     camera.translate(64,0);
+        // if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
+        //     camera.translate(0, 64);
+        // if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
+        //     camera.translate(0,-64);
         if(keycode == Input.Keys.B){
             Gdx.app.exit();
         }
@@ -148,6 +177,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         if(keycode == Input.Keys.L){
             map.bordersOnOff();
+        }
+        //TODO: REMOVE AFTER FINISHING
+        if(keycode == Input.Keys.NUM_1){
+            currentPlayer = 0;
+        }
+        if(keycode == Input.Keys.NUM_2){
+            currentPlayer = 1;
+        }
+        if(keycode == Input.Keys.NUM_3){
+            currentPlayer = 3;
         }
         putInMapBounds();
         return false;
@@ -183,8 +222,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             tilesToDraw.clear();
             currentlySelectedUnit = tile.getUnit();
-            if(currentlySelectedUnit != null){
-                //setBordersOnTiles(lastClickTile);
+            if(currentlySelectedUnit != null && currentlySelectedUnit.getPlayer() == players.get(currentPlayer)){
                 findUnitMovementRange(currentlySelectedUnit, tile);
             }
         }
@@ -202,7 +240,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void recursiveSearch(int movementPoints, Tile tile){
-        if(tile==null || tile.getMovementCost() == 99 || movementPoints == 0){
+        if(tile==null || tile.getMovementCost() == 99 || movementPoints == 0 || tile.getUnit() != null){
             return;
         }
         if(movementPoints - tile.getMovementCost() < 0){
@@ -215,41 +253,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
         recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
         recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
-    }
-
-    private void setBordersOnTiles(Vector2 lastClickTile){
-        Vector2 temp = new Vector2();
-        Tile tile;
-        temp.x = lastClickTile.x; temp.y = lastClickTile.y;
-        tile = map.getTile(temp);
-        if(tile != null){
-            tile.setBorder(1);
-            tilesToDraw.add(tile);
-        }
-        temp.x = lastClickTile.x -1; temp.y = lastClickTile.y;
-        tile = map.getTile(temp);
-        if(tile != null){
-            tile.setBorder(1);
-            tilesToDraw.add(tile);
-        }
-        temp.x = lastClickTile.x + 1; temp.y = lastClickTile.y;
-        tile = map.getTile(temp);
-        if(tile != null){
-            tile.setBorder(1);
-            tilesToDraw.add(tile);
-        }
-        temp.x = lastClickTile.x; temp.y = lastClickTile.y-1;
-        tile = map.getTile(temp);
-        if(tile != null){
-            tile.setBorder(1);
-            tilesToDraw.add(tile);
-        }
-        temp.x = lastClickTile.x; temp.y = lastClickTile.y+1;
-        tile = map.getTile(temp);
-        if(tile != null){
-            tile.setBorder(1);
-            tilesToDraw.add(tile);
-        }
     }
 
     @Override
@@ -306,20 +309,21 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
 
         if(type == 1){
-            unit = new Warrior((int)lastClickTile.x,(int)lastClickTile.y);
+            unit = new Warrior((int)lastClickTile.x,(int)lastClickTile.y, players.get(currentPlayer));
         }
         else if(type == 2){
-            unit = new Archer((int)lastClickTile.x,(int)lastClickTile.y);
+            unit = new Archer((int)lastClickTile.x,(int)lastClickTile.y, players.get(currentPlayer));
         }
         else if(type == 3){
-            unit = new Knight((int)lastClickTile.x,(int)lastClickTile.y);
+            unit = new Knight((int)lastClickTile.x,(int)lastClickTile.y, players.get(currentPlayer));
         }
         else{
             return false;
         }
 
         tile.setUnit(unit);
-        unitList.add(unit);
+        //unitList.add(unit);
+        players.get(currentPlayer).addUnit(unit);
         return true;
     }
 }

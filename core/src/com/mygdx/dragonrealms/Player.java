@@ -2,36 +2,33 @@ package com.mygdx.dragonrealms;
 
 import com.mygdx.dragonrealms.units.Unit;
 
-import java.awt.*;
-import java.util.HashMap;
+import java.util.Vector;
 
 public class Player {
     private final String playerName;
-    private final HashMap<Point, Unit> ownedUnits;
+    private final Vector<Unit> ownedUnits;
     private int moveRange;
     boolean isWinner;
 
-    public Player(String name, int moveRange, boolean isWinner){
+    public Player(String name){
 
         this.playerName = name;
-        this.moveRange = moveRange;
-        this.isWinner = isWinner;
-        this.ownedUnits = new HashMap<>();
+        this.ownedUnits = new Vector<>();
     }
 
     public String getPlayerName(){
         return this.playerName;
     }
 
-    public void addUnit(Point coordinates, Unit unit){
-        ownedUnits.put(coordinates, unit);
+    public void addUnit(Unit unit){
+        ownedUnits.add(unit);
     }
 
-    public void removeUnit(Point coordinates){
-        ownedUnits.remove(coordinates);
+    public void removeUnit(Unit unit){
+        ownedUnits.remove(unit);
     }
 
-    public HashMap<Point, Unit> getUnits(){
+    public Vector<Unit> getUnits(){
         return this.ownedUnits;
     }
 
