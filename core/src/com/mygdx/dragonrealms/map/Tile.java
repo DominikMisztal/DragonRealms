@@ -15,9 +15,11 @@ public class Tile extends Actor{
     private TileType type;
     private int movementCost;
     private Sprite tileBorder;
+    public int tempMovCost;
 
     public Tile(){
         coordinates = new Vector2();
+        tempMovCost = 0;
     }
 
     public int getMovementCost() {
@@ -45,8 +47,19 @@ public class Tile extends Actor{
     }
 
     public void setBorder(int type){
+        if(type == 0){
+            tileBorder = null;
+        }
         if(type == 1){
             tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/GreenFrame.png")));
+            tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
+        }
+        if(type == 2){
+            tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/RedFrame.png")));
+            tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
+        }
+        if(type == 3){
+            tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/CrossFrame.png")));
             tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
         }
     }

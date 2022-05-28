@@ -45,8 +45,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Tile currentlySelectedTile;
     public Vector2 lastClickTile;
     public Unit currentlySelectedUnit;
-    private Vector<Player> players;
-    private int currentPlayer;
+    public Vector<Player> players;
+    public int currentPlayer;
     boolean doDrawing = true;
 
     public MainGameScreen(MyGame game){
@@ -204,7 +204,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             currentPlayer = 1;
         }
         if(keycode == Input.Keys.NUM_3){
-            currentPlayer = 3;
+            currentPlayer = 2;
         }
         if(keycode == Input.Keys.ESCAPE){
             doDrawing = (doDrawing == false) ? true : false;
@@ -245,7 +245,17 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void recursiveSearch(int movementPoints, Tile tile){
-        if(tile==null || tile.getMovementCost() == 99 || movementPoints == 0 || tile.getUnit() != null){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
             return;
         }
         if(movementPoints - tile.getMovementCost() < 0){

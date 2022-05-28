@@ -17,14 +17,17 @@ public class TileClickListener extends ClickListener {
     public void clicked(InputEvent event, float x, float y){
         mainGameScreen.previouslySelectedTile = mainGameScreen.currentlySelectedTile;
         mainGameScreen.currentlySelectedTile = tile;
-        if(mainGameScreen.tilesToDraw.contains(tile)){
-            mainGameScreen.moveUnit();
-            mainGameScreen.currentlySelectedUnit = null;
-            return;
+        if(tile.getUnit() == null){
+            if(mainGameScreen.tilesToDraw.contains(tile) && 
+            (tile.getType() != TileType.MOUNTAIN && tile.getType() != TileType.WATER )){
+                mainGameScreen.moveUnit();
+                mainGameScreen.currentlySelectedUnit = null;
+                return;
+            }
         }
         mainGameScreen.currentlySelectedUnit = null;
         mainGameScreen.tilesToDraw.clear();
-        if(tile.getUnit() != null){
+        if(tile.getUnit() != null && tile.getUnit().getPlayer() == mainGameScreen.players.get(mainGameScreen.currentPlayer)){
             mainGameScreen.currentlySelectedUnit = tile.getUnit();
             mainGameScreen.findUnitMovementRange(tile.getUnit(), tile);
         }
