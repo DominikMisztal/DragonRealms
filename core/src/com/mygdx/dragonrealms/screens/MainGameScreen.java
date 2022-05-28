@@ -1,14 +1,19 @@
 package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.Player;
@@ -19,12 +24,18 @@ import com.mygdx.dragonrealms.units.*;
 
 import java.util.Vector;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
 
     private Map map;
     private MyGame game;
     private Skin skin;
     private Stage stage;
+    private ShapeRenderer shapeRenderer;
+    TextButton playButton;
+    TextButton exitButton;
     private OrthographicCamera camera;
 
     private Vector<Unit> unitList;
@@ -35,10 +46,12 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Unit currentlySelectedUnit;
     private Vector<Player> players;
     private int currentPlayer;
+    boolean doDrawing = false;
 
     public MainGameScreen(MyGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.shapeRenderer = new ShapeRenderer();
 
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -63,13 +76,18 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         stage.clear();
 
         this.skin = new Skin();
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
         this.skin.add("default-font", game.font);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+
+        initButtons();
     }
 
     private void update(float delta){
@@ -83,10 +101,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         camera.update();
         map.render(camera);
-
-        update(delta);
-
-        stage.draw();
 
         game.batch.begin();
         game.batch.setProjectionMatrix(camera.combined);
@@ -119,6 +133,18 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
             camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
         }
+        if(doDrawing){
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(new Color(0, 1, 0, 0.5f));
+            shapeRenderer.rect(game.camera.viewportWidth - 350, 0, 350, game.camera.viewportHeight);
+            shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            update(delta);
+            stage.draw();
+        }
+
     }
 
     private void putInMapBounds() {
@@ -187,6 +213,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         if(keycode == Input.Keys.NUM_3){
             currentPlayer = 3;
+        }
+        if(keycode == Input.Keys.ESCAPE){
+            doDrawing = (doDrawing == false) ? true : false;
         }
         putInMapBounds();
         return false;
@@ -325,5 +354,34 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         //unitList.add(unit);
         players.get(currentPlayer).addUnit(unit);
         return true;
+    }
+
+    private void initButtons(){
+        playButton = new TextButton("Menu", skin, "default");
+        playButton.setSize(300,100);
+        playButton.setPosition(MyGame.WIDTH - 325,MyGame.HEIGHT - 100);
+        playButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        playButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
+            }
+        });
+
+        exitButton = new TextButton("Exit", skin, "default");
+        exitButton.setSize(300,100);
+        exitButton.setPosition(MyGame.WIDTH - 325,MyGame.HEIGHT - 250);
+        exitButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(playButton);
+        stage.addActor(exitButton);
     }
 }
