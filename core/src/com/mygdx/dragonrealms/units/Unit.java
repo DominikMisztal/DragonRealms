@@ -78,6 +78,10 @@ public class Unit {
         currentMovement -= moveCost;
     }
 
+    public void resetMovement(){
+        currentMovement = maxMovement;
+    }
+
     public Player getPlayer(){
         return player;
     }

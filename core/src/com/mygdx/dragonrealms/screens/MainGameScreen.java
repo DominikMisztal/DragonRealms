@@ -173,18 +173,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public boolean keyDown(int keycode) {
-        // if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A && isInMapBounds())
-        //     camera.translate(-64,0);
-        // if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D && isInMapBounds())
-        //     camera.translate(64,0);
-        // if(keycode == Input.Keys.UP || keycode == Input.Keys.W && isInMapBounds())
-        //     camera.translate(0, 64);
-        // if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S && isInMapBounds())
-        //     camera.translate(0,-64);
-        if(keycode == Input.Keys.B){
-            Gdx.app.exit();
-        }
-
         if(keycode == Input.Keys.I){
             spawnUnit(1);
             //System.out.println("Spawning warrior at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
@@ -235,29 +223,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Vector2 temp = lastClickTile;
-        // Vector3 clickCoordinates = new Vector3(screenX, screenY, 0);
-        
-        // Vector3 position = camera.unproject(clickCoordinates);
-        // System.out.println("click: " + position);
-        // lastClickTile = map.convertCoordinates(position);
-        
-        // Tile tile = map.getTile(lastClickTile);
-        // System.out.println("tile: " + tile.getType());
-        // if(tilesToDraw.contains(tile) && tile.getUnit() == null){
-        //     System.out.println("moving unit");
-        //     tilesToDraw.clear();
-        //     currentlySelectedUnit.changePosition((int)lastClickTile.x, (int)lastClickTile.y);
-        //     map.getTile(temp).setUnit(null);
-        //     map.getTile(lastClickTile).setUnit(currentlySelectedUnit);
-        // }
-        // else{
-        //     tilesToDraw.clear();
-        //     currentlySelectedUnit = tile.getUnit();
-        //     if(currentlySelectedUnit != null && currentlySelectedUnit.getPlayer() == players.get(currentPlayer)){
-        //         findUnitMovementRange(currentlySelectedUnit, tile);
-        //     }
-        // }
         return false;
     }
 
