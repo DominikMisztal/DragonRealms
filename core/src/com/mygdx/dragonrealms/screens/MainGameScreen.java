@@ -425,10 +425,12 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         putInMapBounds();
         return false;
     }
+    
     @Override
     public void hide() {
 
     }
+    
     @Override
     public void dispose(){
         stage.dispose();

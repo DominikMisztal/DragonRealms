@@ -68,15 +68,15 @@ public class Map extends Stage {
                                 break;
                             case "5":
                                 tile.setType(TileType.FOREST);
-                                tile.setMovementCost(4);
+                                tile.setMovementCost(3);
                                 break;
                             case "6":
                                 tile.setType(TileType.SNOW);
-                                tile.setMovementCost(5);
+                                tile.setMovementCost(4);
                                 break;
                             case "7":
                                 tile.setType(TileType.SHALLOW_WATER);
-                                tile.setMovementCost(3);
+                                tile.setMovementCost(2);
                                 break;
                         }
                         tile.coordinates.x = j;
