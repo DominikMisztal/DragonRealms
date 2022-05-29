@@ -435,8 +435,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public boolean scrolled(float amountX, float amountY) {
         camera.zoom += amountY/50;
-        if(camera.zoom > 1.1375){
-            camera.zoom = 1.1375f;
+        if(camera.zoom > 1.412){
+            camera.zoom = 1.412f;
         }
         if(camera.zoom < 0.6){
             camera.zoom = 0.6f;
