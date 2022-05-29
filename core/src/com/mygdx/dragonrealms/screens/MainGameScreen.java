@@ -172,6 +172,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 && camera.position.y <= mapHeight - camera.viewportHeight * camera.zoom / 2f;
 
     }
+ 
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.I){
@@ -212,14 +213,17 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         putInMapBounds();
         return false;
     }
+ 
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
+ 
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
+  
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
@@ -231,6 +235,78 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         currentlySelectedTile.setUnit(currentlySelectedUnit);
         currentlySelectedUnit.setCurrentMovement(currentlySelectedTile.getTempMovLeft());
         clearMovementTiles();
+    }
+
+    public void moveUnit(Unit unit, Tile destination){
+        unit.changePosition((int)destination.getCoordinates().x, (int)destination.getCoordinates().y);
+        previouslySelectedTile.setUnit(null);
+        destination.setUnit(currentlySelectedUnit);
+        unit.setCurrentMovement(destination.getTempMovLeft());
+        clearMovementTiles();
+    }
+
+    public void unitAttack(Unit attacker, Unit defender){
+        if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) == 1){
+            if(defender.damage(attacker.getAttack())){
+                defender.getPlayer().getUnits().remove(defender);
+                map.getTile(defender.getCoordinates()).setUnit(null);
+            }
+        }
+        else{
+            moveUnit(attacker, findClosestTile(defender, attacker));
+            if(defender.damage(attacker.getAttack())){
+                defender.getPlayer().getUnits().remove(defender);
+                map.getTile(defender.getCoordinates()).setUnit(null);
+            }
+        }
+    }
+
+    public Tile findClosestTile(Unit target, Unit toMove){
+        Tile closestTile = null, temp;
+        double distance = 9999;
+        temp = map.getTile((int)target.getCoordinates().x + 1, (int)target.getCoordinates().y);
+        if(temp != null){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+                distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
+                closestTile = temp;
+            }
+        }
+        temp = map.getTile((int)target.getCoordinates().x - 1, (int)target.getCoordinates().y);
+        if(temp != null){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+                distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
+                closestTile = temp;
+            }
+        }
+        temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y + 1);
+        if(temp != null){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+                distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
+                closestTile = temp;
+            }
+        }
+        temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y - 1);
+        if(temp != null){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+                distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
+                closestTile = temp;
+            }
+        }
+        System.out.println("distance: " + distance);
+
+        return closestTile;
+    }
+
+    public double getDistance(Tile tile1, Tile tile2){
+        double x = Math.abs(tile1.coordinates.x - tile2.coordinates.x);
+        double y = Math.abs(tile1.coordinates.y - tile2.coordinates.y);
+        return Math.sqrt(x*x + y*y);
+    }
+
+    public double getDistance(Vector2 coordinates1, Vector2 coordinates2){
+        double x = Math.abs(coordinates1.x - coordinates2.x);
+        double y = Math.abs(coordinates1.y - coordinates2.y);
+        return Math.sqrt(x*x + y*y);
     }
 
     public void findUnitMovementRange(Unit unit, Tile tile){

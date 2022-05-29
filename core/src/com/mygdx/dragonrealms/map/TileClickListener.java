@@ -1,8 +1,11 @@
 package com.mygdx.dragonrealms.map;
 
+import java.util.Currency;
+
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.dragonrealms.screens.MainGameScreen;
+import com.mygdx.dragonrealms.units.Unit;
 
 public class TileClickListener extends ClickListener {
     private Tile tile;
@@ -25,13 +28,27 @@ public class TileClickListener extends ClickListener {
                 return;
             }
         }
+        else if(tile.getUnit() != null && mainGameScreen.tilesToDraw.contains(tile) 
+                && tile.getUnit().getPlayer() != mainGameScreen.players.get(mainGameScreen.currentPlayer)){
+                    mainGameScreen.unitAttack(mainGameScreen.currentlySelectedUnit, tile.getUnit());
+                    mainGameScreen.currentlySelectedUnit = null;
+                    mainGameScreen.tilesToDraw.clear();
+                    return;
+            }
         mainGameScreen.currentlySelectedUnit = null;
         mainGameScreen.tilesToDraw.clear();
         if(tile.getUnit() != null && tile.getUnit().getPlayer() == mainGameScreen.players.get(mainGameScreen.currentPlayer)){
             mainGameScreen.currentlySelectedUnit = tile.getUnit();
             mainGameScreen.findUnitMovementRange(tile.getUnit(), tile);
         }
+        else{
+            mainGameScreen.tilesToDraw.add(tile);
+            tile.setBorder(4);
+        }
         System.out.println("Hello from actor " + tile.getCoordinates());
-        System.out.println("Currently selected tile: " + mainGameScreen.currentlySelectedTile.getCoordinates());
+        if(tile.getUnit() != null){
+            System.out.println("Unit hp: " + tile.getUnit().getCurrent_hp() + "/" + tile.getUnit().getMax_hp());
+        }
+        //System.out.println("Currently selected tile: " + mainGameScreen.currentlySelectedTile.getCoordinates());
     }
 }

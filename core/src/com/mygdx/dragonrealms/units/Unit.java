@@ -94,4 +94,12 @@ public class Unit {
             sprite.setPosition(coordinates.x * Map.TILESIZE, coordinates.y * Map.TILESIZE);
     }
 
+    public boolean damage(int damage){
+        current_hp -= damage;
+        if(current_hp <= 0){
+            return true;
+        }
+        return false;
+    }
+
 }

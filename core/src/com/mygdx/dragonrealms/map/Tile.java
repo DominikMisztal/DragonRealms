@@ -62,6 +62,10 @@ public class Tile extends Actor{
             tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/CrossFrame.png")));
             tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
         }
+        if(type == 4){
+            tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/WhiteFrame.png")));
+            tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
+        }
     }
 
     public void render(SpriteBatch sb){
