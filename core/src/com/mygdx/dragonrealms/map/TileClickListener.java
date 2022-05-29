@@ -1,11 +1,8 @@
 package com.mygdx.dragonrealms.map;
 
-import java.util.Currency;
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.dragonrealms.screens.MainGameScreen;
-import com.mygdx.dragonrealms.units.Unit;
 
 public class TileClickListener extends ClickListener {
     private Tile tile;
@@ -20,6 +17,9 @@ public class TileClickListener extends ClickListener {
     public void clicked(InputEvent event, float x, float y){
         mainGameScreen.previouslySelectedTile = mainGameScreen.currentlySelectedTile;
         mainGameScreen.currentlySelectedTile = tile;
+        if(tile.getBorder() == 4){
+            return;
+        }
         if(tile.getUnit() == null){
             if(mainGameScreen.tilesToDraw.contains(tile) && 
             (tile.getType() != TileType.MOUNTAIN && tile.getType() != TileType.WATER )){
@@ -32,11 +32,11 @@ public class TileClickListener extends ClickListener {
                 && tile.getUnit().getPlayer() != mainGameScreen.players.get(mainGameScreen.currentPlayer)){
                     mainGameScreen.unitAttack(mainGameScreen.currentlySelectedUnit, tile.getUnit());
                     mainGameScreen.currentlySelectedUnit = null;
-                    mainGameScreen.tilesToDraw.clear();
+                    mainGameScreen.clearMovementTiles();
                     return;
             }
         mainGameScreen.currentlySelectedUnit = null;
-        mainGameScreen.tilesToDraw.clear();
+        mainGameScreen.clearMovementTiles();
         if(tile.getUnit() != null && tile.getUnit().getPlayer() == mainGameScreen.players.get(mainGameScreen.currentPlayer)){
             mainGameScreen.currentlySelectedUnit = tile.getUnit();
             mainGameScreen.findUnitMovementRange(tile.getUnit(), tile);

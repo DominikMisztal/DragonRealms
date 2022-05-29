@@ -16,6 +16,7 @@ public class Tile extends Actor{
     private int movementCost;
     private Sprite tileBorder;
     public int tempMovLeft;
+    private int borderType;
 
     public Tile(){
         coordinates = new Vector2();
@@ -46,6 +47,10 @@ public class Tile extends Actor{
         this.unit = unit;
     }
 
+    public int getBorder(){
+        return borderType;
+    }
+
     public void setBorder(int type){
         if(type == 0){
             tileBorder = null;
@@ -66,6 +71,7 @@ public class Tile extends Actor{
             tileBorder = new Sprite(new Texture(Gdx.files.internal("assets/textures/tiles_borders/WhiteFrame.png")));
             tileBorder.setPosition(Map.TILESIZE*coordinates.x, Map.TILESIZE*coordinates.y);
         }
+        borderType = type;
     }
 
     public void render(SpriteBatch sb){
