@@ -8,6 +8,6 @@ import com.mygdx.dragonrealms.map.Tile;
 public class Warrior extends Unit {
 
     public Warrior(Tile tile, Player player) {
-        super("Warrior", new Texture(Gdx.files.internal("textures/warrior/warrior3.png")) , 4, 3, 6, 1, 5, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
+        super("Warrior", new Texture(Gdx.files.internal("textures/warrior/warrior3.png")) , 2, 2, 6, 1, 4, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 }

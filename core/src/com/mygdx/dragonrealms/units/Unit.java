@@ -1,5 +1,6 @@
 package com.mygdx.dragonrealms.units;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -96,10 +97,35 @@ public class Unit {
 
     public boolean damage(int damage){
         current_hp -= damage;
+        changeSprite();
         if(current_hp <= 0){
             return true;
         }
         return false;
+    }
+
+    private void changeSprite(){
+        if(this.unitName == "Warrior"){
+            if(current_hp < Math.floor(max_hp/3)){
+                sprite.setTexture(new Texture(Gdx.files.internal("textures/warrior/warrior1.png")));
+            }
+            else if(current_hp < Math.floor(2*max_hp/3)){
+                sprite.setTexture(new Texture(Gdx.files.internal("textures/warrior/warrior2.png")));
+            }
+        }
+        else if(this.unitName == "Archer"){
+            if(current_hp <= Math.floor(max_hp/3)){
+                sprite.setTexture(new Texture(Gdx.files.internal("textures/archer/archer1.png")));
+            }
+            else if(current_hp <= Math.floor(2*max_hp/3)){
+                sprite.setTexture(new Texture(Gdx.files.internal("textures/archer/archer2.png")));
+            }
+        }
+        else{
+            if(current_hp <= Math.floor(max_hp/2)){
+                sprite.setTexture(new Texture(Gdx.files.internal("textures/knight/knight1.png")));
+            }
+        }
     }
 
 }

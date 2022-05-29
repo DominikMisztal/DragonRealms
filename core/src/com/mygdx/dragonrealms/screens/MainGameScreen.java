@@ -391,6 +391,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if(button == Input.Buttons.RIGHT){
+            clearMovementTiles();
+        }
         return false;
     }
 
