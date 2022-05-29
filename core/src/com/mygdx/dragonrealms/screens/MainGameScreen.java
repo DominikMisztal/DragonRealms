@@ -48,6 +48,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Vector<Player> players;
     public int currentPlayer;
     private int currentTurn;
+    Vector<Unit> temp;
     boolean doDrawing = true;
 
     public MainGameScreen(MyGame game){
@@ -110,7 +111,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
-        Vector<Unit> temp = players.get(0).getUnits();
+        //draw units
+        temp = players.get(0).getUnits();
         for (Unit unit : temp) {
             unit.render(game.batch);
         }
@@ -123,6 +125,20 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             unit.render(game.batch);
         }
         game.batch.end();
+        // draw health bars
+        temp = players.get(0).getUnits();
+        for (Unit unit : temp) {
+            unit.renderHealthBar();
+        }
+        temp = players.get(1).getUnits();
+        for (Unit unit : temp) {
+            unit.renderHealthBar();
+        }
+        temp = players.get(2).getUnits();
+        for (Unit unit : temp) {
+            unit.renderHealthBar();
+        }
+
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
         }
@@ -136,6 +152,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
         }
         putInMapBounds();
+
         
 
         if(doDrawing){
@@ -449,13 +466,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
 
         if(type == 1){
-            unit = new Warrior(currentlySelectedTile, players.get(currentPlayer));
+            unit = new Warrior(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
         else if(type == 2){
-            unit = new Archer(currentlySelectedTile, players.get(currentPlayer));
+            unit = new Archer(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
         else if(type == 3){
-            unit = new Knight(currentlySelectedTile, players.get(currentPlayer));
+            unit = new Knight(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
         else{
             return false;
