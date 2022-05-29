@@ -74,8 +74,8 @@ public class Unit {
         return currentMovement;
     }
 
-    public void reduceCurrentMovement(int moveCost){
-        currentMovement -= moveCost;
+    public void setCurrentMovement(int movement){
+        currentMovement = movement;
     }
 
     public void resetMovement(){

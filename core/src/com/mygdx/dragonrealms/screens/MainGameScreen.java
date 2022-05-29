@@ -212,12 +212,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         putInMapBounds();
         return false;
     }
-
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
-
     @Override
     public boolean keyTyped(char character) {
         return false;
@@ -228,10 +226,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     public void moveUnit(){
-        tilesToDraw.clear();
         currentlySelectedUnit.changePosition((int)currentlySelectedTile.getCoordinates().x, (int)currentlySelectedTile.getCoordinates().y);
         previouslySelectedTile.setUnit(null);
         currentlySelectedTile.setUnit(currentlySelectedUnit);
+        currentlySelectedUnit.setCurrentMovement(currentlySelectedTile.getTempMovLeft());
+        clearMovementTiles();
     }
 
     public void findUnitMovementRange(Unit unit, Tile tile){
@@ -262,6 +261,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
            return;
         }
         movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
         tilesToDraw.add(tile);
         tile.setBorder(1);
         recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
@@ -340,6 +342,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         currentlySelectedTile.setUnit(unit);
         players.get(currentPlayer).addUnit(unit);
         return true;
+    }
+
+    public void clearMovementTiles(){
+        for(Tile tile : tilesToDraw){
+            tile.setBorder(0);
+            tile.setTempMovLeft(0);
+        }
+        tilesToDraw.clear();
     }
 
     private void initButtons(){

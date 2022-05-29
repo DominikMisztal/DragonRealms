@@ -15,11 +15,11 @@ public class Tile extends Actor{
     private TileType type;
     private int movementCost;
     private Sprite tileBorder;
-    public int tempMovCost;
+    public int tempMovLeft;
 
     public Tile(){
         coordinates = new Vector2();
-        tempMovCost = 0;
+        tempMovLeft = 0;
     }
 
     public int getMovementCost() {
@@ -70,5 +70,13 @@ public class Tile extends Actor{
 
     public Vector2 getCoordinates(){
         return coordinates;
+    }
+
+    public int getTempMovLeft(){
+        return tempMovLeft;
+    }
+
+    public void setTempMovLeft(int movement){
+        tempMovLeft = movement;
     }
 }
