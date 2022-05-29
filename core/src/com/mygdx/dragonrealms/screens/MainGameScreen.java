@@ -47,6 +47,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Unit currentlySelectedUnit;
     public Vector<Player> players;
     public int currentPlayer;
+    private int currentTurn;
     boolean doDrawing = true;
 
     public MainGameScreen(MyGame game){
@@ -68,6 +69,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         players.add(new Player("Player 2"));
         players.add(new Player("Player 3"));
         currentPlayer = 0;
+        currentTurn = 1;
     }
 
     @Override
@@ -295,6 +297,19 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         System.out.println("distance: " + distance);
 
         return closestTile;
+    }
+
+    public void nextPlayer(){
+        currentPlayer++;
+        if(currentPlayer > 2){
+            currentPlayer = 0;
+            nextTurn();
+        }
+    }
+
+    private void nextTurn(){
+        // reset units movements
+        // give gold
     }
 
     public double getDistance(Tile tile1, Tile tile2){
