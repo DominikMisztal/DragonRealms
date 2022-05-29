@@ -248,7 +248,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     public void unitAttack(Unit attacker, Unit defender){
-        if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) == 1){
+        if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) <= attacker.getRange()){
             if(defender.damage(attacker.getAttack())){
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
@@ -261,6 +261,32 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
+    }
+
+    public void findRangedAttack(Unit unit){
+        int range = unit.getRange();
+
+        recursiveSearchRanged(map.getTile((int)unit.getCoordinates().x+1, (int)unit.getCoordinates().y), range);
+        recursiveSearchRanged(map.getTile((int)unit.getCoordinates().x-1, (int)unit.getCoordinates().y), range);
+        recursiveSearchRanged(map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y+1), range);
+        recursiveSearchRanged(map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y-1), range);
+    }
+
+    private void recursiveSearchRanged(Tile tile, int rangeLeft){
+        if(tile==null || rangeLeft == 0){
+            return;
+        }
+        if(tile.getUnit() != null && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+            tile.setBorder(2 );
+            if(!tilesToDraw.contains(tile))
+                tilesToDraw.add(tile);
+            return;
+        }
+        
+        recursiveSearchRanged(map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y), rangeLeft-1);
+        recursiveSearchRanged(map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y), rangeLeft-1);
+        recursiveSearchRanged(map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1), rangeLeft-1);
+        recursiveSearchRanged(map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1), rangeLeft-1);
     }
 
     public Tile findClosestTile(Unit target, Unit toMove){

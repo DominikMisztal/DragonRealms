@@ -3,6 +3,7 @@ package com.mygdx.dragonrealms.map;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.dragonrealms.screens.MainGameScreen;
+import com.mygdx.dragonrealms.units.Archer;
 
 public class TileClickListener extends ClickListener {
     private Tile tile;
@@ -40,6 +41,9 @@ public class TileClickListener extends ClickListener {
         if(tile.getUnit() != null && tile.getUnit().getPlayer() == mainGameScreen.players.get(mainGameScreen.currentPlayer)){
             mainGameScreen.currentlySelectedUnit = tile.getUnit();
             mainGameScreen.findUnitMovementRange(tile.getUnit(), tile);
+            if(tile.getUnit() instanceof Archer){
+                mainGameScreen.findRangedAttack(tile.getUnit());
+            }
         }
         else{
             mainGameScreen.tilesToDraw.add(tile);
