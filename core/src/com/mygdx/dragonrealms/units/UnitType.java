@@ -1,5 +1,5 @@
 package com.mygdx.dragonrealms.units;
 
 public enum UnitType {
-        MELEE, RANGED
+        WARRIOR, KNIGHT, ARCHER, GOLDMINE
 }

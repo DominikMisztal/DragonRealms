@@ -26,11 +26,8 @@ public class Unit {
     private int maxMovement;
     private int currentMovement;
     private Player player;
-    private Matrix4 projectionMatrix;
     private float hpWidth;
     public boolean attacked;
-
-    private ShapeRenderer sr;
 
     public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int movementRange, Player player, int x, int y, Matrix4 projectionMatrix){
         this.unitName = unitName;
@@ -47,7 +44,6 @@ public class Unit {
         hpWidth = Map.TILESIZE-20;
         coordinates = new Vector2(x,y);
         sprite.setPosition(coordinates.x * Map.TILESIZE, coordinates.y * Map.TILESIZE);
-        sr = new ShapeRenderer();
         attacked = false;
     }
 
@@ -56,12 +52,9 @@ public class Unit {
         sprite.draw(spriteBatch);
     }
 
-    public void renderHealthBar(){
-        sr.begin(ShapeType.Filled);
-        sr.setProjectionMatrix(projectionMatrix);
-        sr.setColor(Color.GREEN);
-        sr.rect(coordinates.x * Map.TILESIZE+10, coordinates.y * Map.TILESIZE + 10, hpWidth, 5);
-        sr.end();
+    public void renderHealthBar(ShapeRenderer shapeRenderer){
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.rect(coordinates.x * Map.TILESIZE+10, coordinates.y * Map.TILESIZE + 10, hpWidth, 5);
     }
 
     public String getUnitName(){

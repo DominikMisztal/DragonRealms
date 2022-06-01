@@ -55,7 +55,7 @@ public class Map extends Stage {
                                 break;
                             case "1":
                                 tile.setType(TileType.SAND);
-                                tile.setMovementCost(2);
+                                tile.setMovementCost(1);
 
                                 break;
                             case "4":

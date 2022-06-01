@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
@@ -28,12 +29,14 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
+
     private static final int MENU_WIDTH = 350;
     private Map map;
     private MyGame game;
     private Skin skin;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+    private ShapeRenderer unitRenderer;
     private TextButton playButton;
     private TextButton exitButton;
     private OrthographicCamera camera;
@@ -47,7 +50,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Unit currentlySelectedUnit;
     public Vector<Player> players;
     public int currentPlayer;
+    private int playersCount;
     private int currentTurn;
+    public boolean gamePaused;
+    public boolean drawHealthBars;
+    public Mode currentMode;
+    private UnitType unitToSpawn;
+
     Vector<Unit> temp;
     boolean doDrawing = true;
 
@@ -75,9 +84,17 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                                                 , camera.combined, 1);
         players.get(2).castle = new Castle(map.getTile(27,5), players.get(2)
                                                 , camera.combined, 2);
-
+        
+        map.getTile(1, 1).setUnit(players.get(0).castle);     
+        map.getTile(16, 25).setUnit(players.get(1).castle);  
+        map.getTile(27,5).setUnit(players.get(2).castle);
+        playersCount = 3;                                     
         currentPlayer = 0;
         currentTurn = 1;
+        drawHealthBars = true;
+        gamePaused = false;
+        currentMode = Mode.NONE;
+        unitRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -99,6 +116,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
 
         initButtons();
+        gamePaused = false;
     }
 
     private void update(float delta){
@@ -115,39 +133,35 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         game.batch.begin();
         game.batch.setProjectionMatrix(camera.combined);
+       
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
+        
+
         //draw units
-        players.get(0).castle.render(game.batch);
-        players.get(1).castle.render(game.batch);
-        players.get(2).castle.render(game.batch);
-        temp = players.get(0).getUnits();
-        for (Unit unit : temp) {
-            unit.render(game.batch);
+        for(int i = 0; i < playersCount; i++){
+            players.get(i).castle.render(game.batch);
+            temp = players.get(i).getUnits();
+            for (Unit unit : temp) {
+                unit.render(game.batch);
+            }
         }
-        temp = players.get(1).getUnits();
-        for (Unit unit : temp) {
-            unit.render(game.batch);
-        }
-        temp = players.get(2).getUnits();
-        for (Unit unit : temp) {
-            unit.render(game.batch);
-        }
+
         game.batch.end();
         // draw health bars
-        temp = players.get(0).getUnits();
-        for (Unit unit : temp) {
-            unit.renderHealthBar();
+        unitRenderer.begin(ShapeType.Filled);
+        unitRenderer.setProjectionMatrix(camera.combined);
+        if(drawHealthBars){
+            for(int i = 0; i < playersCount; i++){
+                players.get(i).castle.renderHealthBar(unitRenderer);
+                temp = players.get(i).getUnits();
+                for (Unit unit : temp) {
+                    unit.renderHealthBar(unitRenderer);
+                }
+            }
         }
-        temp = players.get(1).getUnits();
-        for (Unit unit : temp) {
-            unit.renderHealthBar();
-        }
-        temp = players.get(2).getUnits();
-        for (Unit unit : temp) {
-            unit.renderHealthBar();
-        }
+        unitRenderer.end();
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
@@ -205,18 +219,21 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.I){
-            spawnUnit(1);
-            //System.out.println("Spawning warrior at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
+            unitSpawner(UnitType.WARRIOR);
         }
         if(keycode == Input.Keys.O){
-            spawnUnit(2);
-            //System.out.println("Spawning archer at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
+            unitSpawner(UnitType.ARCHER);
         }
         if(keycode == Input.Keys.P){
-            spawnUnit(3);
-            //System.out.println("Spawning assassin at X: " + (int)lastClickTile.x + " Y: " + (int)lastClickTile.y);
+            unitSpawner(UnitType.KNIGHT);
+        }
+        if(keycode == Input.Keys.G){
+            unitSpawner(UnitType.GOLDMINE);
         }
         if(keycode == Input.Keys.SPACE){
+            nextPlayer();
+        }
+        if(keycode == Input.Keys.ESCAPE){
             game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
         }
         if(keycode == Input.Keys.T){
@@ -225,6 +242,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         if(keycode == Input.Keys.L){
             map.bordersOnOff();
+        }
+        if(keycode == Input.Keys.H){
+            drawHealthBars = !drawHealthBars;
         }
         //TODO: REMOVE AFTER FINISHING
         if(keycode == Input.Keys.NUM_1){
@@ -277,7 +297,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void unitAttack(Unit attacker, Unit defender){
         if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) <= attacker.getRange()){
             if(defender.damage(attacker.getAttack())){
-                attacker.attacked = true;
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
@@ -285,11 +304,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             moveUnit(attacker, findClosestTile(defender, attacker));
             if(defender.damage(attacker.getAttack())){
-                attacker.attacked = true;
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
+        attacker.attacked = true;
     }
 
     public void findRangedAttack(Unit unit){
@@ -407,7 +426,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             tilesToDraw.add(tile);
             return;
         }
-        if(tile.getUnit() != null && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
             tile.setBorder(2 );
             tilesToDraw.add(tile);
             return;
@@ -477,31 +502,130 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         stage.dispose();
     }
 
-    private boolean spawnUnit(int type){
+    private void unitSpawner(UnitType type){
+        int cost = 0;
+        if(type == UnitType.ARCHER){
+            cost = 4;
+        }
+        if(type == UnitType.KNIGHT){
+            cost = 7;
+        }
+        if(type == UnitType.WARRIOR){
+            cost = 3;
+        }
+        if(type == UnitType.GOLDMINE){
+            cost = 10;
+        }
+        if(players.get(currentPlayer).gold - cost < 0){
+            System.out.println("can't spawn");
+            clearMovementTiles();
+            return;
+        }
+        players.get(currentPlayer).gold -= cost;
+        unitToSpawn = type;
+        currentMode = Mode.SPAWN_UNIT;
+        clearMovementTiles();
+        findSpawnLocations();
+    }
+
+    private void findSpawnLocations(){
+        Tile temp;
+        Player player = players.get(currentPlayer);
+        temp = map.getTile((int)player.castle.getCoordinates().x-1, (int)player.castle.getCoordinates().y);
+        if(temp != null && temp.getUnit() == null
+        && temp.getType() != TileType.WATER
+        && temp.getType() != TileType.MOUNTAIN){
+            temp.setBorder(1);
+            tilesToDraw.add( temp);
+        }
+        temp = map.getTile((int)player.castle.getCoordinates().x+1, (int)player.castle.getCoordinates().y);
+        if(temp != null && temp.getUnit() == null
+        && temp.getType() != TileType.WATER
+        && temp.getType() != TileType.MOUNTAIN){
+            temp.setBorder(1);
+            tilesToDraw.add( temp);
+        }
+        temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y-1);
+        if(temp != null && temp.getUnit() == null
+        && temp.getType() != TileType.WATER
+        && temp.getType() != TileType.MOUNTAIN){
+            temp.setBorder(1);
+            tilesToDraw.add( temp);
+        }
+        temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y+1);
+        if(temp != null && temp.getUnit() == null
+        && temp.getType() != TileType.WATER
+        && temp.getType() != TileType.MOUNTAIN){
+            temp.setBorder(1);
+            tilesToDraw.add( temp);
+        }
+        if(unitToSpawn == UnitType.GOLDMINE){
+            for(Unit unit : player.getUnits()){
+                temp = map.getTile((int)unit.getCoordinates().x-1, (int)unit.getCoordinates().y);
+                if(temp != null && temp.getUnit() == null){
+                    temp.setBorder(1);
+                    tilesToDraw.add( temp);
+                }
+                temp = map.getTile((int)unit.getCoordinates().x+1, (int)unit.getCoordinates().y);
+                if(temp != null && temp.getUnit() == null
+                && temp.getType() != TileType.WATER
+                && temp.getType() != TileType.MOUNTAIN){
+                    temp.setBorder(1);
+                    tilesToDraw.add( temp);
+                }
+                temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y-1);
+                if(temp != null && temp.getUnit() == null
+                && temp.getType() != TileType.WATER
+                && temp.getType() != TileType.MOUNTAIN){
+                    temp.setBorder(1);
+                    tilesToDraw.add( temp);
+                }
+                temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y+1);
+                if(temp != null && temp.getUnit() == null
+                && temp.getType() != TileType.WATER
+                && temp.getType() != TileType.MOUNTAIN){
+                    temp.setBorder(1);
+                    tilesToDraw.add( temp);
+                }
+            }
+        }
+        
+    }
+
+    public void spawnUnit(){
         Unit unit;
+
         if(currentlySelectedTile == null 
             || currentlySelectedTile.getUnit() != null 
                 || currentlySelectedTile.getType() == TileType.MOUNTAIN 
                     || currentlySelectedTile.getType() == TileType.WATER){
-            return false;
+            return;
         }
 
-        if(type == 1){
+        if(unitToSpawn == UnitType.WARRIOR){
             unit = new Warrior(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
-        else if(type == 2){
+        else if(unitToSpawn == UnitType.ARCHER){
             unit = new Archer(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
-        else if(type == 3){
+        else if(unitToSpawn == UnitType.KNIGHT){
             unit = new Knight(currentlySelectedTile, players.get(currentPlayer), camera.combined);
         }
-        else{
-            return false;
+        else if(unitToSpawn == UnitType.GOLDMINE){
+            unit = new GoldMine(currentlySelectedTile, players.get(currentPlayer), camera.combined);
+            players.get(currentPlayer).goldMinesCount++;
         }
+        else{
+            return;
+        }
+        //System.out.println("spawned");
 
         currentlySelectedTile.setUnit(unit);
         players.get(currentPlayer).addUnit(unit);
-        return true;
+        clearMovementTiles();
+        currentlySelectedTile = null;
+        currentMode = Mode.NONE;
+        return;
     }
 
     public void clearMovementTiles(){
