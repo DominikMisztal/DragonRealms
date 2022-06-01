@@ -7,6 +7,9 @@ import java.util.Vector;
 public class Player {
     private final String playerName;
     private final Vector<Unit> ownedUnits;
+    public Unit castle;
+    public int gold;
+    public int goldMinesCount;
     private int moveRange;
     boolean isWinner;
 
@@ -14,6 +17,13 @@ public class Player {
 
         this.playerName = name;
         this.ownedUnits = new Vector<>();
+        gold = 10;
+        goldMinesCount = 0;
+    }
+
+    public void addGold(){
+        gold += 10  + 5*goldMinesCount;
+
     }
 
     public String getPlayerName(){

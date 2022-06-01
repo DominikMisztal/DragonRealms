@@ -28,6 +28,7 @@ public class Unit {
     private Player player;
     private Matrix4 projectionMatrix;
     private float hpWidth;
+    public boolean attacked;
 
     private ShapeRenderer sr;
 
@@ -47,9 +48,9 @@ public class Unit {
         coordinates = new Vector2(x,y);
         sprite.setPosition(coordinates.x * Map.TILESIZE, coordinates.y * Map.TILESIZE);
         sr = new ShapeRenderer();
-        //sr.setProjectionMatrix(projectionMatrix);
-        this.projectionMatrix = projectionMatrix;
+        attacked = false;
     }
+
 
     public void render(SpriteBatch spriteBatch){
         sprite.draw(spriteBatch);

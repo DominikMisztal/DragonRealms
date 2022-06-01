@@ -69,6 +69,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         players.add(new Player("Player 1"));
         players.add(new Player("Player 2"));
         players.add(new Player("Player 3"));
+        players.get(0).castle = new Castle(map.getTile(1,1), players.get(0)
+                                                , camera.combined, 0);
+        players.get(1).castle = new Castle(map.getTile(16,25), players.get(1)
+                                                , camera.combined, 1);
+        players.get(2).castle = new Castle(map.getTile(27,5), players.get(2)
+                                                , camera.combined, 2);
+
         currentPlayer = 0;
         currentTurn = 1;
     }
@@ -112,6 +119,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             tile.render(game.batch);
         }
         //draw units
+        players.get(0).castle.render(game.batch);
+        players.get(1).castle.render(game.batch);
+        players.get(2).castle.render(game.batch);
         temp = players.get(0).getUnits();
         for (Unit unit : temp) {
             unit.render(game.batch);
@@ -267,6 +277,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void unitAttack(Unit attacker, Unit defender){
         if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) <= attacker.getRange()){
             if(defender.damage(attacker.getAttack())){
+                attacker.attacked = true;
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
@@ -274,6 +285,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             moveUnit(attacker, findClosestTile(defender, attacker));
             if(defender.damage(attacker.getAttack())){
+                attacker.attacked = true;
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
@@ -353,6 +365,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private void nextTurn(){
         // reset units movements
         // give gold
+        Vector<Unit> temp;
+        for(Player player : players){
+            temp = player.getUnits();
+            for(Unit unit : temp){
+                unit.resetMovement();
+                unit.attacked = false;
+            }
+            player.addGold();
+        }
     }
 
     public double getDistance(Tile tile1, Tile tile2){
