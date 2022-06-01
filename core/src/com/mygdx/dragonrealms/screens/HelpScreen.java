@@ -15,7 +15,7 @@ import com.mygdx.dragonrealms.MyGame;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-public class MainMenuScreen implements Screen, InputProcessor {
+public class HelpScreen implements Screen, InputProcessor {
 
     final MyGame game;
     private Skin skin;
@@ -26,7 +26,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
     TextButton settingsButton;
     TextButton exitButton;
 
-    public MainMenuScreen(final MyGame game) {
+    public HelpScreen(final MyGame game) {
         this.game = game;
         this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();

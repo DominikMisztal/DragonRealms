@@ -15,6 +15,7 @@ public class ScreenManager {
         ANIMATION,
         MAIN_MENU,
         SETTINGS,
+        HELP,
         PLAY,
         ENDGAME
     }

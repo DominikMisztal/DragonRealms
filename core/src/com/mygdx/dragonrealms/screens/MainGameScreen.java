@@ -257,7 +257,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             currentPlayer = 2;
         }
         if(keycode == Input.Keys.ESCAPE){
-            doDrawing = (doDrawing == false) ? true : false;
+            doDrawing = !doDrawing;
         }
         putInMapBounds();
         return false;
