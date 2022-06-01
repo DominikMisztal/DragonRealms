@@ -150,7 +150,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         settingsButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                game.screenManager.setScreen(ScreenManager.STATE.SETTINGS);
+                game.screenManager.setScreen(ScreenManager.STATE.HELP);
             }
         });
 

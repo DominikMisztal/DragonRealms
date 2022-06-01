@@ -22,7 +22,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 
 public class SettingsScreen implements Screen {
     private MyGame game;
-    private Table table;
     private TextButton exitButton;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
@@ -30,7 +29,6 @@ public class SettingsScreen implements Screen {
 
     public SettingsScreen(MyGame game){
         this.game = game;
-        this.table = new Table();
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
         this.shapeRenderer = new ShapeRenderer();
     }
@@ -63,32 +61,6 @@ public class SettingsScreen implements Screen {
         shapeRenderer.rect(0,0,MyGame.WIDTH,MyGame.HEIGHT);
         shapeRenderer.setColor(Color.BLUE);
         shapeRenderer.end();
-
-        Table table = new Table();
-        table.defaults().pad(10F);
-        table.setFillParent(true);
-
-        Label label = new Label("PLAYER NAME",skin);
-        label.setAlignment(Align.center);
-
-        Table first_table = new Table(skin);
-        first_table.setDebug(true);
-        Label firstLabel = new Label("FIRST TABLE",skin);
-        firstLabel.setAlignment(Align.center);
-        first_table.add(firstLabel);
-
-        Table second_table = new Table(skin);
-        Label secondLabel = new Label("SECOND TABLE",skin);
-        secondLabel.setAlignment(Align.center);
-        second_table.add(secondLabel);
-
-        table.add(label).colspan(2).fillX();
-        table.row();
-        table.add(first_table).expand();
-        table.add(second_table).expand();
-
-        stage.addActor(table);
-        stage.setDebugAll(true);
 
         update(delta);
         stage.draw();
