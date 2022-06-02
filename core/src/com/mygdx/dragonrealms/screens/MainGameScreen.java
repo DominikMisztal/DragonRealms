@@ -394,28 +394,28 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         double distance = 9999;
         temp = map.getTile((int)target.getCoordinates().x + 1, (int)target.getCoordinates().y);
         if(temp != null){
-            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x - 1, (int)target.getCoordinates().y);
         if(temp != null){
-            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y + 1);
         if(temp != null){
-            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y - 1);
         if(temp != null){
-            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
@@ -733,72 +733,56 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            if(!tilesToDraw.contains(temp)){
-                tilesToDraw.add(temp);
-            }
+            tilesToDraw.add(temp);
         }
         temp = map.getTile((int)player.castle.getCoordinates().x+1, (int)player.castle.getCoordinates().y);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            if(!tilesToDraw.contains(temp)){
-                tilesToDraw.add(temp);
-            }
+            tilesToDraw.add(temp);
         }
         temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y-1);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            if(!tilesToDraw.contains(temp)){
-                tilesToDraw.add(temp);
-            }
+            tilesToDraw.add(temp);
         }
         temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y+1);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            if(!tilesToDraw.contains(temp)){
-                tilesToDraw.add(temp);
-            }
+            tilesToDraw.add(temp);
         }
         if(unitToSpawn == UnitType.GOLDMINE){
             for(Unit unit : player.getUnits()){
                 temp = map.getTile((int)unit.getCoordinates().x-1, (int)unit.getCoordinates().y);
                 if(temp != null && temp.getUnit() == null){
                     temp.setBorder(1);
-                    if(!tilesToDraw.contains(temp)){
-                        tilesToDraw.add(temp);
-                    }
+                    tilesToDraw.add(temp);
                 }
                 temp = map.getTile((int)unit.getCoordinates().x+1, (int)unit.getCoordinates().y);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    if(!tilesToDraw.contains(temp)){
-                        tilesToDraw.add(temp);
-                    }
+                    tilesToDraw.add(temp);
                 }
                 temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y-1);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    if(!tilesToDraw.contains(temp)){
-                        tilesToDraw.add(temp);
-                    }
+                    tilesToDraw.add(temp);
                 }
                 temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y+1);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    if(!tilesToDraw.contains(temp)){
-                        tilesToDraw.add(temp);
-                    }
+                    tilesToDraw.add(temp);
                 }
             }
         }
