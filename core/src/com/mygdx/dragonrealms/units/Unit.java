@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.dragonrealms.Player;
@@ -136,11 +135,12 @@ public class Unit {
                 sprite.setTexture(new Texture(Gdx.files.internal("textures/archer/archer2.png")));
             }
         }
-        else{
+        else if (this.unitName == "Knight"){
             if(current_hp <= Math.floor(max_hp/2)){
                 sprite.setTexture(new Texture(Gdx.files.internal("textures/knight/knight1.png")));
             }
         }
     }
 
+    
 }

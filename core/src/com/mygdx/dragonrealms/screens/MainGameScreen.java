@@ -21,6 +21,7 @@ import com.mygdx.dragonrealms.Player;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
+import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
 import java.util.Vector;
@@ -52,6 +53,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public int currentPlayer;
     private int playersCount;
     private int currentTurn;
+    private int unitCost;
     public boolean gamePaused;
     public boolean drawHealthBars;
     public Mode currentMode;
@@ -75,9 +77,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         mapWidth = map.getMapWidth();
         mapHeight = map.getMapHeight();
         players = new Vector<>();
+        game.players = new Vector<>();
         players.add(new Player("Player 1"));
         players.add(new Player("Player 2"));
         players.add(new Player("Player 3"));
+        game.players.add(players.get(0));
+        game.players.add(players.get(1));
+        game.players.add(players.get(2));
         players.get(0).castle = new Castle(map.getTile(1,1), players.get(0)
                                                 , camera.combined, 0);
         players.get(1).castle = new Castle(map.getTile(16,25), players.get(1)
@@ -284,14 +290,34 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void unitAttack(Unit attacker, Unit defender){
         if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) <= attacker.getRange()){
             if(defender.damage(attacker.getAttack())){
+                if(defender instanceof Castle){
+                    defender.getPlayer().removePlayer(map);
+                    players.remove(defender.getPlayer());
+                    playersCount--;
+                    if(playersCount == 1){
+                        players.get(0).isWinner = true;
+                        game.screenManager.setScreen(STATE.ENDGAME);
+                    }
+                }
                 defender.getPlayer().getUnits().remove(defender);
+                defender.getPlayer().unitsLost++;
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
         else{
             moveUnit(attacker, findClosestTile(defender, attacker));
             if(defender.damage(attacker.getAttack())){
+                if(defender instanceof Castle){
+                    defender.getPlayer().removePlayer(map);
+                    players.remove(defender.getPlayer());
+                    playersCount--;
+                    if(playersCount == 1){
+                        players.get(0).isWinner = true;
+                        game.screenManager.setScreen(STATE.ENDGAME);
+                    }
+                }
                 defender.getPlayer().getUnits().remove(defender);
+                defender.getPlayer().unitsLost++;
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
@@ -362,7 +388,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     public void nextPlayer(){
         currentPlayer++;
-        if(currentPlayer > 2){
+        if(currentPlayer >= playersCount){
             currentPlayer = 0;
             nextTurn();
         }
@@ -398,13 +424,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         tile.setBorder(1);
         tilesToDraw.add(tile);
         int movementPoints = unit.getCurrentMovement();
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
     }
 
-    private void recursiveSearch(int movementPoints, Tile tile){
+    private void recursiveSearchUp(int movementPoints, Tile tile){
         if(tile==null || movementPoints == 0){
             return;
         }
@@ -433,10 +459,111 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+    }
+
+    private void recursiveSearchRight(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+    }
+    
+    private void recursiveSearchDown(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+    }
+    
+    private void recursiveSearchLeft(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
     }
 
     @Override
@@ -511,7 +638,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             clearMovementTiles();
             return;
         }
-        players.get(currentPlayer).gold -= cost;
+        unitCost = cost;
         unitToSpawn = type;
         currentMode = Mode.SPAWN_UNIT;
         clearMovementTiles();
@@ -608,13 +735,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             return;
         }
-        //System.out.println("spawned");
 
         currentlySelectedTile.setUnit(unit);
         players.get(currentPlayer).addUnit(unit);
         clearMovementTiles();
         currentlySelectedTile = null;
         currentMode = Mode.NONE;
+        players.get(currentPlayer).gold -= unitCost;
+        players.get(currentPlayer).totalGoldSpent += unitCost;
+        players.get(currentPlayer).unitsBought++;
         return;
     }
 
