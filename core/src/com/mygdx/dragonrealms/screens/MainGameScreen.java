@@ -43,6 +43,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private ShapeRenderer unitRenderer;
     private TextButton playButton;
     private TextButton exitButton;
+    private TextButton archerButton;
+    private TextButton warriorButton;
+    private TextButton knightButton;
     private OrthographicCamera camera;
     
     public Vector<Tile> tilesToDraw;
@@ -61,6 +64,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public boolean drawHealthBars;
     public Mode currentMode;
     private UnitType unitToSpawn;
+    float UNIT_SHOP_X;
+    float UNIT_SHOP_Y;
 
     Vector<Unit> temp;
     boolean doDrawing = true;
@@ -128,6 +133,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         this.skin.add("default-font", game.font);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
 
+        UNIT_SHOP_X = game.camera.viewportWidth - MENU_WIDTH + 10;
+        UNIT_SHOP_Y = 150;
         initButtons();
         gamePaused = false;
     }
@@ -190,21 +197,18 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         putInMapBounds();
 
-        
+
 
         if(doDrawing){
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             guiBatch.begin();
                 stage.getBatch().draw(texture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+//            stage.getBatch().draw(new Texture("goldCoin.png"), UNIT_SHOP_X - 40, UNIT_SHOP_Y + 100, 100, 100);
+                stage.getBatch().draw(new Texture("textures/archer/archer1.png"), UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
+                stage.getBatch().draw(new Texture("textures/knight/knight1.png"),UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
+                stage.getBatch().draw(new Texture("textures/warrior/warrior1.png"),UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
             guiBatch.end();
-            game.batch.begin();
-                shapeRenderer.begin(ShapeType.Filled);
-                shapeRenderer.setColor(new Color(Color.WHITE));
-                shapeRenderer.rect(game.camera.viewportWidth - MENU_WIDTH + 20, 20, MENU_WIDTH - 40, MyGame.HEIGHT - 40 - 350);
-//                stage.getBatch().draw(Archer.getTexture(),MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
-            shapeRenderer.end();
-            game.batch.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
             stage.draw();
@@ -784,8 +788,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         exitButton = new TextButton("Exit", skin, "default");
         exitButton.setSize(300,100);
         exitButton.setPosition(MyGame.WIDTH - 325,MyGame.HEIGHT - 250);
-        exitButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        exitButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -793,8 +797,47 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
+        archerButton = new TextButton("Buy archer / 4gp", skin, "default");
+        archerButton.setSize(185,64);
+        archerButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 100);
+        archerButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        archerButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                unitSpawner(UnitType.ARCHER);
+            }
+        });
+
+        knightButton = new TextButton("Buy knight / 7gp", skin, "default");
+        knightButton.setSize(185,64);
+        knightButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y);
+        knightButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        knightButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                unitSpawner(UnitType.KNIGHT);
+            }
+        });
+
+        warriorButton = new TextButton("Buy warrior / 3gp", skin, "default");
+        warriorButton.setSize(185,64);
+        warriorButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y - 100);
+        warriorButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        warriorButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                unitSpawner(UnitType.WARRIOR);
+            }
+        });
+
         stage.addActor(playButton);
         stage.addActor(exitButton);
+        stage.addActor(archerButton);
+        stage.addActor(warriorButton);
+        stage.addActor(knightButton);
     }
 }
 
