@@ -416,13 +416,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         tile.setBorder(1);
         tilesToDraw.add(tile);
         int movementPoints = unit.getCurrentMovement();
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
     }
 
-    private void recursiveSearch(int movementPoints, Tile tile){
+    private void recursiveSearchUp(int movementPoints, Tile tile){
         if(tile==null || movementPoints == 0){
             return;
         }
@@ -451,10 +451,111 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
-        recursiveSearch(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+    }
+
+    private void recursiveSearchRight(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+    }
+    
+    private void recursiveSearchDown(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
+    }
+    
+    private void recursiveSearchLeft(int movementPoints, Tile tile){
+        if(tile==null || movementPoints == 0){
+            return;
+        }
+        if(tile.getMovementCost() == 99){
+            tile.setBorder(3);
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(tile.getUnit() != null 
+            && tile.getUnit().getPlayer() != players.get(currentPlayer)){
+
+            if(currentlySelectedUnit.attacked == true){
+                tile.setBorder(3);
+                return;
+            }
+            tile.setBorder(2 );
+            tilesToDraw.add(tile);
+            return;
+        }
+        if(movementPoints - tile.getMovementCost() < 0){
+           return;
+        }
+        movementPoints -= tile.getMovementCost();
+        if(tile.getTempMovLeft() < movementPoints){
+            tile.setTempMovLeft(movementPoints);
+        }
+        tilesToDraw.add(tile);
+        tile.setBorder(1);
+        recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
+        recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
+        recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
     }
 
     @Override
