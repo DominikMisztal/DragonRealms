@@ -1,7 +1,6 @@
 package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,7 +25,6 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
-import java.awt.*;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -41,8 +39,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Stage stage;
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer unitRenderer;
-    private TextButton playButton;
-    private TextButton exitButton;
+    private TextButton menuButton;
+    private TextButton endTurnButton;
     private TextButton archerButton;
     private TextButton warriorButton;
     private TextButton knightButton;
@@ -69,7 +67,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     Vector<Unit> temp;
     boolean doDrawing = true;
-    private Texture texture;
+    private Texture backgroundTexture;
+    private Texture archerTexture;
+    private Texture knightTexture;
+    private Texture warriorTexture;
     SpriteBatch guiBatch;
 
     public MainGameScreen(MyGame game){
@@ -112,7 +113,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         gamePaused = false;
         currentMode = Mode.NONE;
         unitRenderer = new ShapeRenderer();
-        this.texture = new Texture(Gdx.files.internal("woodImage.jpg"));
+        backgroundTexture = new Texture(Gdx.files.internal("woodImage.jpg"));
+        archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
+        knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
+        warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
     }
 
     @Override
@@ -203,11 +207,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             guiBatch.begin();
-                stage.getBatch().draw(texture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
-//            stage.getBatch().draw(new Texture("goldCoin.png"), UNIT_SHOP_X - 40, UNIT_SHOP_Y + 100, 100, 100);
-                stage.getBatch().draw(new Texture("textures/archer/archer1.png"), UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
-                stage.getBatch().draw(new Texture("textures/knight/knight1.png"),UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
-                stage.getBatch().draw(new Texture("textures/warrior/warrior1.png"),UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
+                stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+                stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
+                stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
+                stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
+                game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
             guiBatch.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
@@ -773,27 +777,27 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void initButtons(){
-        playButton = new TextButton("Menu", skin, "default");
-        playButton.setSize(300,100);
-        playButton.setPosition(MyGame.WIDTH - 325,MyGame.HEIGHT - 100);
-        playButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out))));
-        playButton.addListener(new ClickListener(){
+        menuButton = new TextButton("Menu", skin, "default");
+        menuButton.setSize(150,70);
+        menuButton.setPosition(MyGame.WIDTH - 330,MyGame.HEIGHT - 70);
+        menuButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        menuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
             }
         });
 
-        exitButton = new TextButton("Exit", skin, "default");
-        exitButton.setSize(300,100);
-        exitButton.setPosition(MyGame.WIDTH - 325,MyGame.HEIGHT - 250);
-        exitButton.addAction(parallel(fadeIn(.5f),
+        endTurnButton = new TextButton("End turn", skin, "default");
+        endTurnButton.setSize(150,70);
+        endTurnButton.setPosition(MyGame.WIDTH - 170,MyGame.HEIGHT - 70);
+        endTurnButton.addAction(parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out)));
-        exitButton.addListener(new ClickListener(){
+        endTurnButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Gdx.app.exit();
+                nextPlayer();
             }
         });
 
@@ -833,8 +837,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
-        stage.addActor(playButton);
-        stage.addActor(exitButton);
+        stage.addActor(menuButton);
+        stage.addActor(endTurnButton);
         stage.addActor(archerButton);
         stage.addActor(warriorButton);
         stage.addActor(knightButton);
