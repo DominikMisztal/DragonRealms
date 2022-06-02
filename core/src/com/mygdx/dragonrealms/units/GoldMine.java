@@ -8,6 +8,6 @@ import com.mygdx.dragonrealms.map.Tile;
 
 public class GoldMine extends Unit {
     public GoldMine(Tile tile, Player player, Matrix4 projectionMatrix) {
-        super("Gold Mine", new Texture(Gdx.files.internal("textures/buildings/goldmine.png")) , 10, 0, 10, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y, projectionMatrix);
+        super("Gold Mine", new Texture(Gdx.files.internal("textures/buildings/goldmine.png")) , 10, 0, 10, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 }

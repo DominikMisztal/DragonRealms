@@ -14,7 +14,7 @@ import com.mygdx.dragonrealms.map.Map;
 
 public class Unit {
     private String unitName;
-    private Texture texture;
+    public Texture texture;
     private Sprite sprite;
     private Vector2 coordinates;
     private int unitCost;
@@ -28,7 +28,7 @@ public class Unit {
     private float hpWidth;
     public boolean attacked;
 
-    public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int movementRange, Player player, int x, int y, Matrix4 projectionMatrix){
+    public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int movementRange, Player player, int x, int y){
         this.unitName = unitName;
         this.texture = texture;
         this.sprite = new Sprite(texture);
@@ -142,5 +142,5 @@ public class Unit {
         }
     }
 
-    
+
 }

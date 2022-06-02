@@ -9,6 +9,6 @@ import com.mygdx.dragonrealms.map.Tile;
 public class Knight extends Unit {
 
     public Knight(Tile tile, Player player, Matrix4 projectionMatrix) {
-        super("Knight", new Texture(Gdx.files.internal("textures/knight/knight2.png")) , 7, 5, 8, 1, 6, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y, projectionMatrix);
+        super("Knight", new Texture(Gdx.files.internal("textures/knight/knight2.png")) , 7, 5, 8, 1, 6, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 }

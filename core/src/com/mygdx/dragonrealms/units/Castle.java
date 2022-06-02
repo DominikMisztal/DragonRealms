@@ -8,6 +8,6 @@ import com.mygdx.dragonrealms.map.Tile;
 
 public class Castle extends Unit {
     public Castle(Tile tile, Player player, Matrix4 projectionMatrix, int playerNum) {
-        super("Castle", new Texture(Gdx.files.internal("textures/buildings/castle"+playerNum+".png")) , 99, 0, 30, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y, projectionMatrix);
+        super("Castle", new Texture(Gdx.files.internal("textures/buildings/castle"+playerNum+".png")) , 99, 0, 30, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 }

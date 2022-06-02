@@ -4,6 +4,8 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -24,6 +26,7 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
+import java.awt.*;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -61,10 +64,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     Vector<Unit> temp;
     boolean doDrawing = true;
+    private Texture texture;
+    SpriteBatch guiBatch;
 
     public MainGameScreen(MyGame game){
         this.game = game;
-        this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        guiBatch = new SpriteBatch();
+        this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), guiBatch);
         this.shapeRenderer = new ShapeRenderer();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -101,6 +107,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         gamePaused = false;
         currentMode = Mode.NONE;
         unitRenderer = new ShapeRenderer();
+        this.texture = new Texture(Gdx.files.internal("woodImage.jpg"));
     }
 
     @Override
@@ -188,10 +195,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(doDrawing){
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(new Color(0, 1, 0, 1f));
-            shapeRenderer.rect(game.camera.viewportWidth - MENU_WIDTH, 0, MENU_WIDTH, game.camera.viewportHeight);
+            guiBatch.begin();
+                stage.getBatch().draw(texture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+            guiBatch.end();
+            game.batch.begin();
+                shapeRenderer.begin(ShapeType.Filled);
+                shapeRenderer.setColor(new Color(Color.WHITE));
+                shapeRenderer.rect(game.camera.viewportWidth - MENU_WIDTH + 20, 20, MENU_WIDTH - 40, MyGame.HEIGHT - 40 - 350);
+//                stage.getBatch().draw(Archer.getTexture(),MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
             shapeRenderer.end();
+            game.batch.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
             stage.draw();
@@ -784,3 +797,4 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         stage.addActor(exitButton);
     }
 }
+
