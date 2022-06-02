@@ -295,6 +295,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     players.remove(defender.getPlayer());
                     playersCount--;
                     if(playersCount == 1){
+                        players.get(0).isWinner = true;
                         game.screenManager.setScreen(STATE.ENDGAME);
                     }
                 }
@@ -311,6 +312,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     players.remove(defender.getPlayer());
                     playersCount--;
                     if(playersCount == 1){
+                        players.get(0).isWinner = true;
                         game.screenManager.setScreen(STATE.ENDGAME);
                     }
                 }

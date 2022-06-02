@@ -17,7 +17,7 @@ public class Player {
     public int unitsLost;
     public int totalGoldEarned;
     public int totalGoldSpent;
-    boolean isWinner;
+    public boolean isWinner;
 
     public Player(String name){
 
