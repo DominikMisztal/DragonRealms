@@ -80,7 +80,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Texture knightTexture;
     private Texture warriorTexture;
     SpriteBatch guiBatch;
-    private boolean start = false;
+    private boolean nextPlayer = false;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -214,27 +214,31 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         putInMapBounds();
 
+        drawPlayerGUI();
 
+        update(delta);
+        stage.draw();
 
-        if(doDrawing){
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            guiBatch.begin();
-                stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
-                GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
-                float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
-                float fontY = MENU_BUTTON_Y - 40;
-                game.font.draw(guiBatch, layout, fontX, fontY);
-                stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
-                stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
-                stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
-                game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
-            guiBatch.end();
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-            update(delta);
-            stage.draw();
+        if(nextPlayer){
+            drawNextPlayerOverlay();
         }
+    }
 
+    private void drawPlayerGUI(){
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        guiBatch.begin();
+        stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+        GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
+        float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
+        float fontY = MENU_BUTTON_Y - 40;
+        game.font.draw(guiBatch, layout, fontX, fontY);
+        stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
+        stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
+        stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
+        game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
+        guiBatch.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     private void putInMapBounds() {
@@ -262,6 +266,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
  
     @Override
     public boolean keyDown(int keycode) {
+        nextPlayer = false;
         if(keycode == Input.Keys.I){
             unitSpawner(UnitType.WARRIOR);
         }
@@ -376,7 +381,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return;
         }
         if(tile.getUnit() != null && tile.getUnit().getPlayer() != players.get(currentPlayer)){
-            tile.setBorder(2 );
+            tile.setBorder(2);
             if(!tilesToDraw.contains(tile))
                 tilesToDraw.add(tile);
             return;
@@ -393,28 +398,28 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         double distance = 9999;
         temp = map.getTile((int)target.getCoordinates().x + 1, (int)target.getCoordinates().y);
         if(temp != null){
-            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x - 1, (int)target.getCoordinates().y);
         if(temp != null){
-            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y + 1);
         if(temp != null){
-            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y - 1);
         if(temp != null){
-            if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
+            if(!tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
@@ -437,6 +442,24 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         putInMapBounds();
     }
+    public void drawNextPlayerOverlay(){
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        guiBatch.begin();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rect(0,0,MyGame.WIDTH, MyGame.HEIGHT);
+        shapeRenderer.setColor(0,0,0,0.8f);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        guiBatch.end();
+        guiBatch.begin();
+        GlyphLayout playerLayout = new GlyphLayout(game.font, String.format("Now is playing player number %d\n" +
+                "     Type any key to begin...", currentPlayer + 1));
+        float fontX = MyGame.WIDTH / 2f - (playerLayout.width) / 2f;
+        float fontY = MyGame.HEIGHT / 2f;
+        game.font.draw(guiBatch, playerLayout, fontX, fontY);
+        guiBatch.end();
+    }
 
     public void nextPlayer(){
         currentPlayer++;
@@ -444,6 +467,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             currentPlayer = 0;
             nextTurn();
         }
+        nextPlayer = true;
         setCurrentPlayerCamera();
     }
 
@@ -622,6 +646,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        nextPlayer = false;
         if(button == Input.Buttons.RIGHT){
             clearMovementTiles();
         }
@@ -630,6 +655,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        nextPlayer = false;
         if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
             if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaX() > -4 
                 && Gdx.input.getDeltaY(pointer) < 4 && Gdx.input.getDeltaY(pointer) > -4){
@@ -651,6 +677,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        nextPlayer = false;
         camera.zoom += amountY/50;
         if(camera.zoom > 1.412){
             camera.zoom = 1.412f;
@@ -707,56 +734,72 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            tilesToDraw.add( temp);
+            if(!tilesToDraw.contains(temp)){
+                tilesToDraw.add(temp);
+            }
         }
         temp = map.getTile((int)player.castle.getCoordinates().x+1, (int)player.castle.getCoordinates().y);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            tilesToDraw.add( temp);
+            if(!tilesToDraw.contains(temp)){
+                tilesToDraw.add(temp);
+            }
         }
         temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y-1);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            tilesToDraw.add( temp);
+            if(!tilesToDraw.contains(temp)){
+                tilesToDraw.add(temp);
+            }
         }
         temp = map.getTile((int)player.castle.getCoordinates().x, (int)player.castle.getCoordinates().y+1);
         if(temp != null && temp.getUnit() == null
         && temp.getType() != TileType.WATER
         && temp.getType() != TileType.MOUNTAIN){
             temp.setBorder(1);
-            tilesToDraw.add( temp);
+            if(!tilesToDraw.contains(temp)){
+                tilesToDraw.add(temp);
+            }
         }
         if(unitToSpawn == UnitType.GOLDMINE){
             for(Unit unit : player.getUnits()){
                 temp = map.getTile((int)unit.getCoordinates().x-1, (int)unit.getCoordinates().y);
                 if(temp != null && temp.getUnit() == null){
                     temp.setBorder(1);
-                    tilesToDraw.add( temp);
+                    if(!tilesToDraw.contains(temp)){
+                        tilesToDraw.add(temp);
+                    }
                 }
                 temp = map.getTile((int)unit.getCoordinates().x+1, (int)unit.getCoordinates().y);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    tilesToDraw.add( temp);
+                    if(!tilesToDraw.contains(temp)){
+                        tilesToDraw.add(temp);
+                    }
                 }
                 temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y-1);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    tilesToDraw.add( temp);
+                    if(!tilesToDraw.contains(temp)){
+                        tilesToDraw.add(temp);
+                    }
                 }
                 temp = map.getTile((int)unit.getCoordinates().x, (int)unit.getCoordinates().y+1);
                 if(temp != null && temp.getUnit() == null
                 && temp.getType() != TileType.WATER
                 && temp.getType() != TileType.MOUNTAIN){
                     temp.setBorder(1);
-                    tilesToDraw.add( temp);
+                    if(!tilesToDraw.contains(temp)){
+                        tilesToDraw.add(temp);
+                    }
                 }
             }
         }
