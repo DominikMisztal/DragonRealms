@@ -246,22 +246,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.H){
             drawHealthBars = !drawHealthBars;
         }
-<<<<<<< HEAD
-=======
-        //TODO: REMOVE AFTER FINISHING
-        if(keycode == Input.Keys.NUM_1){
-            currentPlayer = 0;
-        }
-        if(keycode == Input.Keys.NUM_2){
-            currentPlayer = 1;
-        }
-        if(keycode == Input.Keys.NUM_3){
-            currentPlayer = 2;
-        }
-        if(keycode == Input.Keys.ESCAPE){
-            doDrawing = !doDrawing;
-        }
->>>>>>> abec6375625205a643c802dbad908373f8e62e3f
         putInMapBounds();
         return false;
     }
