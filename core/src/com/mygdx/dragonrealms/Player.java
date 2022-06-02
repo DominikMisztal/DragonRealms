@@ -1,5 +1,6 @@
 package com.mygdx.dragonrealms;
 
+import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.units.Unit;
 
 import java.util.Vector;
@@ -48,5 +49,12 @@ public class Player {
 
     public void changeMoveRange(int moveRange){
         this.moveRange = moveRange;
+    }
+
+    public void removePlayer(Map map){
+        for(Unit unit : ownedUnits){
+            map.getTile(unit.getCoordinates()).setUnit(null);
+        }
+        ownedUnits.clear();
     }
 }

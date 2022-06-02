@@ -52,6 +52,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public int currentPlayer;
     private int playersCount;
     private int currentTurn;
+    private int unitCost;
     public boolean gamePaused;
     public boolean drawHealthBars;
     public Mode currentMode;
@@ -284,6 +285,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void unitAttack(Unit attacker, Unit defender){
         if(getDistance(attacker.getCoordinates(), defender.getCoordinates()) <= attacker.getRange()){
             if(defender.damage(attacker.getAttack())){
+                if(defender instanceof Castle){
+                    defender.getPlayer().removePlayer(map);
+                    players.remove(defender.getPlayer());
+                    playersCount--;
+                }
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
@@ -291,6 +297,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             moveUnit(attacker, findClosestTile(defender, attacker));
             if(defender.damage(attacker.getAttack())){
+                if(defender instanceof Castle){
+                    defender.getPlayer().removePlayer(map);
+                    players.remove(defender.getPlayer());
+                    playersCount--;
+                }
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
@@ -362,7 +373,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     public void nextPlayer(){
         currentPlayer++;
-        if(currentPlayer > 2){
+        if(currentPlayer >= playersCount){
             currentPlayer = 0;
             nextTurn();
         }
@@ -511,7 +522,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             clearMovementTiles();
             return;
         }
-        players.get(currentPlayer).gold -= cost;
+        unitCost = cost;
         unitToSpawn = type;
         currentMode = Mode.SPAWN_UNIT;
         clearMovementTiles();
@@ -615,6 +626,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         clearMovementTiles();
         currentlySelectedTile = null;
         currentMode = Mode.NONE;
+        players.get(currentPlayer).gold -= unitCost;
         return;
     }
 
