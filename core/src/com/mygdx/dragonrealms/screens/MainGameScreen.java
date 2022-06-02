@@ -42,11 +42,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Stage stage;
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer unitRenderer;
-    private TextButton menuButton;
-    private TextButton endTurnButton;
-    private TextButton archerButton;
-    private TextButton warriorButton;
-    private TextButton knightButton;
     private OrthographicCamera camera;
     
     public Vector<Tile> tilesToDraw;
@@ -161,9 +156,22 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public void render(float delta) {
+
+        drawCurrentGameplayArea();
+        putInMapBounds();
+        drawPlayerGUI();
+
+        update(delta);
+        stage.draw();
+
+        if(nextPlayer){
+            drawNextPlayerOverlay();
+        }
+    }
+
+    private void drawCurrentGameplayArea(){
         Gdx.gl.glClearColor(1f,1f,1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         camera.update();
         map.render(camera);
@@ -174,7 +182,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
-        
+
 
         //draw units
         for(int i = 0; i < playersCount; i++){
@@ -199,31 +207,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         }
         unitRenderer.end();
-
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            camera.translate(0,Gdx.graphics.getDeltaTime() * -200);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            camera.translate(0,Gdx.graphics.getDeltaTime() * 200);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
-        }
-        putInMapBounds();
-
-        drawPlayerGUI();
-
-        update(delta);
-        stage.draw();
-
-        if(nextPlayer){
-            drawNextPlayerOverlay();
-        }
     }
-
     private void drawPlayerGUI(){
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -267,6 +251,18 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public boolean keyDown(int keycode) {
         nextPlayer = false;
+        if(keycode == Input.Keys.A){
+            camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
+        }
+        if(keycode == Input.Keys.S){
+            camera.translate(0,Gdx.graphics.getDeltaTime() * -200);
+        }
+        if(keycode == Input.Keys.W){
+            camera.translate(0,Gdx.graphics.getDeltaTime() * 200);
+        }
+        if(keycode == Input.Keys.D){
+            camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
+        }
         if(keycode == Input.Keys.I){
             unitSpawner(UnitType.WARRIOR);
         }
@@ -519,7 +515,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(tile.getUnit() != null 
             && tile.getUnit().getPlayer() != players.get(currentPlayer)){
 
-            if(currentlySelectedUnit.attacked == true){
+            if(currentlySelectedUnit.attacked){
                 tile.setBorder(3);
                 tilesToDraw.add(tile);
                 return;
@@ -554,7 +550,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(tile.getUnit() != null 
             && tile.getUnit().getPlayer() != players.get(currentPlayer)){
 
-            if(currentlySelectedUnit.attacked == true){
+            if(currentlySelectedUnit.attacked){
                 tile.setBorder(3);
                 return;
             }
@@ -588,7 +584,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(tile.getUnit() != null 
             && tile.getUnit().getPlayer() != players.get(currentPlayer)){
 
-            if(currentlySelectedUnit.attacked == true){
+            if(currentlySelectedUnit.attacked){
                 tile.setBorder(3);
                 return;
             }
@@ -622,7 +618,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(tile.getUnit() != null 
             && tile.getUnit().getPlayer() != players.get(currentPlayer)){
 
-            if(currentlySelectedUnit.attacked == true){
+            if(currentlySelectedUnit.attacked){
                 tile.setBorder(3);
                 return;
             }
@@ -841,7 +837,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         players.get(currentPlayer).gold -= unitCost;
         players.get(currentPlayer).totalGoldSpent += unitCost;
         players.get(currentPlayer).unitsBought++;
-        return;
     }
 
     public void clearMovementTiles(){
@@ -853,7 +848,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void initButtons(){
-        menuButton = new TextButton("Menu", skin, "default");
+        TextButton menuButton = new TextButton("Menu", skin, "default");
         menuButton.setSize(150,70);
         menuButton.setPosition(MENU_BUTTON_X, MENU_BUTTON_Y);
         menuButton.addAction(parallel(fadeIn(.5f),
@@ -865,7 +860,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
-        endTurnButton = new TextButton("End turn", skin, "default");
+        TextButton endTurnButton = new TextButton("End turn", skin, "default");
         endTurnButton.setSize(150,70);
         endTurnButton.setPosition(MENU_BUTTON_X + 160, MENU_BUTTON_Y);
         endTurnButton.addAction(parallel(fadeIn(.5f),
@@ -877,7 +872,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
-        archerButton = new TextButton("Buy archer / 4gp", skin, "default");
+        TextButton archerButton = new TextButton("Buy archer / 4gp", skin, "default");
         archerButton.setSize(185,64);
         archerButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 100);
         archerButton.addAction(parallel(fadeIn(.5f),
@@ -890,7 +885,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
-        knightButton = new TextButton("Buy knight / 7gp", skin, "default");
+        TextButton knightButton = new TextButton("Buy knight / 7gp", skin, "default");
         knightButton.setSize(185,64);
         knightButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y);
         knightButton.addAction(parallel(fadeIn(.5f),
@@ -903,7 +898,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
-        warriorButton = new TextButton("Buy warrior / 3gp", skin, "default");
+        TextButton warriorButton = new TextButton("Buy warrior / 3gp", skin, "default");
         warriorButton.setSize(185,64);
         warriorButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y - 100);
         warriorButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
