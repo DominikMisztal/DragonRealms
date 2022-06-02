@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -64,6 +65,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private UnitType unitToSpawn;
     float UNIT_SHOP_X;
     float UNIT_SHOP_Y;
+    float MENU_BUTTON_X;
+    float MENU_BUTTON_Y;
 
     Vector<Unit> temp;
     boolean doDrawing = true;
@@ -139,6 +142,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         UNIT_SHOP_X = game.camera.viewportWidth - MENU_WIDTH + 10;
         UNIT_SHOP_Y = 150;
+        MENU_BUTTON_X = MyGame.WIDTH - 330;
+        MENU_BUTTON_Y = MyGame.HEIGHT - 70;
         initButtons();
         gamePaused = false;
     }
@@ -208,10 +213,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             guiBatch.begin();
                 stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+                GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
+                float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
+                float fontY = MENU_BUTTON_Y - 40;
+                game.font.draw(guiBatch, layout, fontX, fontY);
                 stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
                 stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
                 stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
-                game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
+            game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
             guiBatch.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
@@ -779,7 +788,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private void initButtons(){
         menuButton = new TextButton("Menu", skin, "default");
         menuButton.setSize(150,70);
-        menuButton.setPosition(MyGame.WIDTH - 330,MyGame.HEIGHT - 70);
+        menuButton.setPosition(MENU_BUTTON_X, MENU_BUTTON_Y);
         menuButton.addAction(parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out)));
         menuButton.addListener(new ClickListener(){
@@ -791,7 +800,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         endTurnButton = new TextButton("End turn", skin, "default");
         endTurnButton.setSize(150,70);
-        endTurnButton.setPosition(MyGame.WIDTH - 170,MyGame.HEIGHT - 70);
+        endTurnButton.setPosition(MENU_BUTTON_X + 160, MENU_BUTTON_Y);
         endTurnButton.addAction(parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out)));
         endTurnButton.addListener(new ClickListener(){
