@@ -246,19 +246,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.H){
             drawHealthBars = !drawHealthBars;
         }
-        //TODO: REMOVE AFTER FINISHING
-        if(keycode == Input.Keys.NUM_1){
-            currentPlayer = 0;
-        }
-        if(keycode == Input.Keys.NUM_2){
-            currentPlayer = 1;
-        }
-        if(keycode == Input.Keys.NUM_3){
-            currentPlayer = 2;
-        }
-        if(keycode == Input.Keys.ESCAPE){
-            doDrawing = (doDrawing == false) ? true : false;
-        }
         putInMapBounds();
         return false;
     }
@@ -462,13 +449,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaX() > -4 
-            && Gdx.input.getDeltaY(pointer) < 4 && Gdx.input.getDeltaY(pointer) > -4){
-            return true;
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaX() > -4 
+                && Gdx.input.getDeltaY(pointer) < 4 && Gdx.input.getDeltaY(pointer) > -4){
+                return true;
+            }
+            if(isInMapBounds()){
+                camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
+            }
         }
-        if(isInMapBounds()){
-            camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
-        }
+        
         putInMapBounds();
         return true;      
     }
