@@ -228,7 +228,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
                 stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
                 stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
-            game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
+                game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
             guiBatch.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             update(delta);
@@ -439,12 +439,12 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     public void nextPlayer(){
-        setCurrentPlayerCamera();
         currentPlayer++;
         if(currentPlayer >= playersCount){
             currentPlayer = 0;
             nextTurn();
         }
+        setCurrentPlayerCamera();
     }
 
     private void nextTurn(){
@@ -837,11 +837,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         archerButton.setSize(185,64);
         archerButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 100);
         archerButton.addAction(parallel(fadeIn(.5f),
-                moveBy(0,-20,0, Interpolation.pow5Out)));
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         archerButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-
+                setCurrentPlayerCamera();
                 unitSpawner(UnitType.ARCHER);
             }
         });
@@ -854,6 +854,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         knightButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                setCurrentPlayerCamera();
                 unitSpawner(UnitType.KNIGHT);
             }
         });
@@ -866,6 +867,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         warriorButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                setCurrentPlayerCamera();
                 unitSpawner(UnitType.WARRIOR);
             }
         });
