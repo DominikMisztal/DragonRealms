@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.dragonrealms.screens.ScreenManager;
+
+import java.util.Vector;
 
 
 public class MyGame extends Game {
@@ -23,6 +26,7 @@ public class MyGame extends Game {
     public AssetManager assets;
     public Sound sound;
     public boolean isSoundActive;
+    public Vector<Player> players;
 
     public void create() {
         assets = new AssetManager();
