@@ -2,6 +2,7 @@ package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -21,6 +22,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
     private Skin skin;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+    Texture texture;
 
     TextButton playButton;
     TextButton settingsButton;
@@ -28,8 +30,9 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     public MainMenuScreen(final MyGame game) {
         this.game = game;
-        this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera));
+        this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), game.batch);
         this.shapeRenderer = new ShapeRenderer();
+        this.texture = new Texture(Gdx.files.internal("mainMenu.jpg"));
     }
 
     @Override
@@ -53,6 +56,10 @@ public class MainMenuScreen implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClearColor(1f,1f,1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.batch.begin();
+        stage.getBatch().draw(texture,0,0, MyGame.WIDTH, MyGame.HEIGHT);
+        game.batch.end();
 
         update(delta);
         stage.draw();
@@ -133,8 +140,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
         playButton = new TextButton("Play", skin, "default");
         playButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
         playButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y);
-        playButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        playButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -145,20 +152,20 @@ public class MainMenuScreen implements Screen, InputProcessor {
         settingsButton = new TextButton("Settings", skin, "default");
         settingsButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
         settingsButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 120);
-        settingsButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        settingsButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         settingsButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                game.screenManager.setScreen(ScreenManager.STATE.HELP);
+                game.screenManager.setScreen(ScreenManager.STATE.SETTINGS);
             }
         });
 
         exitButton = new TextButton("Exit", skin, "default");
         exitButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
         exitButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 240);
-        exitButton.addAction(sequence(alpha(0), parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out))));
+        exitButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -170,8 +177,5 @@ public class MainMenuScreen implements Screen, InputProcessor {
         stage.addActor(settingsButton);
         stage.addActor(exitButton);
     }
-
-
-    //...Rest of class omitted for succinctness.
 
 }
