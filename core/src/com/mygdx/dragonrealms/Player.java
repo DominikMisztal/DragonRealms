@@ -12,6 +12,11 @@ public class Player {
     public int gold;
     public int goldMinesCount;
     private int moveRange;
+    public int unitsDefeated;
+    public int unitsBought;
+    public int unitsLost;
+    public int totalGoldEarned;
+    public int totalGoldSpent;
     boolean isWinner;
 
     public Player(String name){
@@ -20,11 +25,16 @@ public class Player {
         this.ownedUnits = new Vector<>();
         gold = 10;
         goldMinesCount = 0;
+        unitsDefeated = 0;
+        unitsBought = 0;
+        unitsLost = 0;
+        totalGoldEarned = 10;
+        totalGoldSpent = 0;
     }
 
     public void addGold(){
         gold += 10  + 5*goldMinesCount;
-
+        totalGoldEarned += 10  + 5*goldMinesCount;
     }
 
     public String getPlayerName(){
@@ -37,6 +47,7 @@ public class Player {
 
     public void removeUnit(Unit unit){
         ownedUnits.remove(unit);
+        unitsLost++;
     }
 
     public Vector<Unit> getUnits(){

@@ -77,9 +77,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         mapWidth = map.getMapWidth();
         mapHeight = map.getMapHeight();
         players = new Vector<>();
+        game.players = new Vector<>();
         players.add(new Player("Player 1"));
         players.add(new Player("Player 2"));
         players.add(new Player("Player 3"));
+        game.players.add(players.get(0));
+        game.players.add(players.get(1));
+        game.players.add(players.get(2));
         players.get(0).castle = new Castle(map.getTile(1,1), players.get(0)
                                                 , camera.combined, 0);
         players.get(1).castle = new Castle(map.getTile(16,25), players.get(1)
@@ -295,6 +299,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     }
                 }
                 defender.getPlayer().getUnits().remove(defender);
+                defender.getPlayer().unitsLost++;
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
@@ -310,6 +315,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     }
                 }
                 defender.getPlayer().getUnits().remove(defender);
+                defender.getPlayer().unitsLost++;
                 map.getTile(defender.getCoordinates()).setUnit(null);
             }
         }
@@ -727,7 +733,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         else{
             return;
         }
-        //System.out.println("spawned");
 
         currentlySelectedTile.setUnit(unit);
         players.get(currentPlayer).addUnit(unit);
@@ -735,6 +740,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         currentlySelectedTile = null;
         currentMode = Mode.NONE;
         players.get(currentPlayer).gold -= unitCost;
+        players.get(currentPlayer).totalGoldSpent += unitCost;
+        players.get(currentPlayer).unitsBought++;
         return;
     }
 

@@ -1,5 +1,7 @@
 package com.mygdx.dragonrealms;
 
+import java.util.Vector;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -20,6 +22,7 @@ public class MyGame extends Game {
     public ScreenManager screenManager;
     public OrthographicCamera camera;
     public AssetManager assets;
+    public Vector<Player> players;
 
     public void create() {
         assets = new AssetManager();
