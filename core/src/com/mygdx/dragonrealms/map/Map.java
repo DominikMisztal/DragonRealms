@@ -30,7 +30,6 @@ public class Map extends Stage {
         mainGameScreen = mgs;
         tiledMap = new TmxMapLoader().load(map_file);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        //this.setViewport();
         createTilesMap();
         borders = false;
         sRenderer = new ShapeRenderer();
