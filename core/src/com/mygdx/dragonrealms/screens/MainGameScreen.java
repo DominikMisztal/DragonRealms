@@ -497,6 +497,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
             if(currentlySelectedUnit.attacked == true){
                 tile.setBorder(3);
+                tilesToDraw.add(tile);
                 return;
             }
             tile.setBorder(2 );
