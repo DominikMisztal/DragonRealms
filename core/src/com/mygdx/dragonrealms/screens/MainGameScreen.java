@@ -21,6 +21,7 @@ import com.mygdx.dragonrealms.Player;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
+import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
 import java.util.Vector;
@@ -289,6 +290,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     defender.getPlayer().removePlayer(map);
                     players.remove(defender.getPlayer());
                     playersCount--;
+                    if(playersCount == 1){
+                        game.screenManager.setScreen(STATE.ENDGAME);
+                    }
                 }
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
@@ -301,6 +305,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     defender.getPlayer().removePlayer(map);
                     players.remove(defender.getPlayer());
                     playersCount--;
+                    if(playersCount == 1){
+                        game.screenManager.setScreen(STATE.ENDGAME);
+                    }
                 }
                 defender.getPlayer().getUnits().remove(defender);
                 map.getTile(defender.getCoordinates()).setUnit(null);
