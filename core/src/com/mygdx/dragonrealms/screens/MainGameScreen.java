@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -26,6 +27,7 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
+import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -67,6 +69,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     float UNIT_SHOP_Y;
     float MENU_BUTTON_X;
     float MENU_BUTTON_Y;
+    Vector2 PLAYER1_CASTLE = new Vector2(Map.TILESIZE,Map.TILESIZE);
+    Vector2 PLAYER2_CASTLE = new Vector2(16 * Map.TILESIZE ,25 * Map.TILESIZE);
+    Vector2 PLAYER3_CASTLE = new Vector2(27 * Map.TILESIZE,5 * Map.TILESIZE);
 
     Vector<Unit> temp;
     boolean doDrawing = true;
@@ -75,6 +80,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Texture knightTexture;
     private Texture warriorTexture;
     SpriteBatch guiBatch;
+    private boolean start = false;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -105,7 +111,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                                                 , camera.combined, 1);
         players.get(2).castle = new Castle(map.getTile(27,5), players.get(2)
                                                 , camera.combined, 2);
-        
+
         map.getTile(1, 1).setUnit(players.get(0).castle);     
         map.getTile(16, 25).setUnit(players.get(1).castle);  
         map.getTile(27,5).setUnit(players.get(2).castle);
@@ -146,6 +152,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         MENU_BUTTON_Y = MyGame.HEIGHT - 70;
         initButtons();
         gamePaused = false;
+        setCurrentPlayerCamera();
     }
 
     private void update(float delta){
@@ -157,12 +164,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Gdx.gl.glClearColor(1f,1f,1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
         camera.update();
         map.render(camera);
 
         game.batch.begin();
         game.batch.setProjectionMatrix(camera.combined);
-       
+
         for(Tile tile : tilesToDraw){
             tile.render(game.batch);
         }
@@ -415,8 +423,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         return closestTile;
     }
+    private void setCurrentPlayerCamera(){
+        switch (currentPlayer){
+            case 0:
+                camera.position.set(PLAYER1_CASTLE, 0);
+                break;
+            case 1:
+                camera.position.set(PLAYER2_CASTLE, 0);
+                break;
+            case 2:
+                camera.position.set(PLAYER3_CASTLE, 0);
+                break;
+        }
+        putInMapBounds();
+    }
 
     public void nextPlayer(){
+        setCurrentPlayerCamera();
         currentPlayer++;
         if(currentPlayer >= playersCount){
             currentPlayer = 0;
@@ -814,10 +837,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         archerButton.setSize(185,64);
         archerButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 100);
         archerButton.addAction(parallel(fadeIn(.5f),
-                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+                moveBy(0,-20,0, Interpolation.pow5Out)));
         archerButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+
                 unitSpawner(UnitType.ARCHER);
             }
         });
