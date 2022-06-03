@@ -68,7 +68,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     Vector2 PLAYER3_CASTLE = new Vector2(27 * Map.TILESIZE,5 * Map.TILESIZE);
 
     Vector<Unit> temp;
-    boolean doDrawing = true;
     private Texture backgroundTexture;
     private Texture archerTexture;
     private Texture knightTexture;
@@ -338,9 +337,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 if(defender instanceof Castle){
                     defender.getPlayer().removePlayer(map);
                     players.remove(defender.getPlayer());
+                    if(playersCount == 3){
+                        defender.getPlayer().setPlace(3);
+                    }
+                    if(playersCount == 2){
+                        defender.getPlayer().setPlace(2);
+                    }
                     playersCount--;
                     if(playersCount == 1){
                         players.get(0).isWinner = true;
+                        defender.getPlayer().setPlace(1);
                         game.screenManager.setScreen(STATE.ENDGAME);
                     }
                 }

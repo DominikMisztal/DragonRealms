@@ -6,10 +6,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class EndGameScreen implements Screen {
     private MyGame game;
@@ -88,10 +94,11 @@ public class EndGameScreen implements Screen {
             float fontY = MyGame.HEIGHT - 360;
             for(int i = 0; i < 3; i++){
                 game.font.draw(game.batch, String.format("Gold earned: %d", game.players.get(i).totalGoldEarned), 20 + i * MyGame.WIDTH / 3f, fontY);
-                game.font.draw(game.batch, String.format("Gold spent: %d", game.players.get(i).totalGoldSpent), 20 + i * MyGame.WIDTH / 3f, fontY - 100);
-                game.font.draw(game.batch, String.format("Units bought: %d", game.players.get(i).unitsBought), 20 + i * MyGame.WIDTH / 3f, fontY - 200);
-                game.font.draw(game.batch, String.format("Units defeated: %d", game.players.get(i).unitsDefeated), 20 + i * MyGame.WIDTH / 3f, fontY - 300);
-                game.font.draw(game.batch, String.format("Units lost: %d", game.players.get(i).unitsLost), 20 + i * MyGame.WIDTH / 3f, fontY - 400);
+                game.font.draw(game.batch, String.format("Gold spent: %d", game.players.get(i).totalGoldSpent), 20 + i * MyGame.WIDTH / 3f, fontY - 90);
+                game.font.draw(game.batch, String.format("Gold mines bought: %d", game.players.get(i).goldMinesCount), 20 + i * MyGame.WIDTH / 3f, fontY - 180);
+                game.font.draw(game.batch, String.format("Units bought: %d", game.players.get(i).unitsBought), 20 + i * MyGame.WIDTH / 3f, fontY - 270);
+                game.font.draw(game.batch, String.format("Units defeated: %d", game.players.get(i).unitsDefeated), 20 + i * MyGame.WIDTH / 3f, fontY - 360);
+                game.font.draw(game.batch, String.format("Units lost: %d", game.players.get(i).unitsLost), 20 + i * MyGame.WIDTH / 3f, fontY - 450);
             }
 
         game.batch.end();
@@ -118,15 +125,15 @@ public class EndGameScreen implements Screen {
         game.batch.begin();
             GlyphLayout layout = new GlyphLayout();
             for(int i = 0; i < 3; i++){
-//                if(game.players.get(i).place == 1){
+                if(game.players.get(i).place == 1){
                     information = "WINNER";
-//                }
-//                else if(game.players.get(i).place == 2){
-//                    information = "SECOND PLACE";
-//                }
-//                else if(game.players.get(i).place == 3){
-//                    information = "THIRD PLACE";
-//                }
+                }
+                else if(game.players.get(i).place == 2){
+                    information = "2nd PLACE";
+                }
+                else if(game.players.get(i).place == 3){
+                    information = "3rd PLACE";
+                }
                 layout.setText(game.endGameWinnerFont, information);
                 float fontX = MyGame.WIDTH / 6f - layout.width / 2f + i * MyGame.WIDTH / 3f;
                 float fontY = MyGame.HEIGHT - 80;
@@ -136,7 +143,32 @@ public class EndGameScreen implements Screen {
     }
 
     private void initButtons(){
+        TextButton restartButton = new TextButton("Restart game", skin);
+        restartButton.setSize(180,50);
+        restartButton.setPosition(MyGame.WIDTH - 190, MyGame.HEIGHT - 60);
+        restartButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        restartButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.setScreen(new MainGameScreen(game));
+            }
+        });
 
+        TextButton exitButton = new TextButton("Exit game", skin);
+        exitButton.setSize(180,50);
+        exitButton.setPosition(MyGame.WIDTH - 190, MyGame.HEIGHT - 120);
+        exitButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Gdx.app.exit();
+            }
+        });
+
+        stage.addActor(restartButton);
+        stage.addActor(exitButton);
     }
 
     private void update(float delta){

@@ -69,4 +69,7 @@ public class Player {
         }
         ownedUnits.clear();
     }
+    public void setPlace(int place){
+        this.place = place;
+    }
 }
