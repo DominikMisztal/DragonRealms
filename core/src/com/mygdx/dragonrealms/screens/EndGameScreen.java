@@ -48,14 +48,20 @@ public class EndGameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        drawLayout();
+        drawPlayerName();
+        drawEveryPlayerUnits();
+        drawPlayerPlaces();
+    }
+
+    private void drawLayout(){
         game.batch.begin();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.rectLine(MyGame.WIDTH/3f, 0, MyGame.WIDTH/3f, MyGame.HEIGHT, 1);
             shapeRenderer.rectLine(2 * MyGame.WIDTH/3f, 0, 2 * MyGame.WIDTH/3f, MyGame.HEIGHT, 1);
             shapeRenderer.end();
         game.batch.end();
-        drawPlayerName();
-        drawEveryPlayerUnits();
     }
 
     private void drawPlayerName(){
@@ -70,25 +76,78 @@ public class EndGameScreen implements Screen {
             game.font.draw(game.batch, layout, fontX +  2 * MyGame.WIDTH / 3f, fontY);
         game.batch.end();
     }
+
+    private void drawEveryPlayerStatistics(float UNIT_HEIGHT){
+        game.batch.begin();
+            GlyphLayout layout = new GlyphLayout(game.font, String.format("Archer kills : %d", 10));
+            float fontX = MyGame.WIDTH / 6f - layout.width / 2f + 40;
+            float fontY = UNIT_HEIGHT + 130;
+
+            game.font.draw(game.batch, layout, fontX, fontY);
+            layout.setText(game.font, String.format("Knight kills  : %d", 10));
+            game.font.draw(game.batch, layout, fontX, fontY - 120);
+            layout.setText(game.font, String.format("Warrior kills: %d", 10));
+            game.font.draw(game.batch, layout, fontX, fontY - 220);
+
+            layout.setText(game.font, String.format("Archer kills : %d", 10));
+            game.font.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY);
+            layout.setText(game.font, String.format("Knight kills  : %d", 10));
+            game.font.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY - 120);
+            layout.setText(game.font, String.format("Warrior kills: %d", 10));
+            game.font.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY - 220);
+
+            layout.setText(game.font, String.format("Archer kills : %d", 10));
+            game.font.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY);
+            layout.setText(game.font, String.format("Knight kills  : %d", 10));
+            game.font.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY - 120);
+            layout.setText(game.font, String.format("Warrior kills: %d", 10));
+            game.font.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY - 220);
+        game.batch.end();
+    }
     private void drawEveryPlayerUnits(){
         int UNIT_HEIGHT = MyGame.HEIGHT - 350;
         game.batch.begin();
-            GlyphLayout layout = new GlyphLayout(game.font, "Units killed");
-            float fontX = MyGame.WIDTH / 6f - layout.width / 2f;
+
+            GlyphLayout layout = new GlyphLayout(game.endgameFont, "Units killed");
+            float fontX = MyGame.WIDTH / 6f - layout.width / 2f + 20;
             float fontY = MyGame.HEIGHT - 150;
-            game.font.draw(game.batch, layout, fontX, fontY);
-            game.font.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY);
-            game.font.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY);
+            game.endgameFont.draw(game.batch, layout, fontX, fontY);
+            game.endgameFont.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY);
+            game.endgameFont.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY);
 
             stage.getBatch().draw(archerTexture,  10, UNIT_HEIGHT, 200, 200);
             stage.getBatch().draw(knightTexture,  20, UNIT_HEIGHT - 120, 200, 200);
             stage.getBatch().draw(warriorTexture, 10, UNIT_HEIGHT - 220, 200, 200);
+
             stage.getBatch().draw(archerTexture,  10 + MyGame.WIDTH / 3f, UNIT_HEIGHT, 200, 200);
             stage.getBatch().draw(knightTexture,  20 + MyGame.WIDTH / 3f, UNIT_HEIGHT - 120, 200, 200);
             stage.getBatch().draw(warriorTexture, 10 + MyGame.WIDTH / 3f, UNIT_HEIGHT - 220, 200, 200);
+
             stage.getBatch().draw(archerTexture,  10 + 2 * MyGame.WIDTH / 3f, UNIT_HEIGHT, 200, 200);
             stage.getBatch().draw(knightTexture,  20 + 2 * MyGame.WIDTH / 3f, UNIT_HEIGHT - 120, 200, 200);
             stage.getBatch().draw(warriorTexture, 10 + 2 * MyGame.WIDTH / 3f, UNIT_HEIGHT - 220, 200, 200);
+        game.batch.end();
+        drawEveryPlayerStatistics(UNIT_HEIGHT);
+    }
+    private void drawPlayerPlaces(){
+        String information = "WINNER";
+        game.batch.begin();
+            GlyphLayout layout = new GlyphLayout();
+            for(int i = 0; i < 3; i++){
+//                if(game.players.get(i).place == 1){
+                    information = "WINNER";
+//                }
+//                else if(game.players.get(i).place == 2){
+//                    information = "SECOND PLACE";
+//                }
+//                else if(game.players.get(i).place == 3){
+//                    information = "THIRD PLACE";
+//                }
+                layout.setText(game.endGameWinnerFont, information);
+                float fontX = MyGame.WIDTH / 6f - layout.width / 2f + i * MyGame.WIDTH / 3f;
+                float fontY = MyGame.HEIGHT - 80;
+                game.endGameWinnerFont.draw(game.batch, layout, fontX, fontY);
+            }
         game.batch.end();
     }
 

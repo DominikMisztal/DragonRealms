@@ -18,6 +18,7 @@ public class Player {
     public int totalGoldEarned;
     public int totalGoldSpent;
     public boolean isWinner;
+    public int place;
 
     public Player(String name){
 
