@@ -17,6 +17,9 @@ public class TileClickListener extends ClickListener {
 
     @Override
     public void clicked(InputEvent event, float x, float y){
+        if(mainGameScreen.gamePaused || mainGameScreen.scrolled){
+            return;
+        }
         mainGameScreen.previouslySelectedTile = mainGameScreen.currentlySelectedTile;
         mainGameScreen.currentlySelectedTile = tile;
         if(mainGameScreen.currentMode == Mode.SPAWN_UNIT){

@@ -59,6 +59,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Mode currentMode;
     private UnitType unitToSpawn;
     private boolean scrollable;
+    public boolean scrolled;
     float UNIT_SHOP_X;
     float UNIT_SHOP_Y;
     float MENU_BUTTON_X;
@@ -207,7 +208,27 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         }
         unitRenderer.end();
+        
+        game.batch.begin();
+        for(Tile tile : tilesToDraw){
+            tile.render(game.batch);
+        }
+        game.batch.end();
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            camera.translate( 0,Gdx.graphics.getDeltaTime() * 400);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            camera.translate(Gdx.graphics.getDeltaTime() * 400,0);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            camera.translate(0, Gdx.graphics.getDeltaTime() * -400);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            camera.translate(Gdx.graphics.getDeltaTime() * -400,0);
+        }
     }
+
     private void drawPlayerGUI(){
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -258,18 +279,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.SPACE){
             nextPlayer();
         }
-        if(keycode == Input.Keys.A){
-            camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
-        }
-        if(keycode == Input.Keys.S){
-            camera.translate(0,Gdx.graphics.getDeltaTime() * -200);
-        }
-        if(keycode == Input.Keys.W){
-            camera.translate(0,Gdx.graphics.getDeltaTime() * 200);
-        }
-        if(keycode == Input.Keys.D){
-            camera.translate(Gdx.graphics.getDeltaTime() * 200,0);
-        }
         if(keycode == Input.Keys.I){
             unitSpawner(UnitType.WARRIOR);
         }
@@ -314,7 +323,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(screenX >= 1800 - 350){
             scrollable = false;
         }
-        else scrollable = true;
+        else {
+            scrollable = true;
+            scrolled = false;
+        }
+
         return false;
     }
 
@@ -376,6 +389,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         }
         attacker.attacked = true;
+        changeAttackTiles();
+    }
+
+    private void changeAttackTiles(){
+        for(Tile tile : tilesToDraw){
+            if(tile.getBorder() == 2){
+                tile.clearBorder();
+                tile.setBorder(4);
+            }
+        }
     }
 
     public void findRangedAttack(Unit unit){
@@ -408,28 +431,28 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Tile closestTile = null, temp;
         double distance = 9999;
         temp = map.getTile((int)target.getCoordinates().x + 1, (int)target.getCoordinates().y);
-        if(temp != null){
+        if(temp != null && temp.getUnit() == null){
             if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x - 1, (int)target.getCoordinates().y);
-        if(temp != null){
+        if(temp != null && temp.getUnit() == null){
             if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y + 1);
-        if(temp != null){
+        if(temp != null && temp.getUnit() == null){
             if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
             }
         }
         temp = map.getTile((int)target.getCoordinates().x, (int)target.getCoordinates().y - 1);
-        if(temp != null){
+        if(temp != null && temp.getUnit() == null){
             if(tilesToDraw.contains(temp) && getDistance(map.getTile(toMove.getCoordinates()), temp) < distance){
                 distance = getDistance(map.getTile(toMove.getCoordinates()), temp);
                 closestTile = temp;
@@ -513,6 +536,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         tile.setBorder(1);
         tilesToDraw.add(tile);
         int movementPoints = unit.getCurrentMovement();
+        if(movementPoints == 0){
+            lookForEnemyMelee(tile);
+        }
         recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
         recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
         recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
@@ -541,6 +567,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return;
         }
         if(movementPoints - tile.getMovementCost() < 0){
+            lookForEnemyMelee(tile);
            return;
         }
         movementPoints -= tile.getMovementCost();
@@ -549,6 +576,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
+        if(movementPoints == 0){
+            lookForEnemyMelee(tile);
+            return;
+        }
         recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
         recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
         recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
@@ -576,6 +607,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return;
         }
         if(movementPoints - tile.getMovementCost() < 0){
+            lookForEnemyMelee(tile);
            return;
         }
         movementPoints -= tile.getMovementCost();
@@ -584,6 +616,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
+        if(movementPoints == 0){
+            lookForEnemyMelee(tile);
+            return;
+        }
         recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
         recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
         recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
@@ -611,6 +647,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             return;
         }
         if(movementPoints - tile.getMovementCost() < 0){
+            lookForEnemyMelee(tile);
            return;
         }
         movementPoints -= tile.getMovementCost();
@@ -619,6 +656,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
+        if(movementPoints == 0){
+            lookForEnemyMelee(tile);
+            return;
+        }
         recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
         recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
         recursiveSearchRight(movementPoints, map.getTile((int)tile.coordinates.x+1, (int)tile.coordinates.y));
@@ -654,9 +695,41 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         tilesToDraw.add(tile);
         tile.setBorder(1);
+        if(movementPoints == 0){
+            lookForEnemyMelee(tile);
+            return;
+        }
         recursiveSearchUp(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y+1));
         recursiveSearchLeft(movementPoints, map.getTile((int)tile.coordinates.x-1, (int)tile.coordinates.y));
         recursiveSearchDown(movementPoints, map.getTile((int)tile.coordinates.x, (int)tile.coordinates.y-1));
+    }
+
+    private void lookForEnemyMelee(Tile tile){
+        if(tile == null){
+            return;
+        }
+        Tile temp = map.getTile((int)tile.getCoordinates().x+1, (int)tile.getCoordinates().y );
+        if(temp != null 
+            && temp.getUnit() != null 
+            && temp.getUnit().getPlayer() != players.get(currentPlayer)){
+            temp.setBorder(2 );
+            tilesToDraw.add(temp);
+        }
+        temp = map.getTile((int)tile.getCoordinates().x-1, (int)tile.getCoordinates().y );
+        if(temp != null && temp.getUnit() != null && temp.getUnit().getPlayer() != players.get(currentPlayer) ){
+            temp.setBorder(2 );
+            tilesToDraw.add(temp);
+        }
+        temp = map.getTile((int)tile.getCoordinates().x, (int)tile.getCoordinates().y-1 );
+        if(temp != null && temp.getUnit() != null && temp.getUnit().getPlayer() != players.get(currentPlayer) ){
+            temp.setBorder(2 );
+            tilesToDraw.add(temp);
+        }
+        temp = map.getTile((int)tile.getCoordinates().x, (int)tile.getCoordinates().y-1 );
+        if(temp != null && temp.getUnit() != null && temp.getUnit().getPlayer() != players.get(currentPlayer) ){
+            temp.setBorder(2 );
+            tilesToDraw.add(temp);
+        }
     }
 
     @Override
@@ -677,6 +750,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 return true;
             }
             if(isInMapBounds()){
+                scrolled = true;
                 camera.translate(-Gdx.input.getDeltaX(pointer), Gdx.input.getDeltaY(pointer));
             }
         }
