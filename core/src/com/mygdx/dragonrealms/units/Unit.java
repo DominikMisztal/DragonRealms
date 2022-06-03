@@ -28,6 +28,16 @@ public class Unit {
     private float hpWidth;
     public boolean attacked;
 
+    public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int movementRange){
+        this.unitName = unitName;
+        this.texture = texture;
+        this.unitCost = unitCost;
+        this.attack = attack;
+        this.max_hp = hp;
+        this.range = range;
+        this.maxMovement = movementRange;
+    }
+
     public Unit(String unitName, Texture texture, int unitCost, int attack, int hp, int range, int movementRange, Player player, int x, int y){
         this.unitName = unitName;
         this.texture = texture;
@@ -86,6 +96,9 @@ public class Unit {
 
     public int getCurrentMovement(){
         return currentMovement;
+    }
+    public int getMaxMovement(){
+        return maxMovement;
     }
 
     public void setCurrentMovement(int movement){

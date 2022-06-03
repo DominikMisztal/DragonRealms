@@ -3,6 +3,7 @@ package com.mygdx.dragonrealms.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -13,6 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.dragonrealms.MyGame;
+import com.mygdx.dragonrealms.units.Archer;
+import com.mygdx.dragonrealms.units.Knight;
+import com.mygdx.dragonrealms.units.Unit;
+import com.mygdx.dragonrealms.units.Warrior;
+
+import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -25,7 +32,12 @@ public class HelpScreen implements Screen, InputProcessor {
     private Texture texture;
     private Texture texture1;
     private Texture currentTexture;
+
+    private Texture archerTexture;
+    private Texture knightTexture;
+    private Texture warriorTexture;
     private String nextPageText;
+    private Vector<Unit> units;
 
     public HelpScreen(final MyGame game) {
         this.game = game;
@@ -34,6 +46,13 @@ public class HelpScreen implements Screen, InputProcessor {
         currentTexture = texture;
         this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), game.batch);
         this.shapeRenderer = new ShapeRenderer();
+        archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
+        knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
+        warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
+        units = new Vector<>();
+        units.add(new Archer());
+        units.add(new Warrior());
+        units.add(new Knight());
     }
 
     @Override
@@ -55,15 +74,88 @@ public class HelpScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1f,1f,1f,1f);
+        Gdx.gl.glClearColor(0,0,0,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.begin();
-        stage.getBatch().draw(currentTexture,0,0, MyGame.WIDTH, MyGame.HEIGHT);
-        game.batch.end();
+        drawUnitsInfo();
+        drawCommandsHelp();
 
         update(delta);
         stage.draw();
+    }
+
+    private void drawUnitsInfo(){
+        game.batch.begin();
+            GlyphLayout layout = new GlyphLayout(game.helpFont1, "Available units");
+            float fontX = MyGame.WIDTH / 4f - layout.width / 2f;
+            float fontY = MyGame.HEIGHT - 100;
+            game.helpFont1.draw(game.batch, layout, fontX, fontY);
+        game.batch.end();
+
+        fontY = MyGame.HEIGHT - 150;
+        game.batch.begin();
+            game.batch.draw(archerTexture, fontX / 4f, fontY - 200, 200, 200);
+            game.batch.draw(knightTexture, fontX / 4f + fontX, fontY - 200, 200, 200);
+            game.batch.draw(warriorTexture, fontX / 4f + 2 * fontX - 30, fontY - 200, 200, 200);
+        game.batch.end();
+
+        game.batch.begin();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.rectLine(fontX, fontY - 200, fontX, fontY - 700, 1);
+            shapeRenderer.rectLine(fontX * 2, fontY - 200, fontX * 2, fontY - 700, 1);
+            shapeRenderer.end();
+        game.batch.end();
+
+        game.batch.begin();
+        for(int i = 0; i < 3; i++){
+            layout.setText(game.helpFont2, String.format("Unit cost: %d", units.get(i).getUnitCost()));
+            game.helpFont2.draw(game.batch, layout, i * fontX + 30, fontY - 230);
+
+            layout.setText(game.helpFont2, String.format("Attack: %d", units.get(i).getAttack()));
+            game.helpFont2.draw(game.batch, layout, i * fontX + 30, fontY - 330);
+
+            layout.setText(game.helpFont2, String.format("Hp: %d", units.get(i).getMax_hp()));
+            game.helpFont2.draw(game.batch, layout, i * fontX + 30, fontY - 430);
+
+            layout.setText(game.helpFont2, String.format("Attack range: %d", units.get(i).getAttack()));
+            game.helpFont2.draw(game.batch, layout, i * fontX + 30, fontY - 530);
+
+            layout.setText(game.helpFont2, String.format("Movement range: %d", units.get(i).getMaxMovement()));
+            game.helpFont2.draw(game.batch, layout, i * fontX + 30, fontY - 630);
+        }
+        game.batch.end();
+    }
+
+    private void drawCommandsHelp(){
+        game.batch.begin();
+            GlyphLayout layout = new GlyphLayout(game.helpFont1, "All commands");
+            float fontX = MyGame.WIDTH * 2/3f - layout.width / 2f;
+            float fontY = MyGame.HEIGHT - 100;
+            game.helpFont1.draw(game.batch, layout, fontX, fontY);
+
+            fontX -= 80;
+            GlyphLayout layout1 = new GlyphLayout(game.helpFont2, "");
+            layout1.setText(game.helpFont2, "I - Spawn Warrior");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 100);
+            layout1.setText(game.helpFont2, "O - spawn Archer");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 200);
+            layout1.setText(game.helpFont2, "P - spawn Knight");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 300);
+            layout1.setText(game.helpFont2, "G - spawn gold mine");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 400);
+            layout1.setText(game.helpFont2, "H - enable / disable health bars");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 500);
+            layout1.setText(game.helpFont2, "L - enable / disable grid lines");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 600);
+            layout1.setText(game.helpFont2, "SPACE - next player");
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY - 700);
+        game.batch.end();
+
+        game.batch.begin();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.rectLine(fontX - 20, 50, fontX - 20, MyGame.HEIGHT - 90, 1f);
+        shapeRenderer.end();
+        game.batch.end();
     }
 
 

@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		config.setWindowIcon("archery.png");
 		config.setTitle("Dragon Realms");
 		config.setAutoIconify(true);
-		config.setResizable(true);
+		config.setResizable(false);
 		config.setWindowedMode(1800,900);
 		config.useVsync(true);
 		new Lwjgl3Application(new MyGame(), config);
