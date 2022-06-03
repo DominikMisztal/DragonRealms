@@ -35,7 +35,8 @@ public class TileClickListener extends ClickListener {
             }
         }
         else if(tile.getUnit() != null && mainGameScreen.tilesToDraw.contains(tile) 
-                && tile.getUnit().getPlayer() != mainGameScreen.players.get(mainGameScreen.currentPlayer)){
+                && tile.getUnit().getPlayer() != mainGameScreen.players.get(mainGameScreen.currentPlayer)
+                && tile.getBorder() == 2){
                     mainGameScreen.unitAttack(mainGameScreen.currentlySelectedUnit, tile.getUnit());
                     mainGameScreen.currentlySelectedUnit = null;
                     mainGameScreen.clearMovementTiles();
