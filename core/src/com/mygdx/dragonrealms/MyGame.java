@@ -153,7 +153,6 @@ public class MyGame extends Game {
         params1.size = 30;
         params1.color = Color.WHITE;
         endgameFont = generator.generateFont(params1);
-        helpFont2 = generator.generateFont(params1);
 
         FreeTypeFontGenerator.FreeTypeFontParameter params2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
@@ -161,5 +160,12 @@ public class MyGame extends Game {
         params2.color = Color.WHITE;
         endGameWinnerFont = generator.generateFont(params2);
         helpFont1 = generator.generateFont(params2);
+
+        FreeTypeFontGenerator.FreeTypeFontParameter params3 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        params3.size = 30;
+        params3.color = Color.WHITE;
+        params3.spaceY = 10;
+        helpFont2 = generator.generateFont(params3);
     }
 }

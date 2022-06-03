@@ -30,20 +30,17 @@ public class HelpScreen implements Screen, InputProcessor {
     private Stage stage;
     private ShapeRenderer shapeRenderer;
     private Texture texture;
-    private Texture texture1;
-    private Texture currentTexture;
 
     private Texture archerTexture;
     private Texture knightTexture;
     private Texture warriorTexture;
     private String nextPageText;
     private Vector<Unit> units;
+    private int page;
 
     public HelpScreen(final MyGame game) {
         this.game = game;
-        this.texture = new Texture(Gdx.files.internal("menuHelp.png"));
-        this.texture1 = new Texture(Gdx.files.internal("menuHelp1.png"));
-        currentTexture = texture;
+        this.texture = new Texture(Gdx.files.internal("menuHelp1.png"));
         this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), game.batch);
         this.shapeRenderer = new ShapeRenderer();
         archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
@@ -53,6 +50,7 @@ public class HelpScreen implements Screen, InputProcessor {
         units.add(new Archer());
         units.add(new Warrior());
         units.add(new Knight());
+        page = 1;
     }
 
     @Override
@@ -77,11 +75,41 @@ public class HelpScreen implements Screen, InputProcessor {
         Gdx.gl.glClearColor(0,0,0,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        drawUnitsInfo();
-        drawCommandsHelp();
+        if(page == 1){
+            displayPage1();
+        }
+        if(page == 2){
+            displayPage2();
+        }
 
         update(delta);
         stage.draw();
+    }
+
+    private void displayPage1(){
+        drawUnitsInfo();
+        drawCommandsHelp();
+    }
+    private void displayPage2(){
+        drawHelpGameRules();
+    }
+
+    private void drawHelpGameRules(){
+        game.batch.begin();
+            GlyphLayout layout = new GlyphLayout(game.helpFont1, "Game rules");
+            float fontX = MyGame.WIDTH / 2f - layout.width / 2f;
+            float fontY = MyGame.HEIGHT - 300;
+            game.helpFont1.draw(game.batch, layout, fontX, fontY);
+
+            GlyphLayout layout1 = new GlyphLayout(game.helpFont2, "The main goal of the game is to defeat your opponents.\n" +
+                    "The winner is the person whose castle survives\nthe longest on the battlefield. " +
+                    "Each player can make\na certain number of moves during one round, depending\non the units he has. " +
+                    "The main currency is gold, which\nwe can get from gold mines. " +
+                    "You can use gold to buy\nunits that can be used to attack your opponents.");
+            fontX = MyGame.WIDTH / 3f - 50;
+            fontY = MyGame.HEIGHT - 400;
+            game.helpFont2.draw(game.batch, layout1, fontX, fontY);
+        game.batch.end();
     }
 
     private void drawUnitsInfo(){
@@ -251,12 +279,12 @@ public class HelpScreen implements Screen, InputProcessor {
         nextPage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                if(currentTexture == texture){
-                    currentTexture = texture1;
+                if(page == 1){
+                    page = 2;
                     nextPage.setText("Back");
                 }
                 else{
-                    currentTexture = texture;
+                    page = 1;
                     nextPage.setText("Next");
                 }
 
@@ -271,7 +299,7 @@ public class HelpScreen implements Screen, InputProcessor {
         mainMenu.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                currentTexture = texture;
+                page = 1;
                 nextPage.setText("Next");
                 game.screenManager.setScreen(ScreenManager.STATE.SETTINGS);
             }
