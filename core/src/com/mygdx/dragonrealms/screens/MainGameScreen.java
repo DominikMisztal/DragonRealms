@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,7 +26,6 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
-import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -250,7 +248,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
  
     @Override
     public boolean keyDown(int keycode) {
-        nextPlayer = false;
+        if(nextPlayer){
+            nextPlayer = false;
+            return false;
+        }
+        if(keycode == Input.Keys.SPACE){
+            nextPlayer();
+        }
         if(keycode == Input.Keys.A){
             camera.translate(Gdx.graphics.getDeltaTime() * -200,0);
         }
@@ -274,9 +278,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         if(keycode == Input.Keys.G){
             unitSpawner(UnitType.GOLDMINE);
-        }
-        if(keycode == Input.Keys.SPACE){
-            nextPlayer();
         }
         if(keycode == Input.Keys.ESCAPE){
             game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
@@ -465,6 +466,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         nextPlayer = true;
         setCurrentPlayerCamera();
+        clearMovementTiles();
     }
 
     private void nextTurn(){
