@@ -58,6 +58,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public boolean drawHealthBars;
     public Mode currentMode;
     private UnitType unitToSpawn;
+    private boolean scrollable;
     float UNIT_SHOP_X;
     float UNIT_SHOP_Y;
     float MENU_BUTTON_X;
@@ -308,6 +309,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
   
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(screenX >= 1800 - 350){
+            scrollable = false;
+        }
+        else scrollable = true;
         return false;
     }
 
@@ -657,7 +662,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         nextPlayer = false;
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && scrollable){
             if(Gdx.input.getDeltaX() < 4 && Gdx.input.getDeltaX() > -4 
                 && Gdx.input.getDeltaY(pointer) < 4 && Gdx.input.getDeltaY(pointer) > -4){
                 return true;
