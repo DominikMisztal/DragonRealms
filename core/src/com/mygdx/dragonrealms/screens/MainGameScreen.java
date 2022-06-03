@@ -337,14 +337,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 if(defender instanceof Castle){
                     defender.getPlayer().removePlayer(map);
                     players.remove(defender.getPlayer());
-                    if(playersCount == 3){
+                    playersCount--;
+                    if(playersCount == 2){
                         defender.getPlayer().setPlace(3);
                     }
-                    if(playersCount == 2){
+                    if(playersCount == 1){
                         defender.getPlayer().setPlace(2);
                     }
-                    playersCount--;
-                    if(playersCount == 1){
+                    if(playersCount == 0){
                         players.get(0).isWinner = true;
                         defender.getPlayer().setPlace(1);
                         game.screenManager.setScreen(STATE.ENDGAME);
