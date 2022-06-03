@@ -20,6 +20,7 @@ public class MyGame extends Game {
 
     public SpriteBatch batch;
     public BitmapFont font;
+    public BitmapFont font1;
     public BitmapFont endgameFont;
     public BitmapFont endGameWinnerFont;
     public BitmapFont helpFont1;
@@ -165,7 +166,13 @@ public class MyGame extends Game {
 
         params3.size = 30;
         params3.color = Color.WHITE;
-        params3.spaceY = 10;
+        params3.spaceY = 16;
         helpFont2 = generator.generateFont(params3);
+
+        FreeTypeFontGenerator.FreeTypeFontParameter params4 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        params4.size = 20;
+        params4.color = Color.WHITE;
+        font1 = generator.generateFont(params4);
     }
 }

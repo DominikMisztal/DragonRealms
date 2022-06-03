@@ -69,6 +69,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     Vector<Unit> temp;
     private Texture backgroundTexture;
+    private Texture goldmineTexture;
     private Texture archerTexture;
     private Texture knightTexture;
     private Texture warriorTexture;
@@ -116,6 +117,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         currentMode = Mode.NONE;
         unitRenderer = new ShapeRenderer();
         backgroundTexture = new Texture(Gdx.files.internal("woodImage.jpg"));
+        goldmineTexture = new Texture(Gdx.files.internal("textures/buildings/goldmine.png"));
         archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
         knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
         warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
@@ -210,15 +212,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         guiBatch.begin();
-        stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
-        GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
-        float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
-        float fontY = MENU_BUTTON_Y - 40;
-        game.font.draw(guiBatch, layout, fontX, fontY);
-        stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
-        stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
-        stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
-        game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 190);
+            stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
+            GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
+            float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
+            float fontY = MENU_BUTTON_Y - 40;
+            game.font.draw(guiBatch, layout, fontX, fontY);
+            stage.getBatch().draw(goldmineTexture, UNIT_SHOP_X + 10, UNIT_SHOP_Y + 160, 100, 100);
+            stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
+            stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
+            stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
+            game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 300);
         guiBatch.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
@@ -872,6 +875,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
+        Skin skin1 = new Skin();
+        skin1.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
+        skin1.add("default-font", game.font1);
+        skin1.load(Gdx.files.internal("ui/uiskin.json"));
+
+        TextButton goldmineButton = new TextButton("Buy goldmine / 10gp", skin1, "default");
+        goldmineButton.setSize(185,64);
+        goldmineButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 200);
+        goldmineButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        goldmineButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                unitSpawner(UnitType.GOLDMINE);
+            }
+        });
+
         TextButton archerButton = new TextButton("Buy archer / 4gp", skin, "default");
         archerButton.setSize(185,64);
         archerButton.setPosition(UNIT_SHOP_X + 140,UNIT_SHOP_Y + 100);
@@ -911,6 +931,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         });
 
+        stage.addActor(goldmineButton);
         stage.addActor(menuButton);
         stage.addActor(endTurnButton);
         stage.addActor(archerButton);
