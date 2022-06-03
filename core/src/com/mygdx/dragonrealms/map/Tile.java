@@ -51,6 +51,11 @@ public class Tile extends Actor{
         return borderType;
     }
 
+    public void clearBorder(){
+        tileBorder = null;
+        borderType = 0;
+    }
+
     public void setBorder(int type){
         if(tileBorder == null){
             if(type == 0){

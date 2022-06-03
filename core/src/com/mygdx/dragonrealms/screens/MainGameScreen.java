@@ -828,7 +828,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
     public void clearMovementTiles(){
         for(Tile tile : tilesToDraw){
-            tile.setBorder(0);
+            tile.clearBorder();
             tile.setTempMovLeft(0);
         }
         tilesToDraw.clear();
