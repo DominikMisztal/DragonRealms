@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.Player;
+import com.mygdx.dragonrealms.SoundController;
 import com.mygdx.dragonrealms.map.Map;
 import com.mygdx.dragonrealms.map.Tile;
 import com.mygdx.dragonrealms.map.TileType;
@@ -41,7 +42,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer unitRenderer;
     private OrthographicCamera camera;
-    
+    public SoundController soundController;
+
     public Vector<Tile> tilesToDraw;
     private float mapWidth;
     private float mapHeight;
@@ -122,6 +124,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
         knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
         warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
+        soundController = new SoundController();
     }
 
     @Override
@@ -389,6 +392,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
         }
         attacker.attacked = true;
+        if(attacker instanceof Warrior){
+            soundController.playWarriorAttack();
+        }
+        if(attacker instanceof Knight){
+            soundController.playKnightAttack();
+        }
+        if(attacker instanceof Archer){
+            soundController.playArcherAttack();
+        }
         changeAttackTiles();
     }
 
@@ -891,15 +903,19 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
 
         if(unitToSpawn == UnitType.WARRIOR){
             unit = new Warrior(currentlySelectedTile, players.get(currentPlayer), camera.combined);
+            soundController.playWarriorSelect();
         }
         else if(unitToSpawn == UnitType.ARCHER){
             unit = new Archer(currentlySelectedTile, players.get(currentPlayer), camera.combined);
+            soundController.playArcherSelect();
         }
         else if(unitToSpawn == UnitType.KNIGHT){
             unit = new Knight(currentlySelectedTile, players.get(currentPlayer), camera.combined);
+            soundController.playKnightSelect();
         }
         else if(unitToSpawn == UnitType.GOLDMINE){
             unit = new GoldMine(currentlySelectedTile, players.get(currentPlayer), camera.combined);
+            soundController.playGoldMineSelect();
             players.get(currentPlayer).goldMinesCount++;
         }
         else{

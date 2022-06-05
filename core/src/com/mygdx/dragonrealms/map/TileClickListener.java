@@ -5,6 +5,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.dragonrealms.screens.MainGameScreen;
 import com.mygdx.dragonrealms.screens.Mode;
 import com.mygdx.dragonrealms.units.Archer;
+import com.mygdx.dragonrealms.units.Castle;
+import com.mygdx.dragonrealms.units.GoldMine;
+import com.mygdx.dragonrealms.units.Knight;
+import com.mygdx.dragonrealms.units.Warrior;
 
 public class TileClickListener extends ClickListener {
     private Tile tile;
@@ -27,12 +31,22 @@ public class TileClickListener extends ClickListener {
             return;
         }
         if(tile.getBorder() == 4){
+            mainGameScreen.soundController.playClick();
             return;
         }
         if(tile.getUnit() == null){
             if(mainGameScreen.tilesToDraw.contains(tile) && 
             (tile.getType() != TileType.MOUNTAIN && tile.getType() != TileType.WATER )){
                 mainGameScreen.moveUnit();
+                if(mainGameScreen.currentlySelectedUnit instanceof Warrior){
+                    mainGameScreen.soundController.playWarriorMarch();
+                }
+                else if(mainGameScreen.currentlySelectedUnit instanceof Archer){
+                    mainGameScreen.soundController.playArcherMarch();
+                }
+                else if(mainGameScreen.currentlySelectedUnit instanceof Knight){
+                    mainGameScreen.soundController.playKnightMarch();
+                }
                 mainGameScreen.currentlySelectedUnit = null;
                 return;
             }
@@ -49,12 +63,28 @@ public class TileClickListener extends ClickListener {
         mainGameScreen.clearMovementTiles();
         if(tile.getUnit() != null && tile.getUnit().getPlayer() == mainGameScreen.players.get(mainGameScreen.currentPlayer)){
             mainGameScreen.currentlySelectedUnit = tile.getUnit();
+            if(mainGameScreen.currentlySelectedUnit instanceof Warrior){
+                mainGameScreen.soundController.playWarriorSelect();
+            }
+            else if(mainGameScreen.currentlySelectedUnit instanceof Archer){
+                mainGameScreen.soundController.playArcherSelect();
+            }
+            else if(mainGameScreen.currentlySelectedUnit instanceof Knight){
+                mainGameScreen.soundController.playKnightSelect();
+            }
+            else if(mainGameScreen.currentlySelectedUnit instanceof GoldMine){
+                mainGameScreen.soundController.playGoldMineSelect();
+            }
+            else if(mainGameScreen.currentlySelectedUnit instanceof Castle){
+                mainGameScreen.soundController.playCastleSelect();
+            }
             mainGameScreen.findUnitMovementRange(tile.getUnit(), tile);
             if(tile.getUnit() instanceof Archer && tile.getUnit().attacked == false){
                 mainGameScreen.findRangedAttack(tile.getUnit());
             }
         }
         else{
+            mainGameScreen.soundController.playClick();
             mainGameScreen.tilesToDraw.add(tile);
             tile.setBorder(4);
         }
@@ -68,6 +98,7 @@ public class TileClickListener extends ClickListener {
             mainGameScreen.spawnUnit();
         }
         else{
+            mainGameScreen.soundController.playClick();
             mainGameScreen.clearMovementTiles();
             mainGameScreen.currentMode = Mode.NONE;
         }
