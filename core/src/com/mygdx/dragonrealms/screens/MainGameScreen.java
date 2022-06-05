@@ -173,6 +173,35 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
     }
 
+    private void displayCurrentTileName(){
+        stage.getBatch().begin();
+        GlyphLayout layout = new GlyphLayout(game.tileFont, "");
+        if(currentlySelectedUnit != null){
+            layout.setText(game.tileFont, currentlySelectedUnit.getUnitName().toUpperCase());
+            float fontX = (MyGame.WIDTH - MENU_WIDTH) / 2f - layout.width / 2f;
+            float fontY = MyGame.HEIGHT - 20;
+            game.tileFont.draw(stage.getBatch(), layout, fontX, fontY);
+        }
+        else if(tilesToDraw.size() > 0){
+            if(tilesToDraw.get(0).coordinates.equals(PLAYER1_CASTLE)){
+                layout.setText(game.tileFont, "PLAYER 1 CASTLE");
+            }
+            else if(tilesToDraw.get(0).coordinates.equals(PLAYER2_CASTLE)){
+                layout.setText(game.tileFont, "PLAYER 2 CASTLE");
+            }
+            else if(tilesToDraw.get(0).coordinates.equals(PLAYER3_CASTLE)){
+                layout.setText(game.tileFont, "PLAYER 3 CASTLE");
+            }
+            else{
+                layout.setText(game.tileFont, tilesToDraw.get(0).getType().toString());
+            }
+            float fontX = (MyGame.WIDTH - MENU_WIDTH) / 2f - layout.width / 2f;
+            float fontY = MyGame.HEIGHT - 20;
+            game.tileFont.draw(stage.getBatch(), layout, fontX, fontY);
+        }
+        stage.getBatch().end();
+    }
+
     private void drawCurrentGameplayArea(){
         Gdx.gl.glClearColor(1f,1f,1f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -230,6 +259,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             camera.translate(Gdx.graphics.getDeltaTime() * -400,0);
         }
+
+        displayCurrentTileName();
     }
 
     private void drawPlayerGUI(){

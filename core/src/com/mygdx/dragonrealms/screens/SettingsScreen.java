@@ -188,7 +188,9 @@ public class SettingsScreen implements Screen, InputProcessor {
 
         speedButton = new TextButton("Adjust camera speed", skin, "default");
         speedButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
-        speedButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 260);
+        speedButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 240);
+        speedButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
         speedButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){

@@ -25,6 +25,7 @@ public class MyGame extends Game {
     public BitmapFont endGameWinnerFont;
     public BitmapFont helpFont1;
     public BitmapFont helpFont2;
+    public BitmapFont tileFont;
     public ScreenManager screenManager;
     public OrthographicCamera camera;
     public AssetManager assets;
@@ -174,5 +175,11 @@ public class MyGame extends Game {
         params4.size = 20;
         params4.color = Color.WHITE;
         font1 = generator.generateFont(params4);
+
+        FreeTypeFontGenerator.FreeTypeFontParameter params5 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        params5.size = 40;
+        params5.color = Color.WHITE;
+        tileFont = generator.generateFont(params5);
     }
 }
