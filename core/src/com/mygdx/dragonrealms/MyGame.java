@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.mygdx.dragonrealms.map.TileClickListener;
 import com.mygdx.dragonrealms.screens.ScreenManager;
 
 import java.util.Vector;
@@ -29,7 +30,7 @@ public class MyGame extends Game {
     public ScreenManager screenManager;
     public OrthographicCamera camera;
     public AssetManager assets;
-    public Sound sound;
+    public SoundController soundController;
     public boolean isSoundActive;
     public Vector<Player> players;
 
@@ -40,93 +41,8 @@ public class MyGame extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
         screenManager = new ScreenManager(this);
-        sound = new Sound() {
-            @Override
-            public long play() {
-                return 0;
-            }
-
-            @Override
-            public long play(float volume) {
-                return 0;
-            }
-
-            @Override
-            public long play(float volume, float pitch, float pan) {
-                return 0;
-            }
-
-            @Override
-            public long loop() {
-                return 0;
-            }
-
-            @Override
-            public long loop(float volume) {
-                return 0;
-            }
-
-            @Override
-            public long loop(float volume, float pitch, float pan) {
-                return 0;
-            }
-
-            @Override
-            public void stop() {
-
-            }
-
-            @Override
-            public void pause() {
-
-            }
-
-            @Override
-            public void resume() {
-
-            }
-
-            @Override
-            public void dispose() {
-
-            }
-
-            @Override
-            public void stop(long soundId) {
-
-            }
-
-            @Override
-            public void pause(long soundId) {
-
-            }
-
-            @Override
-            public void resume(long soundId) {
-
-            }
-
-            @Override
-            public void setLooping(long soundId, boolean looping) {
-
-            }
-
-            @Override
-            public void setPitch(long soundId, float pitch) {
-
-            }
-
-            @Override
-            public void setVolume(long soundId, float volume) {
-
-            }
-
-            @Override
-            public void setPan(long soundId, float pan, float volume) {
-
-            }
-        };
         isSoundActive = true;
+        soundController = new SoundController();
     }
 
     public void render() {
@@ -139,7 +55,6 @@ public class MyGame extends Game {
         font.dispose();
         assets.dispose();
         screenManager.dispose();
-        sound.dispose();
     }
 
     private void initFonts(){

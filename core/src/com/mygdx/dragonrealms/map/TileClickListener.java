@@ -1,7 +1,9 @@
 package com.mygdx.dragonrealms.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.screens.MainGameScreen;
 import com.mygdx.dragonrealms.screens.Mode;
 import com.mygdx.dragonrealms.units.Archer;
@@ -21,7 +23,12 @@ public class TileClickListener extends ClickListener {
 
     @Override
     public void clicked(InputEvent event, float x, float y){
+        System.out.println(Gdx.input.getX());
         if(mainGameScreen.gamePaused || mainGameScreen.scrolled){
+            return;
+        }
+        if(Gdx.input.getX() > MyGame.WIDTH - MainGameScreen.MENU_WIDTH){
+            mainGameScreen.clearMovementTiles();
             return;
         }
         mainGameScreen.previouslySelectedTile = mainGameScreen.currentlySelectedTile;

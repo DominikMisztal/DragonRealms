@@ -151,6 +151,7 @@ public class EndGameScreen implements Screen {
         restartButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.setScreen(new MainGameScreen(game));
             }
         });
@@ -163,6 +164,7 @@ public class EndGameScreen implements Screen {
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 Gdx.app.exit();
             }
         });

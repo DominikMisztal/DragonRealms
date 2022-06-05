@@ -316,6 +316,7 @@ public class HelpScreen implements Screen, InputProcessor {
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 Gdx.app.exit();
             }
         });
@@ -328,6 +329,7 @@ public class HelpScreen implements Screen, InputProcessor {
         nextPage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 if(page == 1){
                     page = 2;
                     nextPage.setText("Back / Next");
@@ -358,6 +360,7 @@ public class HelpScreen implements Screen, InputProcessor {
         mainMenu.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 page = 1;
                 nextPage.setText("Next");
                 game.screenManager.setScreen(ScreenManager.STATE.SETTINGS);

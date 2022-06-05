@@ -34,7 +34,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 
 public class MainGameScreen extends ApplicationAdapter implements InputProcessor, Screen {
 
-    private static final int MENU_WIDTH = 350;
+    public static final int MENU_WIDTH = 350;
     private Map map;
     private MyGame game;
     private Skin skin;
@@ -78,6 +78,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Texture warriorTexture;
     SpriteBatch guiBatch;
     private boolean nextPlayer = false;
+    private boolean doDrawing = false;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -171,26 +172,28 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(nextPlayer){
             drawNextPlayerOverlay();
         }
+        if(tilesToDraw.size() > 0){
+            displayCurrentTileName();
+        }
     }
 
     private void displayCurrentTileName(){
         stage.getBatch().begin();
         GlyphLayout layout = new GlyphLayout(game.tileFont, "");
-        if(currentlySelectedUnit != null){
-            layout.setText(game.tileFont, currentlySelectedUnit.getUnitName().toUpperCase());
-            float fontX = (MyGame.WIDTH - MENU_WIDTH) / 2f - layout.width / 2f;
-            float fontY = MyGame.HEIGHT - 20;
-            game.tileFont.draw(stage.getBatch(), layout, fontX, fontY);
-        }
-        else if(tilesToDraw.size() > 0){
-            if(tilesToDraw.get(0).coordinates.equals(PLAYER1_CASTLE)){
+        if(tilesToDraw.size() > 0){
+            Vector2 tempVec = new Vector2(tilesToDraw.get(0).coordinates);
+            tempVec.scl(Map.TILESIZE);
+            if(tempVec.equals(PLAYER1_CASTLE)){
                 layout.setText(game.tileFont, "PLAYER 1 CASTLE");
             }
-            else if(tilesToDraw.get(0).coordinates.equals(PLAYER2_CASTLE)){
+            else if(tempVec.equals(PLAYER2_CASTLE)){
                 layout.setText(game.tileFont, "PLAYER 2 CASTLE");
             }
-            else if(tilesToDraw.get(0).coordinates.equals(PLAYER3_CASTLE)){
+            else if(tempVec.equals(PLAYER3_CASTLE)){
                 layout.setText(game.tileFont, "PLAYER 3 CASTLE");
+            }
+            else if(tilesToDraw.get(0).getUnit() != null){
+                layout.setText(game.tileFont, tilesToDraw.get(0).getUnit().getUnitName());
             }
             else{
                 layout.setText(game.tileFont, tilesToDraw.get(0).getType().toString());
@@ -260,7 +263,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             camera.translate(Gdx.graphics.getDeltaTime() * -400,0);
         }
 
-        displayCurrentTileName();
     }
 
     private void drawPlayerGUI(){
@@ -361,7 +363,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             scrollable = true;
             scrolled = false;
         }
-
         return false;
     }
 
@@ -969,6 +970,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             tile.setTempMovLeft(0);
         }
         tilesToDraw.clear();
+        doDrawing = false;
     }
 
     private void initButtons(){
@@ -980,6 +982,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         menuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
             }
         });
@@ -992,6 +995,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         endTurnButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 nextPlayer();
             }
         });
@@ -1009,6 +1013,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         goldmineButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 unitSpawner(UnitType.GOLDMINE);
             }
         });
@@ -1021,6 +1026,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         archerButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 setCurrentPlayerCamera();
                 unitSpawner(UnitType.ARCHER);
             }
@@ -1034,6 +1040,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         knightButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 setCurrentPlayerCamera();
                 unitSpawner(UnitType.KNIGHT);
             }
@@ -1047,6 +1054,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         warriorButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 setCurrentPlayerCamera();
                 unitSpawner(UnitType.WARRIOR);
             }

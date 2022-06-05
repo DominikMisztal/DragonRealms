@@ -145,6 +145,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.screenManager.setScreen(ScreenManager.STATE.PLAY);
             }
         });
@@ -157,6 +158,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         settingsButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.screenManager.setScreen(ScreenManager.STATE.SETTINGS);
             }
         });
@@ -169,6 +171,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 Gdx.app.exit();
             }
         });

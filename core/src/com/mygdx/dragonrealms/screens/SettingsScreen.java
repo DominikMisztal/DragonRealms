@@ -161,11 +161,12 @@ public class SettingsScreen implements Screen, InputProcessor {
         helpButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.screenManager.setScreen(ScreenManager.STATE.HELP);
             }
         });
 
-        musicButton = new TextButton("Music OFF", skin, "default");
+        musicButton = new TextButton("Music ON", skin, "default");
         musicButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
         musicButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 120);
         musicButton.addAction(parallel(fadeIn(.5f),
@@ -173,15 +174,14 @@ public class SettingsScreen implements Screen, InputProcessor {
         musicButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 if(game.isSoundActive){
                     game.isSoundActive = false;
-                    game.sound.pause();
-                    musicButton.setText("Music ON");
+                    musicButton.setText("Music OFF");
                 }
                 else{
                     game.isSoundActive = true;
-                    game.sound.play();
-                    musicButton.setText("Music OFF");
+                    musicButton.setText("Music ON");
                 }
             }
         });
@@ -194,6 +194,7 @@ public class SettingsScreen implements Screen, InputProcessor {
         speedButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 if(speedButton.getText().length() > 0){
                     speedButton.setText("");
                     slider.setVisible(true);
@@ -213,6 +214,7 @@ public class SettingsScreen implements Screen, InputProcessor {
         backButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
                 game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
             }
         });
