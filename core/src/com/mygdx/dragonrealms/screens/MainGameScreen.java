@@ -188,6 +188,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 game.tileFont.draw(stage.getBatch(), text, fontX, fontY + 30, MENU_WIDTH, Align.center, true);
             stage.getBatch().end();
         }
+        else if(tilesToDraw.get(0) != null){
+            stage.getBatch().begin();
+                String text = tilesToDraw.get(0).getStatistics();
+                Texture texture = tilesToDraw.get(0).getTexture();
+                float fontX = MyGame.WIDTH - MENU_WIDTH;
+                float fontY = MyGame.HEIGHT - 330;
+                stage.getBatch().draw(texture, fontX + MENU_WIDTH / 2f - 50, fontY + 40, 100, 100);
+                game.tileFont.draw(stage.getBatch(), text, fontX, fontY + 30, MENU_WIDTH, Align.center, true);
+            stage.getBatch().end();
+        }
     }
 
     private void drawCurrentGameplayArea(){

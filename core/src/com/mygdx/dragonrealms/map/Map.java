@@ -1,8 +1,10 @@
 package com.mygdx.dragonrealms.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.*;
@@ -48,33 +50,39 @@ public class Map extends Stage {
                     for (String type: typeArray) {
                         Tile tile = new Tile();
                         switch (type){
-                            case "2":
-                                tile.setType(TileType.GRASS);
-                                tile.setMovementCost(1);
-                                break;
                             case "1":
                                 tile.setType(TileType.SAND);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/SAND.png")));
                                 tile.setMovementCost(1);
-
                                 break;
-                            case "4":
-                                tile.setType(TileType.MOUNTAIN);
-                                tile.setMovementCost(99);
+                            case "2":
+                                tile.setType(TileType.GRASS);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/GRASS.png")));
+                                tile.setMovementCost(1);
                                 break;
                             case "3":
                                 tile.setType(TileType.WATER);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/WATER.png")));
+                                tile.setMovementCost(99);
+                                break;
+                            case "4":
+                                tile.setType(TileType.MOUNTAIN);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/MOUNTAIN.png")));
                                 tile.setMovementCost(99);
                                 break;
                             case "5":
                                 tile.setType(TileType.FOREST);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/FOREST.png")));
                                 tile.setMovementCost(3);
                                 break;
                             case "6":
                                 tile.setType(TileType.SNOW);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/SNOW.png")));
                                 tile.setMovementCost(4);
                                 break;
                             case "7":
                                 tile.setType(TileType.SHALLOW_WATER);
+                                tile.setTexture(new Texture(Gdx.files.internal("textures/tiles/SHALLOW_WATER.png")));
                                 tile.setMovementCost(2);
                                 break;
                         }
@@ -105,6 +113,7 @@ public class Map extends Stage {
         Tile tile = tilesHashMap.get(new Vector2(x, y));
         return tile;
     }
+
 
     public int getMapWidth(){
         TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get("layer1");

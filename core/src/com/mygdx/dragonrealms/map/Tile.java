@@ -23,8 +23,17 @@ public class Tile extends Actor{
         coordinates = new Vector2();
         tempMovLeft = 0;
     }
+    public String getStatistics(){
+        String out = String.format("%s\nMove cost: %d\n%s",
+                type.toString(), movementCost, (movementCost == 99) ? "UNPASSABLE" : "PASSABLE");
+
+        return out;
+    }
     public void setTexture(Texture texture){
         this.texture = texture;
+    }
+    public Texture getTexture(){
+        return this.texture;
     }
 
     public int getMovementCost() {
