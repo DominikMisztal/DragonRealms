@@ -11,6 +11,7 @@ import com.mygdx.dragonrealms.units.Unit;
 public class Tile extends Actor{
 
     private Unit unit;
+    private Texture texture;
     public Vector2 coordinates;
     private TileType type;
     private int movementCost;
@@ -21,6 +22,9 @@ public class Tile extends Actor{
     public Tile(){
         coordinates = new Vector2();
         tempMovLeft = 0;
+    }
+    public void setTexture(Texture texture){
+        this.texture = texture;
     }
 
     public int getMovementCost() {
