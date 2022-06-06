@@ -24,8 +24,8 @@ public class Tile extends Actor{
         tempMovLeft = 0;
     }
     public String getStatistics(){
-        String out = String.format("%s\nMove cost: %d\n%s",
-                type.toString(), movementCost, (movementCost == 99) ? "UNPASSABLE" : "PASSABLE");
+        String out = String.format("%s\n%s",
+                type.toString(), (movementCost == 99) ? "UNPASSABLE" : String.format("Move cost: %d\nPASSABLE", movementCost));
 
         return out;
     }
