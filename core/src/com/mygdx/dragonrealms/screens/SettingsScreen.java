@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.dragonrealms.MyGame;
@@ -30,17 +32,17 @@ public class SettingsScreen implements Screen, InputProcessor {
     TextButton musicButton;
     TextButton speedButton;
     TextButton backButton;
-    Slider slider;
+    public Slider slider;
     private Texture texture;
     float FIRST_BUTTON_X = MyGame.WIDTH / 2f - 150f;
     float FIRST_BUTTON_Y = MyGame.HEIGHT/ 2f + 60f;
+    private boolean setCameraValue = true;
 
     public SettingsScreen(final MyGame game) {
         this.game = game;
         this.stage = new Stage(new FillViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), game.batch);
         this.shapeRenderer = new ShapeRenderer();
         this.texture = new Texture(Gdx.files.internal("mainMenu.jpg"));
-
     }
 
     @Override
@@ -72,6 +74,11 @@ public class SettingsScreen implements Screen, InputProcessor {
 
         update(delta);
         stage.draw();
+        if(setCameraValue){
+            slider.setValue(game.cameraSpeed);
+            setCameraValue = false;
+        }
+        System.out.println(game.cameraSpeed);
     }
 
 
@@ -141,9 +148,16 @@ public class SettingsScreen implements Screen, InputProcessor {
         return false;
     }
     private void initSlider(){
-        slider = new Slider(0, 100, 1, false, skin);
+        slider = new Slider(1, 1.5f, 0.005f, false, skin);
         slider.setSize(280, 10);
         slider.setPosition(FIRST_BUTTON_X + 10,FIRST_BUTTON_Y - 215);
+        slider.addListener(new ChangeListener(){
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                game.cameraSpeed = slider.getValue();
+                slider.setValue(slider.getValue());
+            }
+        });
 
         stage.addActor(slider);
         slider.setVisible(false);
@@ -215,6 +229,7 @@ public class SettingsScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.soundController.playClick();
+                setCameraValue = true;
                 game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
             }
         });

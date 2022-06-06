@@ -33,6 +33,7 @@ public class MyGame extends Game {
     public SoundController soundController;
     public boolean isSoundActive;
     public Vector<Player> players;
+    public float cameraSpeed;
 
     public void create() {
         assets = new AssetManager();
@@ -43,6 +44,7 @@ public class MyGame extends Game {
         screenManager = new ScreenManager(this);
         isSoundActive = true;
         soundController = new SoundController();
+        cameraSpeed = 1;
     }
 
     public void render() {
