@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.Player;
@@ -78,7 +79,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Texture warriorTexture;
     SpriteBatch guiBatch;
     private boolean nextPlayer = false;
-    private boolean doDrawing = false;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -120,7 +120,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         gamePaused = false;
         currentMode = Mode.NONE;
         unitRenderer = new ShapeRenderer();
-        backgroundTexture = new Texture(Gdx.files.internal("woodImage.jpg"));
+        backgroundTexture = new Texture(Gdx.files.internal("woodImage2.jpg"));
         goldmineTexture = new Texture(Gdx.files.internal("textures/buildings/goldmine.png"));
         archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
         knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
@@ -178,31 +178,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void displayCurrentTileName(){
-        stage.getBatch().begin();
-        GlyphLayout layout = new GlyphLayout(game.tileFont, "");
-        if(tilesToDraw.size() > 0){
-            Vector2 tempVec = new Vector2(tilesToDraw.get(0).coordinates);
-            tempVec.scl(Map.TILESIZE);
-            if(tempVec.equals(PLAYER1_CASTLE)){
-                layout.setText(game.tileFont, "PLAYER 1 CASTLE");
-            }
-            else if(tempVec.equals(PLAYER2_CASTLE)){
-                layout.setText(game.tileFont, "PLAYER 2 CASTLE");
-            }
-            else if(tempVec.equals(PLAYER3_CASTLE)){
-                layout.setText(game.tileFont, "PLAYER 3 CASTLE");
-            }
-            else if(tilesToDraw.get(0).getUnit() != null){
-                layout.setText(game.tileFont, tilesToDraw.get(0).getUnit().getUnitName());
-            }
-            else{
-                layout.setText(game.tileFont, tilesToDraw.get(0).getType().toString());
-            }
-            float fontX = (MyGame.WIDTH - MENU_WIDTH) / 2f - layout.width / 2f;
-            float fontY = MyGame.HEIGHT - 20;
-            game.tileFont.draw(stage.getBatch(), layout, fontX, fontY);
+        if(tilesToDraw.get(0).getUnit() != null) {
+            stage.getBatch().begin();
+                String text = tilesToDraw.get(0).getUnit().getStatistics();
+                Texture texture = tilesToDraw.get(0).getUnit().getTexture();
+                float fontX = MyGame.WIDTH - MENU_WIDTH;
+                float fontY = MyGame.HEIGHT - 300;
+                stage.getBatch().draw(texture, fontX + MENU_WIDTH / 2f - 50, fontY + 40, 100, 100);
+                game.tileFont.draw(stage.getBatch(), text, fontX, fontY + 30, MENU_WIDTH, Align.center, true);
+            stage.getBatch().end();
         }
-        stage.getBatch().end();
     }
 
     private void drawCurrentGameplayArea(){
@@ -270,15 +255,15 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         guiBatch.begin();
             stage.getBatch().draw(backgroundTexture,MyGame.WIDTH - MENU_WIDTH,0, MENU_WIDTH, MyGame.HEIGHT);
-            GlyphLayout layout = new GlyphLayout(game.font, String.format("Current player number: %d", currentPlayer + 1));
+            GlyphLayout layout = new GlyphLayout(game.tileFont, String.format("Current player number: %d", currentPlayer + 1));
             float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
             float fontY = MENU_BUTTON_Y - 40;
-            game.font.draw(guiBatch, layout, fontX, fontY);
+            game.tileFont.draw(guiBatch, layout, fontX, fontY);
             stage.getBatch().draw(goldmineTexture, UNIT_SHOP_X + 10, UNIT_SHOP_Y + 160, 100, 100);
             stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
             stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
             stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
-            game.font.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 170, UNIT_SHOP_Y + 300);
+            game.tileFont.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 130, UNIT_SHOP_Y + 290);
         guiBatch.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
@@ -970,7 +955,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             tile.setTempMovLeft(0);
         }
         tilesToDraw.clear();
-        doDrawing = false;
     }
 
     private void initButtons(){

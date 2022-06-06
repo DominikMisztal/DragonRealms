@@ -93,8 +93,9 @@ public class MyGame extends Game {
 
         FreeTypeFontGenerator.FreeTypeFontParameter params5 = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        params5.size = 40;
+        params5.size = 30;
         params5.color = Color.WHITE;
+        params5.spaceY = 10;
         tileFont = generator.generateFont(params5);
     }
 }

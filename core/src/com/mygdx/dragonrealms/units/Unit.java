@@ -56,6 +56,13 @@ public class Unit {
         attacked = false;
     }
 
+    public String getStatistics(){
+        String out = String.format("Unit name: %s\nAttack: %d\nHp: %d/%d\nMovement: %d/%d",
+                unitName, attack, current_hp, max_hp, currentMovement, maxMovement);
+
+        return out;
+    }
+
 
     public void render(SpriteBatch spriteBatch){
         sprite.draw(spriteBatch);
