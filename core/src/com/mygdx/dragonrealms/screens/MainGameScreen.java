@@ -1008,6 +1008,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.soundController.playClick();
+                setCurrentPlayerCamera();
                 unitSpawner(UnitType.GOLDMINE);
             }
         });
