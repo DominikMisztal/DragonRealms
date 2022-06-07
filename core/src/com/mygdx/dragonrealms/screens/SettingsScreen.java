@@ -201,7 +201,7 @@ public class SettingsScreen implements Screen, InputProcessor {
             }
         });
 
-        specialSoundsButton = new TextButton("Special sounds ON", skin, "default");
+        specialSoundsButton = new TextButton("Sound effects ON", skin, "default");
         specialSoundsButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
         specialSoundsButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 240);
         specialSoundsButton.addAction(parallel(fadeIn(.5f),
