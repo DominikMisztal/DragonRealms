@@ -121,10 +121,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         currentMode = Mode.NONE;
         unitRenderer = new ShapeRenderer();
         backgroundTexture = new Texture(Gdx.files.internal("woodImage2.jpg"));
-        goldmineTexture = new Texture(Gdx.files.internal("textures/buildings/goldmine.png"));
-        archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
-        knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
-        warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
+        goldmineTexture = new Texture(Gdx.files.internal("textures/Player 1/buildings/goldmine.png"));
+        archerTexture = new Texture(Gdx.files.internal("textures/Player 1/archer/archer1.png"));
+        knightTexture = new Texture(Gdx.files.internal("textures/Player 1/knight/knight1.png"));
+        warriorTexture = new Texture(Gdx.files.internal("textures/Player 1/warrior/warrior1.png"));
         soundController = new SoundController();
     }
 
@@ -246,16 +246,16 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         game.batch.end();
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            camera.translate( 0,Gdx.graphics.getDeltaTime() * 400 * game.cameraSpeed);
+            camera.translate( 0,Gdx.graphics.getDeltaTime() * game.cameraSpeed);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            camera.translate(Gdx.graphics.getDeltaTime() * 400 * game.cameraSpeed,0);
+            camera.translate(Gdx.graphics.getDeltaTime() * game.cameraSpeed,0);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            camera.translate(0, Gdx.graphics.getDeltaTime() * -400 * game.cameraSpeed);
+            camera.translate(0, Gdx.graphics.getDeltaTime() * -game.cameraSpeed);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            camera.translate(Gdx.graphics.getDeltaTime() * -400 * game.cameraSpeed,0);
+            camera.translate(Gdx.graphics.getDeltaTime() * -game.cameraSpeed,0);
         }
 
     }
@@ -542,6 +542,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         nextPlayer = true;
         setCurrentPlayerCamera();
+        archerTexture = new Texture(Gdx.files.internal("textures/Player "+(currentPlayer+1)+"/archer/archer1.png"));
+        knightTexture = new Texture(Gdx.files.internal("textures/Player "+(currentPlayer+1)+"/knight/knight1.png"));
+        warriorTexture = new Texture(Gdx.files.internal("textures/Player "+(currentPlayer+1)+"/warrior/warrior1.png"));
         clearMovementTiles();
     }
 

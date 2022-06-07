@@ -148,13 +148,13 @@ public class SettingsScreen implements Screen, InputProcessor {
         return false;
     }
     private void initSlider(){
-        slider = new Slider(1, 1.5f, 0.005f, false, skin);
+        slider = new Slider(1, 3f, 0.005f, false, skin);
         slider.setSize(280, 10);
         slider.setPosition(FIRST_BUTTON_X + 10,FIRST_BUTTON_Y - 215);
         slider.addListener(new ChangeListener(){
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                game.cameraSpeed = slider.getValue();
+                game.cameraSpeed = (200 * slider.getValue());
                 slider.setValue(slider.getValue());
             }
         });
