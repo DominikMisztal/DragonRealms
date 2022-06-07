@@ -1,6 +1,7 @@
 package com.mygdx.dragonrealms.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -83,6 +84,8 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private Texture warriorTexture;
     SpriteBatch guiBatch;
     private boolean nextPlayer = false;
+    private boolean notEnoughGold = false;
+    private float fade = 0;
 
     public MainGameScreen(MyGame game){
         this.game = game;
@@ -171,6 +174,17 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             drawNextPlayerOverlay();
             deactiveActors();
         }
+        if(notEnoughGold){
+            if(fade > 1){
+                notEnoughGold = false;
+                fade = 0;
+            }
+            fade += delta / 3f;
+            stage.getBatch().begin();
+                game.disappearFont.draw(stage.getBatch(), "Not enough gold", Gdx.input.getX(), MyGame.HEIGHT - Gdx.input.getY() - 10);
+                game.disappearFont.setColor(1,1,1,Interpolation.fade.apply(1 - fade));
+            stage.getBatch().end();
+        }
     }
 
     @Override
@@ -179,6 +193,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         drawCurrentGameplayArea();
         putInMapBounds();
         drawPlayerGUI();
+        displayFPS();
 
         stage.draw();
         update(delta);
@@ -198,6 +213,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         for(Actor actor: a){
             actor.setTouchable(Touchable.enabled);
         }
+    }
+    private void displayFPS(){
+        stage.getBatch().begin();
+            game.font.draw(stage.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, MyGame.HEIGHT);
+        stage.getBatch().end();
     }
 
     private void displayCurrentTileName(){
@@ -867,7 +887,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void dispose(){
         stage.dispose();
     }
-
     private void unitSpawner(UnitType type){
         int cost = 0;
         if(type == UnitType.ARCHER){
@@ -884,6 +903,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         }
         if(players.get(currentPlayer).gold - cost < 0){
             System.out.println("can't spawn");
+            notEnoughGold = true;
             clearMovementTiles();
             return;
         }

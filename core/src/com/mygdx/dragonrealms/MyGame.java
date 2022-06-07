@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,9 +17,9 @@ import java.util.Vector;
 public class MyGame extends Game {
     public static final int WIDTH = 1800;
     public static final int HEIGHT = 900;
-
     public SpriteBatch batch;
     public BitmapFont font;
+    public BitmapFont disappearFont;
     public BitmapFont font1;
     public BitmapFont endgameFont;
     public BitmapFont endGameWinnerFont;
@@ -66,6 +67,7 @@ public class MyGame extends Game {
         params.size = 24;
         params.color = Color.WHITE;
         font = generator.generateFont(params);
+        disappearFont = generator.generateFont(params);
 
         FreeTypeFontGenerator.FreeTypeFontParameter params1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
