@@ -44,7 +44,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         this.skin.addRegions(game.assets.get("ui/uiskin.atlas", TextureAtlas.class));
         this.skin.add("default-font", game.font);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
-
+        
         initButtons();
     }
 
