@@ -3,13 +3,11 @@ package com.mygdx.dragonrealms;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.mygdx.dragonrealms.map.TileClickListener;
 import com.mygdx.dragonrealms.screens.ScreenManager;
 
 import java.util.Vector;
@@ -32,6 +30,7 @@ public class MyGame extends Game {
     public AssetManager assets;
     public SoundController soundController;
     public boolean isSoundActive;
+    public boolean isSpecialSoundsActive;
     public Vector<Player> players;
     public float cameraSpeed;
 
@@ -43,6 +42,7 @@ public class MyGame extends Game {
         camera.setToOrtho(false, WIDTH, HEIGHT);
         screenManager = new ScreenManager(this);
         isSoundActive = true;
+        isSpecialSoundsActive = true;
         soundController = new SoundController();
         cameraSpeed = 400f;
     }

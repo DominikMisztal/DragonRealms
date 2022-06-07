@@ -39,7 +39,7 @@ public class SoundController {
         click = Gdx.audio.newSound(Gdx.files.internal("sounds/click.wav"));
     }
 
-    private void stopAllSounds(){
+    public void stopAllSounds(){
         knightSelect.stop();
         warriorSelect.stop();
         archerSelect.stop();

@@ -3,7 +3,6 @@ package com.mygdx.dragonrealms.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -30,12 +29,13 @@ public class SettingsScreen implements Screen, InputProcessor {
     TextButton playButton;
     TextButton helpButton;
     TextButton musicButton;
+    TextButton specialSoundsButton;
     TextButton speedButton;
     TextButton backButton;
     public Slider slider;
     private Texture texture;
     float FIRST_BUTTON_X = MyGame.WIDTH / 2f - 150f;
-    float FIRST_BUTTON_Y = MyGame.HEIGHT/ 2f + 60f;
+    float FIRST_BUTTON_Y = MyGame.HEIGHT/ 2f + 180f;
     private boolean setCameraValue = true;
 
     public SettingsScreen(final MyGame game) {
@@ -76,6 +76,8 @@ public class SettingsScreen implements Screen, InputProcessor {
         stage.draw();
         if(setCameraValue){
             slider.setValue(game.cameraSpeed);
+            specialSoundsButton.setText(game.isSpecialSoundsActive ? "Special sounds ON" : "Special sounds OFF");
+            musicButton.setText(game.isSoundActive ? "Music ON" : "Music OFF");
             setCameraValue = false;
         }
         System.out.println(game.cameraSpeed);
@@ -150,7 +152,7 @@ public class SettingsScreen implements Screen, InputProcessor {
     private void initSlider(){
         slider = new Slider(400, 800, 1f, false, skin);
         slider.setSize(280, 10);
-        slider.setPosition(FIRST_BUTTON_X + 10,FIRST_BUTTON_Y - 215);
+        slider.setPosition(FIRST_BUTTON_X + 10,FIRST_BUTTON_Y - 335);
         slider.addListener(new ChangeListener(){
             @Override
             public void changed (ChangeEvent event, Actor actor) {
@@ -200,9 +202,29 @@ public class SettingsScreen implements Screen, InputProcessor {
             }
         });
 
+        specialSoundsButton = new TextButton("Special sounds ON", skin, "default");
+        specialSoundsButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
+        specialSoundsButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 240);
+        specialSoundsButton.addAction(parallel(fadeIn(.5f),
+                moveBy(0,-20,.5f, Interpolation.pow5Out)));
+        specialSoundsButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.soundController.playClick();
+                if(game.isSpecialSoundsActive){
+                    game.isSpecialSoundsActive = false;
+                    specialSoundsButton.setText("Special sounds OFF");
+                }
+                else{
+                    game.isSpecialSoundsActive = true;
+                    specialSoundsButton.setText("Special sounds ON");
+                }
+            }
+        });
+
         speedButton = new TextButton("Adjust camera speed", skin, "default");
         speedButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
-        speedButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 240);
+        speedButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 360);
         speedButton.addAction(parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out)));
         speedButton.addListener(new ClickListener(){
@@ -222,7 +244,7 @@ public class SettingsScreen implements Screen, InputProcessor {
 
         backButton = new TextButton("Back", skin, "default");
         backButton.setSize(BUTTON_WIDTH,BUTTON_HEIGHT);
-        backButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 360);
+        backButton.setPosition(FIRST_BUTTON_X,FIRST_BUTTON_Y - 480);
         backButton.addAction(parallel(fadeIn(.5f),
                 moveBy(0,-20,.5f, Interpolation.pow5Out)));
         backButton.addListener(new ClickListener(){
@@ -236,6 +258,7 @@ public class SettingsScreen implements Screen, InputProcessor {
 
         stage.addActor(helpButton);
         stage.addActor(musicButton);
+        stage.addActor(specialSoundsButton);
         stage.addActor(speedButton);
         stage.addActor(backButton);
     }
