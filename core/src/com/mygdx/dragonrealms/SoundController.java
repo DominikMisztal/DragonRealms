@@ -39,62 +39,76 @@ public class SoundController {
         click = Gdx.audio.newSound(Gdx.files.internal("sounds/click.wav"));
     }
 
+    private void stopAllSounds(){
+        knightSelect.stop();
+        warriorSelect.stop();
+        archerSelect.stop();
+        goldMineSelect.stop();
+        castleSelect.stop();
+        knightAttack.stop();
+        archerAttack.stop();
+        warriorAttack.stop();
+        warriorMarch.stop();
+        archerMarch.stop();
+        knightMarch.stop();
+    }
+
     public void playClick(){
         click.play();
     }
 
     public void playKnightSelect(){
-        knightSelect.stop();
+        stopAllSounds();
         knightSelect.play();
     }
 
     public void playWarriorSelect(){
-        warriorSelect.stop();
+        stopAllSounds();
         warriorSelect.play();
     }
 
     public void playArcherSelect(){
-        archerSelect.stop();
+        stopAllSounds();
         archerSelect.play();
     }
 
     public void playGoldMineSelect(){
-        goldMineSelect.stop();
+        stopAllSounds();
         goldMineSelect.play();
     }
 
     public void playCastleSelect(){
-        castleSelect.stop();
+        stopAllSounds();
         castleSelect.play();
     }
 
     public void playKnightAttack(){
-        knightAttack.stop();
+        stopAllSounds();
         knightAttack.play();
     }
 
     public void playArcherAttack(){
-        archerAttack.stop();
+        stopAllSounds();
         archerAttack.play();
     }
 
     public void playWarriorAttack(){
-        warriorAttack.stop();
+        stopAllSounds();
         warriorAttack.play();
     }
 
     public void playWarriorMarch(){
-        warriorMarch.stop();
+        stopAllSounds();
         warriorMarch.play();
     }
 
     public void playArcherMarch(){
-        archerMarch.stop();
+        stopAllSounds();
         archerMarch.play();
     }
 
     public void playKnightMarch(){
-        knightMarch.stop();
+        stopAllSounds();
         knightMarch.play();
     }
     

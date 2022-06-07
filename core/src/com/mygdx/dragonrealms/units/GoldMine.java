@@ -14,7 +14,7 @@ public class GoldMine extends Unit {
         this.passiveMoney = 10;
     }
     public GoldMine(Tile tile, Player player, Matrix4 projectionMatrix) {
-        super("Gold Mine", new Texture(Gdx.files.internal("textures/buildings/goldmine.png")) , 10, 0, 10, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
+        super("Gold Mine", new Texture(Gdx.files.internal("textures/"+player.getPlayerName()+"/buildings/goldmine.png")) , 10, 0, 10, 0, 0, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 
     public int getPassiveMoney(){

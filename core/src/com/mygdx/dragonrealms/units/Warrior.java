@@ -13,6 +13,6 @@ public class Warrior extends Unit {
     }
 
     public Warrior(Tile tile, Player player, Matrix4 projectionMatrix) {
-        super("Warrior", new Texture(Gdx.files.internal("textures/warrior/warrior3.png")) , 3, 2, 6, 1, 4, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
+        super("Warrior", new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/warrior/warrior3.png")) , 3, 2, 6, 1, 4, player, (int)tile.getCoordinates().x, (int)tile.getCoordinates().y);
     }
 }

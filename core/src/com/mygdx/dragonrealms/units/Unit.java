@@ -141,23 +141,28 @@ public class Unit {
     private void changeSprite(){
         if(this.unitName == "Warrior"){
             if(current_hp < Math.floor(max_hp/3)){
-                sprite.setTexture(new Texture(Gdx.files.internal("textures/warrior/warrior1.png")));
+                texture = new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/warrior/warrior1.png"));
+                sprite.setTexture(texture);
             }
             else if(current_hp < Math.floor(2*max_hp/3)){
-                sprite.setTexture(new Texture(Gdx.files.internal("textures/warrior/warrior2.png")));
+                texture = new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/warrior/warrior2.png"));
+                sprite.setTexture(texture);
             }
         }
         else if(this.unitName == "Archer"){
             if(current_hp <= Math.floor(max_hp/3)){
-                sprite.setTexture(new Texture(Gdx.files.internal("textures/archer/archer1.png")));
+                texture = new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/archer/archer1.png"));
+                sprite.setTexture(texture);
             }
             else if(current_hp <= Math.floor(2*max_hp/3)){
-                sprite.setTexture(new Texture(Gdx.files.internal("textures/archer/archer2.png")));
+                texture = new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/archer/archer2.png"));
+                sprite.setTexture(texture);
             }
         }
         else if (this.unitName == "Knight"){
             if(current_hp <= Math.floor(max_hp/2)){
-                sprite.setTexture(new Texture(Gdx.files.internal("textures/knight/knight1.png")));
+                texture = new Texture(Gdx.files.internal("textures/"+ player.getPlayerName()+"/knight/knight1.png"));
+                sprite.setTexture(texture);
             }
         }
     }
