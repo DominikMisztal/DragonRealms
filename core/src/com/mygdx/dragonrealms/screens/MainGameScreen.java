@@ -249,13 +249,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
             camera.translate( 0,Gdx.graphics.getDeltaTime() * game.cameraSpeed);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             camera.translate(Gdx.graphics.getDeltaTime() * game.cameraSpeed,0);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
             camera.translate(0, Gdx.graphics.getDeltaTime() * -game.cameraSpeed);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             camera.translate(Gdx.graphics.getDeltaTime() * -game.cameraSpeed,0);
         }
 
