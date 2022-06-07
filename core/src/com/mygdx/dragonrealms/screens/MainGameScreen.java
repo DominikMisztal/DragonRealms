@@ -66,6 +66,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     private UnitType unitToSpawn;
     private boolean scrollable;
     public boolean scrolled;
+    private boolean showFPS;
     float UNIT_SHOP_X;
     float UNIT_SHOP_Y;
     float MENU_BUTTON_X;
@@ -130,6 +131,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         knightTexture = new Texture(Gdx.files.internal("textures/Player 1/knight/knight1.png"));
         warriorTexture = new Texture(Gdx.files.internal("textures/Player 1/warrior/warrior1.png"));
         soundController = new SoundController();
+        showFPS = false;
     }
 
     @Override
@@ -190,7 +192,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         drawCurrentGameplayArea();
         putInMapBounds();
         drawPlayerGUI();
-        displayFPS();
+        if(showFPS){
+            displayFPS();   
+        }
+        
 
         stage.draw();
         update(delta);
@@ -199,18 +204,21 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             displayCurrentTileName();
         }
     }
+    
     private void deactiveActors(){
         Array<Actor> a = stage.getActors();
         for(Actor actor: a){
             actor.setTouchable(Touchable.disabled);
         }
     }
+    
     private void activeActors(){
         Array<Actor> a = stage.getActors();
         for(Actor actor: a){
             actor.setTouchable(Touchable.enabled);
         }
     }
+    
     private void displayFPS(){
         stage.getBatch().begin();
             game.font.draw(stage.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, MyGame.HEIGHT);
@@ -379,6 +387,10 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(keycode == Input.Keys.T){
             soundController.stopMusic();
             game.screenManager.setScreen(ScreenManager.STATE.ENDGAME);
+        }
+
+        if(keycode == Input.Keys.F8){
+            showFPS = !showFPS;
         }
 
         if(keycode == Input.Keys.L){
