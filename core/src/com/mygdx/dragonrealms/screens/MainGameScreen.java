@@ -153,6 +153,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         initButtons();
         gamePaused = false;
         setCurrentPlayerCamera();
+        soundController.playMusic();
     }
 
     private void update(float delta){
@@ -333,9 +334,11 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             unitSpawner(UnitType.GOLDMINE);
         }
         if(keycode == Input.Keys.ESCAPE){
+            soundController.pauseMusic();
             game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
         }
         if(keycode == Input.Keys.T){
+            soundController.stopMusic();
             game.screenManager.setScreen(ScreenManager.STATE.ENDGAME);
         }
 
@@ -403,6 +406,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     if(playersCount == 0){
                         players.get(0).isWinner = true;
                         defender.getPlayer().setPlace(1);
+                        soundController.stopMusic();
                         game.screenManager.setScreen(STATE.ENDGAME);
                     }
                 }
@@ -420,6 +424,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                     playersCount--;
                     if(playersCount == 1){
                         players.get(0).isWinner = true;
+                        soundController.stopMusic();
                         game.screenManager.setScreen(STATE.ENDGAME);
                     }
                 }
@@ -990,6 +995,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.soundController.playClick();
+                soundController.pauseMusic();
                 game.screenManager.setScreen(ScreenManager.STATE.MAIN_MENU);
             }
         });
