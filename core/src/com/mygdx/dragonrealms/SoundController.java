@@ -74,62 +74,86 @@ public class SoundController {
     }
 
     public void playClick(){
-        click.play();
+        if(MyGame.isSpecialSoundsActive){
+            click.play();
+        }
     }
 
     public void playKnightSelect(){
         stopAllSounds();
-        knightSelect.play();
+        if(MyGame.isSpecialSoundsActive){
+            knightSelect.play();
+        }
     }
 
     public void playWarriorSelect(){
         stopAllSounds();
-        warriorSelect.play();
+        if(MyGame.isSpecialSoundsActive){
+            warriorSelect.play();
+        }
     }
 
     public void playArcherSelect(){
         stopAllSounds();
-        archerSelect.play();
+        if(MyGame.isSpecialSoundsActive){
+            archerSelect.play();
+        }
     }
 
     public void playGoldMineSelect(){
         stopAllSounds();
-        goldMineSelect.play();
+        if(MyGame.isSpecialSoundsActive){
+            goldMineSelect.play();
+        }
     }
 
     public void playCastleSelect(){
         stopAllSounds();
-        castleSelect.play();
+        if(MyGame.isSpecialSoundsActive){
+            castleSelect.play();
+        }
     }
 
     public void playKnightAttack(){
         stopAllSounds();
-        knightAttack.play();
+        if(MyGame.isSpecialSoundsActive){
+            knightAttack.play();
+        }
     }
 
     public void playArcherAttack(){
         stopAllSounds();
-        archerAttack.play();
+        if(MyGame.isSpecialSoundsActive){
+            archerAttack.play();
+        }
     }
 
     public void playWarriorAttack(){
         stopAllSounds();
-        warriorAttack.play();
+        if(MyGame.isSpecialSoundsActive){
+            warriorAttack.play();
+        }
     }
 
     public void playWarriorMarch(){
         stopAllSounds();
-        warriorMarch.play();
+        if(MyGame.isSpecialSoundsActive){
+            warriorMarch.play();
+        }
     }
 
     public void playArcherMarch(){
         stopAllSounds();
-        archerMarch.play();
+        if(MyGame.isSpecialSoundsActive){
+            archerMarch.play();
+        }
     }
 
     public void playKnightMarch(){
         stopAllSounds();
-        knightMarch.play();
+        if(MyGame.isSpecialSoundsActive){
+            knightMarch.play();
+        }
     }
     
 }

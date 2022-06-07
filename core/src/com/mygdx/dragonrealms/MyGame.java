@@ -30,7 +30,7 @@ public class MyGame extends Game {
     public AssetManager assets;
     public SoundController soundController;
     public boolean isSoundActive;
-    public boolean isSpecialSoundsActive;
+    public static boolean isSpecialSoundsActive;
     public Vector<Player> players;
     public float cameraSpeed;
 
