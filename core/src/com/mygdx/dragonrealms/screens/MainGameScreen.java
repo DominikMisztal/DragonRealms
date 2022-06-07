@@ -12,12 +12,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.dragonrealms.MyGame;
 import com.mygdx.dragonrealms.Player;
@@ -28,6 +31,7 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
+import java.util.EventListener;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -156,7 +160,14 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     }
 
     private void update(float delta){
-        stage.act(delta);
+        if(!nextPlayer){
+            activeActors();
+            stage.act(delta);
+        }
+        else{
+            drawNextPlayerOverlay();
+            deactiveActors();
+        }
     }
 
     @Override
@@ -166,14 +177,23 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         putInMapBounds();
         drawPlayerGUI();
 
-        update(delta);
         stage.draw();
+        update(delta);
 
-        if(nextPlayer){
-            drawNextPlayerOverlay();
-        }
         if(tilesToDraw.size() > 0){
             displayCurrentTileName();
+        }
+    }
+    private void deactiveActors(){
+        Array<Actor> a = stage.getActors();
+        for(Actor actor: a){
+            actor.setTouchable(Touchable.disabled);
+        }
+    }
+    private void activeActors(){
+        Array<Actor> a = stage.getActors();
+        for(Actor actor: a){
+            actor.setTouchable(Touchable.enabled);
         }
     }
 
@@ -188,7 +208,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
                 game.tileFont.draw(stage.getBatch(), text, fontX, fontY + 30, MENU_WIDTH, Align.center, true);
             stage.getBatch().end();
         }
-        else if(tilesToDraw.get(0) != null){
+        else if(tilesToDraw.get(0) != null && tilesToDraw.size() == 1){
             stage.getBatch().begin();
                 String text = tilesToDraw.get(0).getStatistics();
                 Texture texture = tilesToDraw.get(0).getTexture();
@@ -248,13 +268,13 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
             camera.translate( 0,Gdx.graphics.getDeltaTime() * game.cameraSpeed);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             camera.translate(Gdx.graphics.getDeltaTime() * game.cameraSpeed,0);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
             camera.translate(0, Gdx.graphics.getDeltaTime() * -game.cameraSpeed);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             camera.translate(Gdx.graphics.getDeltaTime() * -game.cameraSpeed,0);
         }
 
@@ -529,18 +549,18 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         guiBatch.begin();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.rect(0,0,MyGame.WIDTH, MyGame.HEIGHT);
-        shapeRenderer.setColor(0,0,0,0.8f);
-        shapeRenderer.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.rect(0,0,MyGame.WIDTH, MyGame.HEIGHT);
+            shapeRenderer.setColor(0,0,0,0.8f);
+            shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
         guiBatch.end();
         guiBatch.begin();
-        GlyphLayout playerLayout = new GlyphLayout(game.font, String.format("Now is playing player number %d\n" +
-                "     Type any key to begin...", currentPlayer + 1));
-        float fontX = MyGame.WIDTH / 2f - (playerLayout.width) / 2f;
-        float fontY = MyGame.HEIGHT / 2f;
-        game.font.draw(guiBatch, playerLayout, fontX, fontY);
+            GlyphLayout playerLayout = new GlyphLayout(game.font, String.format("Now is playing player number %d\n" +
+                    "     Type any key to begin...", currentPlayer + 1));
+            float fontX = MyGame.WIDTH / 2f - (playerLayout.width) / 2f;
+            float fontY = MyGame.HEIGHT / 2f;
+            game.font.draw(guiBatch, playerLayout, fontX, fontY);
         guiBatch.end();
     }
 
