@@ -153,7 +153,9 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         initButtons();
         gamePaused = false;
         setCurrentPlayerCamera();
-        soundController.playMusic();
+        if(game.isSoundActive){
+            soundController.playMusic();
+        }
     }
 
     private void update(float delta){
