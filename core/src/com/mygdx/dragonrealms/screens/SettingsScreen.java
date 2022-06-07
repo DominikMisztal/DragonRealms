@@ -76,7 +76,7 @@ public class SettingsScreen implements Screen, InputProcessor {
         stage.draw();
         if(setCameraValue){
             slider.setValue(game.cameraSpeed);
-            specialSoundsButton.setText(game.isSpecialSoundsActive ? "Special sounds ON" : "Special sounds OFF");
+            specialSoundsButton.setText(MyGame.isSpecialSoundsActive ? "Special sounds ON" : "Special sounds OFF");
             musicButton.setText(game.isSoundActive ? "Music ON" : "Music OFF");
             setCameraValue = false;
         }
@@ -211,12 +211,12 @@ public class SettingsScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.soundController.playClick();
-                if(game.isSpecialSoundsActive){
-                    game.isSpecialSoundsActive = false;
+                if(MyGame.isSpecialSoundsActive){
+                    MyGame.isSpecialSoundsActive = false;
                     specialSoundsButton.setText("Special sounds OFF");
                 }
                 else{
-                    game.isSpecialSoundsActive = true;
+                    MyGame.isSpecialSoundsActive = true;
                     specialSoundsButton.setText("Special sounds ON");
                 }
             }
