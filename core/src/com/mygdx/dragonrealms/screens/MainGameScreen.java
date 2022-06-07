@@ -32,7 +32,6 @@ import com.mygdx.dragonrealms.map.TileType;
 import com.mygdx.dragonrealms.screens.ScreenManager.STATE;
 import com.mygdx.dragonrealms.units.*;
 
-import java.util.EventListener;
 import java.util.Vector;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -60,7 +59,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public Vector<Player> players;
     public int currentPlayer;
     private int playersCount;
-    private int currentTurn;
     private int unitCost;
     public boolean gamePaused;
     public boolean drawHealthBars;
@@ -122,7 +120,6 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         map.getTile(27,5).setUnit(players.get(2).castle);
         playersCount = 3;                                     
         currentPlayer = 0;
-        currentTurn = 1;
         drawHealthBars = true;
         gamePaused = false;
         currentMode = Mode.NONE;

@@ -1,7 +1,5 @@
 package com.mygdx.dragonrealms;
 
-import javax.swing.plaf.multi.MultiInternalFrameUI;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
