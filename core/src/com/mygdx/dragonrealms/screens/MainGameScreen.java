@@ -268,11 +268,21 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             GlyphLayout layout = new GlyphLayout(game.tileFont, String.format("Current player number: %d", currentPlayer + 1));
             float fontX = MyGame.WIDTH - MENU_WIDTH / 2f - (layout.width) / 2f;
             float fontY = MENU_BUTTON_Y - 40;
+            float archerX, archerY, knightX, knightY, warriorX, warriorY;
+            if(currentPlayer == 0){
+                archerX = 40; archerY = -5; knightX = 30; knightY = 110; warriorX = 40; warriorY = 200;
+            }
+            else if(currentPlayer == 1){
+                archerX = 35; archerY = -10; knightX = 50; knightY = 70; warriorX = 35; warriorY = 190;
+            }
+            else{
+                archerX = 40; archerY = 0; knightX = 40; knightY = 70; warriorX = 30; warriorY = 195;
+            }
             game.tileFont.draw(guiBatch, layout, fontX, fontY);
             stage.getBatch().draw(goldmineTexture, UNIT_SHOP_X + 10, UNIT_SHOP_Y + 160, 100, 100);
-            stage.getBatch().draw(archerTexture, UNIT_SHOP_X - 40, UNIT_SHOP_Y, 200, 200);
-            stage.getBatch().draw(knightTexture,UNIT_SHOP_X - 30, UNIT_SHOP_Y - 110, 200, 200);
-            stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - 40, UNIT_SHOP_Y - 200, 200, 200);
+            stage.getBatch().draw(archerTexture, UNIT_SHOP_X - archerX, UNIT_SHOP_Y - archerY, 200, 200);
+            stage.getBatch().draw(knightTexture,UNIT_SHOP_X - knightX, UNIT_SHOP_Y - knightY, 200, 200);
+            stage.getBatch().draw(warriorTexture,UNIT_SHOP_X - warriorX, UNIT_SHOP_Y - warriorY, 200, 200);
             game.tileFont.draw(guiBatch, String.format("Your gold: %d", players.get(currentPlayer).gold), UNIT_SHOP_X + 130, UNIT_SHOP_Y + 290);
         guiBatch.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
