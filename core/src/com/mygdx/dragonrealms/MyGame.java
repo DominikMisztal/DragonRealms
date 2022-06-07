@@ -44,7 +44,7 @@ public class MyGame extends Game {
         screenManager = new ScreenManager(this);
         isSoundActive = true;
         soundController = new SoundController();
-        cameraSpeed = 1;
+        cameraSpeed = 400f;
     }
 
     public void render() {
