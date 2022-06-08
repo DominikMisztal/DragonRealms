@@ -914,6 +914,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
         if(players.get(currentPlayer).gold - cost < 0){
             System.out.println("can't spawn");
             notEnoughGold = true;
+            fade = 0;
             clearMovementTiles();
             return;
         }
