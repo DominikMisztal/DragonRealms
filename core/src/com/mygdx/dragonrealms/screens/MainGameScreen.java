@@ -180,7 +180,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
             }
             fade += delta / 3f;
             stage.getBatch().begin();
-                game.disappearFont.draw(stage.getBatch(), "Not enough gold", Gdx.input.getX(), MyGame.HEIGHT - Gdx.input.getY() - 10);
+                game.disappearFont.draw(stage.getBatch(), "Not enough gold", Gdx.input.getX() - 220, MyGame.HEIGHT - Gdx.input.getY() +30);
                 game.disappearFont.setColor(1,1,1,Interpolation.fade.apply(1 - fade));
             stage.getBatch().end();
         }
@@ -896,6 +896,7 @@ public class MainGameScreen extends ApplicationAdapter implements InputProcessor
     public void dispose(){
         stage.dispose();
     }
+    
     private void unitSpawner(UnitType type){
         int cost = 0;
         if(type == UnitType.ARCHER){
