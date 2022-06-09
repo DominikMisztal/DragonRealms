@@ -59,7 +59,7 @@ public class SoundController {
     }
 
     public void playMusic(){
-        music.setVolume(0.1f);
+        music.setVolume(0.05f);
         music.play();
     }
 
