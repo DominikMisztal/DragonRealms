@@ -22,19 +22,11 @@ public class EndGameScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private ShapeRenderer shapeRenderer;
-    private Texture archerTexture;
-    private Texture knightTexture;
-    private Texture warriorTexture;
-
-
 
     public EndGameScreen(MyGame game){
         this.game = game;
         this.stage = new Stage(new FitViewport(MyGame.WIDTH, MyGame.HEIGHT, game.camera), game.batch);
         this.shapeRenderer = new ShapeRenderer();
-        archerTexture = new Texture(Gdx.files.internal("textures/archer/archer1.png"));
-        knightTexture = new Texture(Gdx.files.internal("textures/knight/knight1.png"));
-        warriorTexture = new Texture(Gdx.files.internal("textures/warrior/warrior1.png"));
     }
 
     @Override
@@ -113,9 +105,20 @@ public class EndGameScreen implements Screen {
             game.endgameFont.draw(game.batch, layout, fontX + MyGame.WIDTH / 3f, fontY);
             game.endgameFont.draw(game.batch, layout, fontX + 2 * MyGame.WIDTH / 3f, fontY);
 
+            float knightY = 0;
+            float knightX = 0;
             for(int i = 0; i < 3; i++){
+                if(i == 1){
+                    knightY = 30; knightX = -20;
+                }
+                if(i == 2){
+                    knightY = 40;
+                }
+                Texture archerTexture = new Texture(Gdx.files.internal("textures/Player "+(i + 1)+"/archer/archer1.png"));
+                Texture knightTexture = new Texture(Gdx.files.internal("textures/Player "+(i + 1)+"/knight/knight1.png"));
+                Texture warriorTexture = new Texture(Gdx.files.internal("textures/Player "+(i + 1)+"/warrior/warrior1.png"));
                 stage.getBatch().draw(archerTexture,  i * MyGame.WIDTH / 3f, UNIT_Y, 200, 200);
-                stage.getBatch().draw(knightTexture,  220 + i * MyGame.WIDTH / 3f, UNIT_Y, 200, 200);
+                stage.getBatch().draw(knightTexture,  220 + i * MyGame.WIDTH / 3f + knightX, UNIT_Y + knightY, 200, 200);
                 stage.getBatch().draw(warriorTexture, 400 + i * MyGame.WIDTH / 3f, UNIT_Y, 200, 200);
             }
         game.batch.end();
